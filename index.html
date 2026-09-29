@@ -304,6 +304,32 @@ textarea{width:100%;min-height:90px;border:1px solid var(--line);border-radius:9
 
 #bMusic[aria-pressed="false"]{color:var(--muted)}
 #bMusic[aria-pressed="false"] #musicIco{text-decoration:line-through}
+/* layout styles bar */
+.stylebar{position:absolute;left:50%;bottom:12px;transform:translateX(-50%);width:min(1040px,calc(100% - 16px));z-index:8;background:var(--panel);border:1px solid var(--gold);border-radius:16px;box-shadow:0 18px 50px -18px rgba(0,0,0,.45);display:none;flex-direction:column}
+.stylebar.open{display:flex}
+.sb-h{display:flex;align-items:center;gap:10px;padding:10px 12px 6px 16px;flex-wrap:wrap}
+.sb-h b{font-family:"Cormorant Garamond",serif;font-size:22px;font-weight:600;margin-right:auto}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:9px;overflow:hidden}
+.seg button{border:0;background:var(--panel);padding:6px 10px;font-size:12px;min-height:32px}
+.seg button+button{border-left:1px solid var(--line)}
+.seg button[aria-pressed="true"]{background:var(--hdr);color:var(--hdr-ink)}
+.seg-l{font-size:11px;color:var(--muted);margin-right:-4px}
+.sb-cards{display:flex;gap:8px;overflow-x:auto;padding:6px 12px 8px;scrollbar-width:thin}
+.sbc{flex:0 0 104px;display:flex;flex-direction:column;align-items:center;gap:4px;border:1px solid var(--line);background:var(--panel2);border-radius:12px;padding:8px 6px 7px;font-size:12px;color:var(--ink);transition:border-color .15s,transform .15s}
+.sbc:hover{border-color:var(--gold)}
+.sbc[aria-pressed="true"]{border-color:var(--gold);background:color-mix(in srgb,var(--gold) 14%,var(--panel));box-shadow:0 0 0 1px var(--gold) inset}
+.sbc svg{width:88px;height:52px;border-radius:7px;background:var(--panel)}
+.sbc.smart{background:linear-gradient(160deg,color-mix(in srgb,var(--gold) 22%,var(--panel)),var(--panel2))}
+.sb-status{padding:0 16px 11px;font-size:12px;color:var(--muted);min-height:18px}
+.sb-status b{color:var(--ink);font-weight:500}
+.stage.busy #svg{opacity:.75;transition:opacity .2s}
+@media (pointer:coarse){.seg button{min-height:40px;padding:8px 12px;font-size:13px}.sbc{flex-basis:112px}}
+/* avatars */
+.av{cursor:grab}
+.av-i{display:inline-block;width:22px;height:22px;flex:0 0 22px;vertical-align:middle}
+.av-i.lg{width:34px;height:34px;flex-basis:34px}
+.avsum{display:flex;gap:12px;flex-wrap:wrap;font-size:12px;color:var(--muted);margin:4px 0 8px}
+.avsum span{display:inline-flex;align-items:center;gap:5px}
 /* seat card */
 .seatcard{position:absolute;z-index:9;width:320px;max-width:calc(100% - 16px);background:var(--panel);border:1px solid var(--gold);border-radius:14px;box-shadow:0 18px 50px -18px rgba(0,0,0,.45);display:none;flex-direction:column;max-height:calc(100% - 70px);overflow:hidden}
 .seatcard.open{display:flex}
@@ -463,6 +489,7 @@ aside.panel.building .buildhead{display:flex}
       <button class="tb" data-tool="measure" aria-pressed="false" title="Measure a distance">Measure</button>
     </div>
     <div class="tgroup plan-only">
+      <button class="tb" id="bStyles" title="Arrange all tables in a professional layout style">✦ Styles</button>
       <button class="tb" id="bSheet" title="Every guest and table in an editable sheet">Sheet</button>
       <button class="tb" id="bChart" title="Seating chart by table and A to Z">Seating chart</button>
       <button class="tb" id="bNames" aria-pressed="true" title="Show guest names at each seat">Names</button>
@@ -492,6 +519,43 @@ aside.panel.building .buildhead{display:flex}
       <pattern id="m-c" width=".8" height=".8" patternUnits="userSpaceOnUse"><rect width=".8" height=".8" fill="#7C2F3C"/><path d="M.4 .1L.7 .4L.4 .7L.1 .4Z" fill="none" stroke="#9A4453" stroke-width=".025"/><circle cx=".4" cy=".4" r=".04" fill="#C9A45F"/></pattern>
       <pattern id="m-g" width="1" height="1" patternUnits="userSpaceOnUse"><rect width="1" height="1" style="fill:var(--lawn)"/><circle cx=".2" cy=".3" r=".04" fill="rgba(60,100,40,.25)"/><circle cx=".7" cy=".75" r=".04" fill="rgba(60,100,40,.25)"/><circle cx=".65" cy=".2" r=".03" fill="rgba(60,100,40,.2)"/></pattern>
       <pattern id="m-w" width="2" height="1" patternUnits="userSpaceOnUse"><rect width="2" height="1" fill="#8ECFE2"/><path d="M0 .5q.5 -.2 1 0t1 0" fill="none" stroke="rgba(255,255,255,.6)" stroke-width=".04"/></pattern>
+
+      <clipPath id="avClip"><circle r=".94"/></clipPath>
+      <radialGradient id="avBg" cx=".35" cy=".3" r=".9"><stop offset="0" stop-color="#fff" stop-opacity=".35"/><stop offset="1" stop-color="#000" stop-opacity=".12"/></radialGradient>
+      <linearGradient id="avSuit" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#34425A"/><stop offset="1" stop-color="#1D2636"/></linearGradient>
+      <linearGradient id="avDress" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F6DDE1"/><stop offset="1" stop-color="#E4B9C1"/></linearGradient>
+      <linearGradient id="avKid" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F7E7C6"/><stop offset="1" stop-color="#E8CF9E"/></linearGradient>
+      <symbol id="av-m" viewBox="-1 -1 2 2" overflow="visible"><circle r="1" fill="currentColor"/><circle r="1" fill="url(#avBg)"/><g clip-path="url(#avClip)">
+        <path d="M-.82 1.1C-.8 .52-.46 .34 0 .34S.8 .52 .82 1.1Z" fill="url(#avSuit)"/><path d="M-.16 .34L0 .62L.16 .34Z" fill="#FBF8F2"/><path d="M-.1 .44L0 .5L.1 .44L.1 .56L0 .5L-.1 .56Z" fill="#C9A45F"/>
+        <path d="M-.11 .2h.22v.16h-.22z" fill="#E2B792"/><circle cy="-.12" r=".33" fill="#EBC6A3"/><circle cx="-.33" cy="-.1" r=".06" fill="#E2B792"/><circle cx=".33" cy="-.1" r=".06" fill="#E2B792"/>
+        <path d="M-.35 -.14C-.39 -.46-.14 -.6 .04 -.58C.29 -.56 .4 -.42 .35 -.14C.3 -.3 .14 -.34 -.02 -.33C-.18 -.32-.29 -.26-.35 -.14Z" fill="#2E2119"/></g>
+        <circle r=".97" fill="none" stroke="#C9A45F" stroke-width="1.4"/></symbol>
+      <symbol id="av-f" viewBox="-1 -1 2 2" overflow="visible"><circle r="1" fill="currentColor"/><circle r="1" fill="url(#avBg)"/><g clip-path="url(#avClip)">
+        <path d="M-.46 -.08C-.48 -.52-.22 -.64 0 -.64C.22 -.64 .48 -.52 .46 -.08L.47 .36C.3 .42-.3 .42-.47 .36Z" fill="#3A2418"/>
+        <path d="M-.8 1.1C-.78 .56-.46 .38 0 .38S.78 .56 .8 1.1Z" fill="url(#avDress)"/><path d="M-.34 .44Q0 .7 .34 .44" fill="none" stroke="#C9A45F" stroke-width="1"/><circle cy=".6" r=".045" fill="#C9A45F"/>
+        <path d="M-.1 .2h.2v.18h-.2z" fill="#E2B792"/><circle cy="-.1" r=".31" fill="#EFCDAE"/>
+        <path d="M-.33 -.13C-.3 -.43-.05 -.52 .13 -.47C.27 -.43 .34 -.32 .33 -.14C.2 -.28 .03 -.31-.12 -.25C-.2 -.21-.28 -.17-.33 -.13Z" fill="#3A2418"/>
+        <circle cx="-.3" cy=".02" r=".035" fill="#C9A45F"/><circle cx=".3" cy=".02" r=".035" fill="#C9A45F"/></g>
+        <circle r=".97" fill="none" stroke="#C9A45F" stroke-width="1.4"/></symbol>
+      <symbol id="av-u" viewBox="-1 -1 2 2" overflow="visible"><circle r="1" fill="currentColor"/><circle r="1" fill="url(#avBg)"/><g clip-path="url(#avClip)">
+        <path d="M-.8 1.1C-.78 .54-.46 .36 0 .36S.78 .54 .8 1.1Z" fill="#F4EEE2"/><circle cy="-.12" r=".32" fill="#F4EEE2"/></g>
+        <circle r=".97" fill="none" stroke="#C9A45F" stroke-width="1.4"/></symbol>
+      <symbol id="av-cm" viewBox="-1 -1 2 2" overflow="visible"><circle r="1" fill="currentColor"/><circle r="1" fill="url(#avBg)"/><g clip-path="url(#avClip)">
+        <path d="M-.66 1.1C-.64 .66-.4 .5 0 .5S.64 .66 .66 1.1Z" fill="#6E93B8"/><path d="M-.14 .5L0 .64L.14 .5Z" fill="#FBF8F2"/>
+        <circle cy="0" r=".4" fill="#F1D0AF"/><circle cx="-.2" cy=".1" r=".07" fill="#F2A9A0" opacity=".6"/><circle cx=".2" cy=".1" r=".07" fill="#F2A9A0" opacity=".6"/>
+        <path d="M-.4 -.04C-.44 -.4-.14 -.5 .04 -.48C.3 -.46 .44 -.3 .4 -.04C.3 -.2 .18 -.26 .02 -.24C.06 -.3 .04 -.36 0 -.38C-.02 -.3-.1 -.24-.2 -.22C-.3 -.2-.36 -.12-.4 -.04Z" fill="#6B4A2E"/></g>
+        <circle r=".97" fill="none" stroke="#C9A45F" stroke-width="1.4"/></symbol>
+      <symbol id="av-cf" viewBox="-1 -1 2 2" overflow="visible"><circle r="1" fill="currentColor"/><circle r="1" fill="url(#avBg)"/><g clip-path="url(#avClip)">
+        <circle cx="-.44" cy="-.12" r=".16" fill="#6B4A2E"/><circle cx=".44" cy="-.12" r=".16" fill="#6B4A2E"/>
+        <path d="M-.66 1.1C-.64 .66-.4 .5 0 .5S.64 .66 .66 1.1Z" fill="#F3C8D0"/><path d="M-.26 .56Q0 .7 .26 .56" fill="none" stroke="#FBF8F2" stroke-width="1.2"/>
+        <circle cy="0" r=".39" fill="#F3D5B8"/><circle cx="-.19" cy=".1" r=".07" fill="#F2A9A0" opacity=".65"/><circle cx=".19" cy=".1" r=".07" fill="#F2A9A0" opacity=".65"/>
+        <path d="M-.39 -.02C-.42 -.38-.16 -.5 0 -.5C.16 -.5 .42 -.38 .39 -.02C.28 -.2 .12 -.26 0 -.22C-.12 -.26-.28 -.2-.39 -.02Z" fill="#6B4A2E"/><path d="M.18 -.44l.16 -.1l.04 .16z" fill="#E08BA0"/></g>
+        <circle r=".97" fill="none" stroke="#C9A45F" stroke-width="1.4"/></symbol>
+      <symbol id="av-c" viewBox="-1 -1 2 2" overflow="visible"><circle r="1" fill="currentColor"/><circle r="1" fill="url(#avBg)"/><g clip-path="url(#avClip)">
+        <path d="M-.66 1.1C-.64 .66-.4 .5 0 .5S.64 .66 .66 1.1Z" fill="url(#avKid)"/>
+        <circle cy="0" r=".4" fill="#F1D0AF"/><circle cx="-.2" cy=".1" r=".07" fill="#F2A9A0" opacity=".6"/><circle cx=".2" cy=".1" r=".07" fill="#F2A9A0" opacity=".6"/>
+        <path d="M-.12 -.38C-.08 -.5 .08 -.54 .14 -.46C.06 -.46 0 -.42-.02 -.36Z" fill="#6B4A2E"/></g>
+        <circle r=".97" fill="none" stroke="#C9A45F" stroke-width="1.4"/></symbol>
       <radialGradient id="glowG">
         <stop offset="0" stop-color="#FFD58A" stop-opacity=".55"/>
         <stop offset=".45" stop-color="#FFC061" stop-opacity=".18"/>
@@ -518,6 +582,7 @@ aside.panel.building .buildhead{display:flex}
   <div class="tiltnote">3D preview. Tap 3D again to keep editing.</div>
   <div class="placing" id="placing"><span>Tap a seat for <b id="placingName"></b></span><button id="placingCancel">Cancel</button></div>
   <div class="ghost" id="ghost"></div>
+  <div class="stylebar" id="styleBar" role="dialog" aria-label="Layout styles"></div>
   <div class="seatcard" id="seatCard" role="dialog" aria-label="Seat"></div>
   <div class="toast" id="toast"></div>
 </main>
@@ -917,7 +982,9 @@ function itemInner(it,forIcon){
     const slots=seatSlots(it);
     const empt=[];if(!forIcon)slots.forEach((p,i)=>{if(!seatMap[it.id+':'+i])empt.push(i)});const rsv=new Set(empt.slice(Math.max(0,empt.length-(it.reserve||0))));
     slots.forEach((p,i)=>{const g=forIcon?null:seatMap[it.id+':'+i];const cur=selSeat&&selSeat.tid===it.id&&selSeat.s===i;
-      s+=chairEl(p.x,p.y,p.a,(g?' f s-'+g.side:'')+(cur?' cur':'')+(rsv.has(i)?' rsv':''),it.id,i)});
+      s+=chairEl(p.x,p.y,p.a,(g?' f s-'+g.side:'')+(cur?' cur':'')+(rsv.has(i)?' rsv':''),it.id,i);
+      if(g)s+=`<g class="av" data-seat="${i}" transform="translate(${f(p.x)} ${f(p.y)}) rotate(${f(-it.rot)})" style="color:${SIDE_COL[g.side]||SIDE_COL.both}"><use href="#av-${avKey(g)}" x="-.27" y="-.27" width=".54" height=".54"/></g>`;
+      if(cur)s+=`<circle class="seatring" cx="${f(p.x)}" cy="${f(p.y)}" r=".34" style="pointer-events:none"/>`});
     if(T.shape==='round'){
       s+=`<circle class="t-top" r="${f(hw)}" fill="${linen}"/><circle r="${f(hw)}" fill="url(#sheen)"/><circle class="t-ring" r="${f(hw*.86)}"/>`;
     }else{
@@ -1248,7 +1315,7 @@ function applyTemplate(kind){
 }
 
 /* ---------- guests ---------- */
-function addGuest(o){const g={id:'g'+(S.gnext++),name:String(o.name).trim(),side:o.side||'both',group:(o.group||'').trim(),meal:o.meal||'',rsvp:o.rsvp||'yes',notes:o.notes||'',rel:o.rel||'',hh:o.hh||'',kid:!!o.kid,pri:o.pri||0,confirm:!!o.confirm,t:null,s:null};inferGuest(g);S.guests.push(g);return g}
+function addGuest(o){const g={id:'g'+(S.gnext++),name:String(o.name).trim(),side:o.side||'both',group:(o.group||'').trim(),meal:o.meal||'',rsvp:o.rsvp||'yes',notes:o.notes||'',rel:o.rel||'',hh:o.hh||'',gender:o.gender||'',kid:!!o.kid,pri:o.pri||0,confirm:!!o.confirm,t:null,s:null};inferGuest(g);S.guests.push(g);return g}
 function assign(gid,tid,s){
   const g=gById(gid),it=byId(tid);if(!g||!it)return;
   if(s==null||s<0)s=firstFree(it);
@@ -1450,7 +1517,7 @@ const BTOOLS=[
   ['remove','Remove','walls, doors',"<path d='M5 7h14M10 7V4h4v3M7 7l1 13h8l1-13'/>"],
   ['measure','Measure','',"<path d='M3 17L17 3l4 4L7 21zM7 13l2 2M10 10l2 2M13 7l2 2'/>"]
 ];
-function setMode(m){closeSeatCard();
+function setMode(m){closeSeatCard();if(typeof closeStyles==='function')closeStyles();
   mode=m;document.querySelectorAll('[data-mode]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.mode===m));
   stage.classList.toggle('building',m==='build');$('#panel').classList.toggle('building',m==='build');
   stage.classList.toggle('hand',m==='build'&&bTool==='hand');
@@ -1568,7 +1635,7 @@ function renderBuild(b){
 
 /* ---------- invitee import ---------- */
 let impRows=null,impMap={},impHeader=true,impSide='col';
-const IMP_FIELDS=[['name','Name',/^(full ?)?name|guest|invitee|اسم|الاسم|ضيف|مدعو/i],['last','Last name (joined to name)',/last|surname|family name|اسم العائلة|لقب/i],['side','Side',/side|bride|groom|جهة|طرف|من طرف/i],['group','Group',/group|relation|category|circle|مجموعة|قرابة|صلة/i],['meal','Meal',/meal|menu|food|dish|وجبة|أكل|اكل/i],['rsvp','RSVP',/rsvp|status|attend|coming|confirm|حضور|تأكيد/i],['table','Table',/table|طاولة|ترابيزة|تربيزة/i],['notes','Notes',/note|comment|ملاحظ/i]];
+const IMP_FIELDS=[['name','Name',/^(full ?)?name|guest|invitee|اسم|الاسم|ضيف|مدعو/i],['last','Last name (joined to name)',/last|surname|family name|اسم العائلة|لقب/i],['side','Side',/side|bride|groom|جهة|طرف|من طرف/i],['group','Group',/group|relation|category|circle|مجموعة|قرابة|صلة/i],['meal','Meal',/meal|menu|food|dish|وجبة|أكل|اكل/i],['rsvp','RSVP',/rsvp|status|attend|coming|confirm|حضور|تأكيد/i],['table','Table',/table|طاولة|ترابيزة|تربيزة/i],['notes','Notes',/note|comment|ملاحظ/i],['gender','Gender',/gender|sex|m\/f|النوع|الجنس/i]];
 $('#gFile').addEventListener('change',async e=>{
   const file=e.target.files[0];e.target.value='';if(!file)return;
   try{
@@ -1607,7 +1674,8 @@ function impParse(){
     const sd=v('side').toLowerCase();const side=/bride|عروس|العروسة/.test(sd)?'bride':/groom|عريس|العريس/.test(sd)?'groom':'both';
     const rv=v('rsvp').toLowerCase();const rsvp=!rv?'yes':/^(y|yes|coming|confirmed?|attending|نعم|أيوه|ايوه|مؤكد|حاضر)/.test(rv)?'yes':/^(n|no|not|declined?|لا|معتذر|مش)/.test(rv)?'no':'pending';
     const mv=v('meal'),meal=MEALS.find(m=>m.toLowerCase()===mv.toLowerCase())||mv;
-    out.push({name,side:impSide==='col'?side:impSide,group:v('group'),meal,rsvp,notes:v('notes'),table:v('table')})}
+    const gv=v('gender').toLowerCase();const gender=/^(f|w|female|woman|girl|أنثى|انثى|ست|بنت)/.test(gv)?'f':/^(m|male|man|boy|ذكر|راجل|ولد)/.test(gv)?'m':'';
+    out.push({gender,name,side:impSide==='col'?side:impSide,group:v('group'),meal,rsvp,notes:v('notes'),table:v('table')})}
   void col;return out;
 }
 function renderImport(){
@@ -1645,9 +1713,27 @@ $('#impGo').onclick=()=>{
 /* ---------- smart planning ---------- */
 const PRI={1:'Immediate family',2:'Close family',3:'VIP and relatives',4:'Friends',5:'Colleagues'};
 function normName(n){return String(n||'').toLowerCase().replace(/\(.*?\)/g,'').replace(/[^\p{L}\p{N}' ]/gu,' ').replace(/\s+/g,' ').trim()}
+const GENDER={m:'Man',f:'Woman','':'Not set'};
+const SIDE_COL={bride:'#B96F7E',groom:'#3E5F88',both:'#9C8752'};
+const F_NAMES='mervat soha sahar dalia rana mona marwa sohair kinda salma hana farida laila layla yasmin yasmine dina malak nada jana habiba reem mariam maryam heba rahma nadine aya lina sara sarah noha ghada amira eman iman shaimaa shimaa hoda nermeen nesma rania doaa asmaa fatma fatima aisha zeinab nahla nagwa samira samia amal afaf hala hanan inas enas manal mai may nevine nancy riham rasha sally shereen sherine suzan wafaa yara zeina salwa magda mervet soad souad fayza nabila lobna lamia azza'.split(' ');
+const M_NAMES='mohamed muhammad mohammed ahmed amr khaled khalid hisham hesham osama essam adly saman ghaly behairy kabbo ezzat khatab abouelsoud omar youssef yousef karim mostafa moustafa mahmoud ali hassan hossam tarek tareq sherif ziad seif adham wael sameh ibrahim marwan amir hany hazem walid yasser toto dad mido emad ehab ashraf ayman magdy medhat nabil nader nasser ramy ramez sayed samir tamer yehia zakaria hatem hamdy fathy gamal kamal mounir ossama anas bassem fady fawzy gaber hamada helmy'.split(' ');
+function inferGender(g){
+  const t=(g.rel+' '+g.name).toLowerCase();
+  const last=(g.rel||'').toLowerCase()||t;
+  const fRe=/\b(wife|mom|mum|mother|sister|daughter|aunt|grandmother|grandma|niece|girl|bride|lady|mrs|miss|madam)\b|زوجة|مراته|ام |أم|اخت|أخت|بنت|خالة|عمة|جدة/,mRe=/\b(husband|dad|father|brother|son|uncle|grandfather|grandpa|nephew|boy|groom|mr)\b|زوج|جوز|أب|ابو|أبو|اخ |أخ|ابن|خال|عم |جد /;
+  if(fRe.test(last)&&!mRe.test(last))return 'f';if(mRe.test(last)&&!fRe.test(last))return 'm';
+  const tail=(g.name.match(/['’]s\s+([^']+)$/i)||[])[1];if(tail){if(fRe.test(tail.toLowerCase()))return 'f';if(mRe.test(tail.toLowerCase()))return 'm'}
+  if(/['’]s\s/.test(g.name))return '';
+  const first=normName(g.name).split(' ')[0];
+  if(F_NAMES.includes(first))return 'f';if(M_NAMES.includes(first))return 'm';
+  return '';
+}
+function avKey(g){return g.kid?(g.gender==='m'?'cm':g.gender==='f'?'cf':'c'):(g.gender==='m'?'m':g.gender==='f'?'f':'u')}
+function avInline(g,cls){return `<svg class="av-i ${cls||''}" viewBox="-1 -1 2 2" aria-hidden="true" style="color:${SIDE_COL[g.side]||SIDE_COL.both}"><use href="#av-${avKey(g)}" x="-1" y="-1" width="2" height="2"/></svg>`}
 function inferGuest(g){
   const m=/^(.+?)['’]s\s+(.+)$/i.exec(g.name);
   if(m){if(!g.hh)g.hh=m[1].replace(/\s*\(.*\)\s*/,' ').trim();if(!g.rel)g.rel=m[2]}
+  if(g.gender==null||g.gender==='')g.gender=inferGender(g);
   const txt=g.name+' '+(g.rel||'');
   if(!g.kid&&/\b(child|kid|son|baby|toddler)\b|طفل|ابن/i.test(txt)){g.kid=true}
   if(g.kid&&!g.meal)g.meal='Kids';
@@ -1873,6 +1959,10 @@ function runCommand(txt){
     const sh=/round|circle/.test(w)?'round':/square/.test(w)?'square':/banquet|long/.test(w)?'banquet':/head/.test(w)?'head':'rect';
     return changeShape([t],sh);
   }
+  if((m=/^(?:layout|style|arrange(?:\s+as|\s+in)?|make it)\s+(?:an?\s+|the\s+)?(.+?)(?:\s+style|\s+layout)?$/i.exec(c))){
+    const w=m[1].toLowerCase();const hit=LSTYLES.find(([k,n])=>w.includes(k)||w.includes(n.toLowerCase())||(k==='arc'&&/amphi|theat|curve/.test(w))||(k==='stacks'&&/stack|long|banquet/.test(w))||(k==='grid'&&/classic|row|grid/.test(w))||(k==='smart'&&/best|smart|auto/.test(w))||(k==='chevron'&&/angle|herring|v shape|chevron/.test(w)));
+    if(hit){openStyles();applyStyle(hit[0]);return}
+  }
   if(/distribut|auto.?seat|seat everyone/i.test(c))return smartDistribute({});
   if(/re-?plan|start over|reseat/i.test(c))return smartDistribute({reseat:true,arrange:true});
   if(/arrange|layout|closest/i.test(c)){mutate(arrangeTables);return logAct("Tables arranged: closest family nearest the kosha, groom's side on the left, bride's on the right.")}
@@ -1899,7 +1989,7 @@ function renderSmart(b){
     <h3>What needs attention</h3>
     <ul class="ins">${ins.map((o,i)=>`<li class="${o.l}"><div>${esc(o.t)}</div>${o.b?`<button class="btn sm" data-fix="${i}">${esc(o.b)}</button>`:''}</li>`).join('')}</ul>
     <h3>One-tap planning</h3>
-    <div class="btns"><button class="btn gold" id="sDist">Smart distribute</button><button class="btn" id="sReplan">Re-plan every seat</button><button class="btn" id="sArr">Arrange by importance</button><button class="btn" id="sRight">Right-size tables</button><button class="btn" id="sBride">Hold tables for the bride</button><button class="btn" id="sSheet">Open sheet</button></div>
+    <div class="btns"><button class="btn gold" id="sDist">Smart distribute</button><button class="btn" id="sReplan">Re-plan every seat</button><button class="btn" id="sArr">Arrange by importance</button><button class="btn" id="sStyles">✦ Layout styles</button><button class="btn" id="sRight">Right-size tables</button><button class="btn" id="sBride">Hold tables for the bride</button><button class="btn" id="sSheet">Open sheet</button></div>
     <p class="note">Smart distribute keeps every household together, seats children next to their parents, fills the most important tables first, never uses reserved chairs, and adds tables only when needed. Re-plan starts from scratch and moves tables so the closest family sits nearest the kosha.</p>
     ${actLog.length?`<h3>Recent</h3><ul class="log">${actLog.map(x=>`<li>${esc(x)}</li>`).join('')}</ul>`:''}`;
   const go=()=>{const v=$('#cmd').value;runCommand(v);const c=$('#cmd');if(c){c.value='';c.focus()}};
@@ -1907,10 +1997,148 @@ function renderSmart(b){
   b.querySelectorAll('[data-ex]').forEach(x=>x.onclick=()=>{$('#cmd').value=x.dataset.ex;$('#cmd').focus()});
   b.querySelectorAll('[data-fix]').forEach(x=>x.onclick=()=>ins[+x.dataset.fix].f());
   $('#sDist').onclick=()=>smartDistribute({});$('#sReplan').onclick=()=>smartDistribute({reseat:true,arrange:true});
+  $('#sStyles').onclick=openStyles;
   $('#sArr').onclick=()=>{mutate(arrangeTables);logAct("Tables arranged: closest family nearest the kosha, groom's side on the left, bride's on the right.")};
   $('#sRight').onclick=rightSize;$('#sBride').onclick=reserveBrideTables;$('#sSheet').onclick=()=>openSheet('guests');
   const lim2=(id,k)=>{$(id).onchange=e=>{mutate(()=>{S.plan[k]=Math.max(0,+e.target.value||0)})}};lim2('#lCap','cap');lim2('#lEx','extra');lim2('#lB','bride');lim2('#lG','groom');
 }
+
+/* ---------- layout styles: arrange every table in a professional pattern ---------- */
+const LSTYLES=[['smart','Smart pick'],['grid','Classic rows'],['stagger','Staggered'],['chevron','Chevron'],['arc','Amphitheater'],['fan','Sunburst'],['diamond','Diamond'],['stacks','Long stacks'],['horseshoe','Horseshoe'],['islands','Side islands'],['garden','Garden']];
+const LO={style:null,space:'balanced',aisle:true,ang:30,aisleW:3,shape:'keep'};
+const SPACING={airy:[1.8,1.4,1,.7,.4,.15],balanced:[1.1,.8,.5,.25,.05],compact:[.35,.15,0]};
+function hash3(i,j,k){let h=(i*374761393+j*668265263+k*2147483647)|0;h=(h^(h>>>13))*1274126177|0;return ((h^(h>>>16))>>>0)/4294967295}
+function genSlots(style,P){
+  const out=[],R=P.R,v0=P.v0,c0=P.aisle?P.aisleW/2+P.fx/2:P.px/2;
+  const push=(u,v,a,sc)=>out.push({u,v,a:a||0,sc:sc==null?Math.hypot(u,v*1.15):sc});
+  const both=(u,v,aL,aR,sc)=>{push(-u,v,aL,sc);push(u,v,aR,sc)};
+  const deg=x=>x*180/Math.PI;
+  if(style==='grid'){for(let i=0;v0+i*P.py<R;i++)for(let j=0;c0+j*P.px<R;j++)both(c0+j*P.px,v0+i*P.py,0,0)}
+  else if(style==='stagger'){const py=P.py*.88;for(let i=0;v0+i*py<R;i++){const off=i%2?P.px/2:0;for(let j=0;c0+off+j*P.px<R;j++)both(c0+off+j*P.px,v0+i*py,0,0)}}
+  else if(style==='chevron'){const sl=Math.tan(rad(P.ang))*.75,a=deg(Math.atan(sl));
+    for(let i=0;v0+i*P.py<R;i++)for(let j=0;c0+j*P.px<R;j++){const u=c0+j*P.px,v=v0+i*P.py+(u-c0)*sl;both(u,v,-a,a,Math.hypot(u,(v0+i*P.py)*1.15))}}
+  else if(style==='arc'){const cc=P.fx*.8;
+    for(let i=0;;i++){const Rr=v0+cc+i*P.py;if(Rr>R)break;const tmin=Math.asin(Math.min(.99,c0/Rr)),st=P.px/Rr;
+      for(let th=(P.aisle?tmin:st/2);th<rad(86);th+=st){const u=Rr*Math.sin(th),v=Rr*Math.cos(th)-cc;if(v<v0*.6)continue;both(u,v,deg(th),-deg(th),i*100+th*10)}}}
+  else if(style==='fan'){const Rref=v0+P.py*1.5,dth=2*Math.asin(Math.min(.99,P.px/(2*Rref))),tmin=P.aisle?Math.asin(Math.min(.99,c0/Rref)):dth/2;
+    for(let k=0;tmin+k*dth<rad(84);k++){const th=tmin+k*dth,ar=deg(Math.atan2(Math.cos(th),Math.sin(th)));
+      for(let j=0;;j++){const Rr=v0+P.fx*.3+j*P.py;if(Rr>R)break;both(Rr*Math.sin(th),Rr*Math.cos(th),-ar,ar,j*10+k*4)}}}
+  else if(style==='diamond'){const q=P.px*.74,N=Math.ceil(R/q)+2;
+    for(let m=-N;m<=N;m++)for(let n=-N;n<=N;n++){if((m+n)<0)continue;const u=(m-n)*q,v=v0+(m+n)*q;if(v>R)continue;push(u,v,45)}}
+  else if(style==='stacks'){const cs=P.aisle?P.aisleW/2+P.fs/2:P.pxS/2;
+    for(let j=0;cs+j*P.pxS<R;j++)for(let i=0;v0+i*P.pyS<R;i++)both(cs+j*P.pxS,v0+i*P.pyS,90,90,(cs+j*P.pxS)*1.2+i*.9)}
+  else if(style==='horseshoe'){const B=P.box||{u0:-3,u1:3,v0:v0,v1:v0+6};
+    for(let L=0;L<8;L++){const e=P.fx/2+Math.max(.6,P.aisleG)+L*P.py,u1=B.u0-e,u2=B.u1+e,vt=Math.max(v0,B.v0),vb=B.v1+e;
+      for(let v=vt;v<=vb+.01;v+=P.px){push(u1,v,90,L*1000+(v-vt));push(u2,v,90,L*1000+(v-vt))}
+      const n=Math.max(1,Math.floor((u2-u1)/P.px));for(let k=1;k<n;k++){const u=u1+(u2-u1)*k/n;push(u,vb,0,L*1000+(vb-vt)+Math.abs(Math.abs(u)-(u2-u1)/2)*.2)}}}
+  else if(style==='islands'||style==='garden'){const py=P.py*.87,A=P.Aw||R;
+    for(let i=0;v0+i*py<R;i++){const off=i%2?P.px/2:0;for(let u=-A-P.px+off;u<A+P.px;u+=P.px){let x=u,y=v0+i*py,a=0;
+      if(style==='garden'){const h1=hash3(i,Math.round(u*10),1),h2=hash3(i,Math.round(u*10),2),h3=hash3(i,Math.round(u*10),3);x+=(h1-.5)*P.px*.28;y+=(h2-.5)*py*.28;a=(h3-.5)*30}
+      const o={u:x,v:y,a,sc:Math.hypot(x,y*1.15)};
+      if(style==='islands'){const cx=A*.45,cy=v0+Math.min(R*.3,A*.35);o.scG=Math.hypot(x+cx,(y-cy)*1.1)+y*.25;o.scB=Math.hypot(x-cx,(y-cy)*1.1)+y*.25}
+      out.push(o)}}}
+  const minU=P.aisle?P.aisleW/2+Math.min(P.fx,P.fs||P.fx)/2-.01:-1;
+  return out.filter(o=>Math.abs(o.u)>=minU||style==='horseshoe'&&o.v>((P.box&&P.box.v1)||0));
+}
+function layoutParams(extra){
+  const tabs=S.items.filter(i=>TYPES[i.type].table);const F=coupleFocus(),r=rad(F.rot),ax=[Math.cos(r),Math.sin(r)],dv=[-Math.sin(r),Math.cos(r)];
+  const CZ=2*CHAIRZ,ai=S.venue.aisle;
+  const fx=Math.max(1.5,...tabs.map(t=>(isCircle(t)?t.w:Math.max(t.w,t.h))+(TYPES[t.type].oneSide?CHAIRZ:CZ)));
+  const fs=Math.max(1,...tabs.map(t=>(isCircle(t)?t.w:Math.min(t.w,t.h))+CZ));
+  const W=S.venue.w,H=S.venue.h,loc=(x,y)=>({u:(x-F.x)*ax[0]+(y-F.y)*ax[1],v:(x-F.x)*dv[0]+(y-F.y)*dv[1]});
+  const cs=[[0,0],[W,0],[0,H],[W,H]].map(([x,y])=>loc(x,y));const Aw=Math.max(...cs.map(c=>Math.abs(c.u)));
+  const dance=S.items.find(i=>i.type==='dance');let box=null;
+  if(dance){const pts=corners(geom(dance,0)).map(([x,y])=>loc(x,y));box={u0:Math.min(...pts.map(p=>p.u)),u1:Math.max(...pts.map(p=>p.u)),v0:Math.min(...pts.map(p=>p.v)),v1:Math.max(...pts.map(p=>p.v))}}
+  const nameRoom=showNames?.6:0;
+  return {F,ax,dv,P:{px:fx+ai+extra+nameRoom,py:fx+ai+extra+nameRoom,fx,fs,pxS:fs+ai+extra+nameRoom,pyS:fx+Math.max(.3,ai*.5)+extra*.4,
+    v0:fx/2+.3,aisle:LO.aisle,aisleW:LO.aisleW,aisleG:ai,ang:LO.ang,R:Math.hypot(W,H)*1.05,Aw,box}};
+}
+function tryLayout(style,extra){
+  const {F,ax,dv,P}=layoutParams(extra);
+  const slots=genSlots(style,P).map(o=>({...o,x:F.x+o.u*ax[0]+o.v*dv[0],y:F.y+o.u*ax[1]+o.v*dv[1]})).filter(o=>onFloor(o.x,o.y));
+  const tabs=S.items.filter(i=>TYPES[i.type].table&&!i.locked);
+  const orig=tabs.map(t=>[t,t.x,t.y,t.rot]);tabs.forEach(t=>{t.x=-999;t.y=-999});
+  const num=t=>+tableNo(t)||99;
+  const order=tabs.slice().sort((a,b)=>tablePri(a)-tablePri(b)||num(a)-num(b));
+  const sorted={g:null,b:null,a:null};
+  const scoreOf=(o,sd)=>sd==='groom'&&o.scG!=null?o.scG:sd==='bride'&&o.scB!=null?o.scB:o.sc;
+  const listFor=sd=>{const k=sd==='groom'?'g':sd==='bride'?'b':'a';if(!sorted[k])sorted[k]=slots.slice().sort((p,q)=>scoreOf(p,sd)-scoreOf(q,sd));return sorted[k]};
+  let placed=0;const res=[];
+  for(const t of order){
+    const sd=tableSide(t)||t.side||'',sg=sd==='groom'?-1:sd==='bride'?1:0;let ok=false;
+    for(const pass of [0,1]){
+      for(const o of listFor(sd)){if(o.taken)continue;if(pass===0&&sg&&o.u*sg<.3)continue;
+        t.x=f(o.x);t.y=f(o.y);t.rot=normRot(isCircle(t)?0:F.rot+o.a);
+        if(canPlace(t)){o.taken=true;ok=true;break}}
+      if(ok)break}
+    if(ok){placed++;res.push([t,t.x,t.y,t.rot])}else{const o=orig.find(x=>x[0]===t);t.x=o[1];t.y=o[2];t.rot=o[3];res.push([t,o[1],o[2],o[3]])}
+  }
+  // score: everything placed, most important tables closest to the couple, left and right balanced, generous spacing
+  let wsum=0,vip=0,gu=[],bu=[];
+  for(const [t,x,y] of res){const w=6-Math.min(5,tablePri(t));wsum+=w;vip+=w*Math.hypot(x-F.x,y-F.y);const u=(x-F.x)*ax[0]+(y-F.y)*ax[1],sd=tableSide(t)||t.side;if(sd==='groom')gu.push(u);if(sd==='bride')bu.push(u)}
+  const avg=a=>a.length?a.reduce((p,q)=>p+q,0)/a.length:0;
+  const asym=gu.length&&bu.length?Math.abs(avg(gu)+avg(bu)):0;
+  const score=placed*1000+extra*45-(wsum?vip/wsum:0)*3-asym*4;
+  for(const [t,x,y,r] of orig){t.x=x;t.y=y;t.rot=r}
+  return {style,extra,placed,total:tabs.length,score,res};
+}
+function bestFor(style){
+  let best=null;
+  for(const ex of SPACING[LO.space]){const r=tryLayout(style,ex);if(!best||r.placed>best.placed||(r.placed===best.placed&&r.score>best.score))best=r;if(r.placed===r.total)break}
+  return best;
+}
+function applyStyle(style){
+  LO.style=style;renderStyleBar();stage.classList.add('busy');$('#sbStatus').innerHTML='<b>Arranging…</b>';
+  setTimeout(()=>{
+    let r;const pre=snapshot();
+    if(LO.shape!=='keep'){for(const t of S.items.filter(i=>TYPES[i.type].table&&!i.locked)){const want=LO.shape==='round'?'round':(Math.max(t.seats,guestsAt(t).filter(Boolean).length)>12?'banquet':'rect');if(shapeOf(t)!==want)reshapeTable(t,want)}}
+    if(style==='smart'){let best=null;for(const [k] of LSTYLES){if(k==='smart')continue;const x=bestFor(k);x.score+=({grid:8,stagger:10,chevron:6,arc:12,fan:4,diamond:2,stacks:5,horseshoe:7,islands:6,garden:0})[k]||0;if(!best||x.score>best.score)best=x}r=best;LO.picked=r.style}
+    else{r=bestFor(style);LO.picked=null}
+    if(!r||!r.total){stage.classList.remove('busy');$('#sbStatus').textContent='There are no tables to arrange yet.';return}
+    for(const [t,x,y,rt] of r.res){t.x=x;t.y=y;t.rot=rt}
+    pushUndo(pre);renderAll();renderPanel();
+    stage.classList.remove('busy');
+    const name=LSTYLES.find(x=>x[0]===r.style)[1];
+    const gap=(S.venue.aisle+r.extra).toFixed(1);
+    const msg=r.placed===r.total?`<b>${style==='smart'?'Smart pick chose '+name:name}${['chevron','diamond'].includes(r.style)?`, ${r.style==='diamond'?45:LO.ang}°`:''}.</b> All ${r.total} tables placed, closest family nearest the kosha, groom's side left and bride's right, at least ${gap} m between chair backs. Undo goes back.`
+      :`<b>${name}:</b> ${r.placed} of ${r.total} tables fit. Try Compact spacing, turn off the center aisle, or make the floor bigger in Build mode.`;
+    $('#sbStatus').innerHTML=msg;renderStyleBar(true);
+    logAct(`${style==='smart'?'Smart pick: '+name:name} layout applied, ${r.placed} of ${r.total} tables placed.`);
+  },30);
+}
+function styleThumb(k){
+  const P={px:1.05,py:1.05,fx:.62,fs:.5,pxS:.8,pyS:1.25,v0:.55,aisle:LO.aisle,aisleW:1,aisleG:.3,ang:LO.ang,R:7,Aw:4.2,box:{u0:-1.1,u1:1.1,v0:.5,v1:2.3}};
+  if(k==='smart')return `<svg viewBox="-5 -1.2 10 6" aria-hidden="true"><rect x="-1.1" y="-.95" width="2.2" height=".45" rx=".12" fill="#EADCC2" stroke="#B08D57" stroke-width=".8"/><path d="M0 1.2l.35 1 1 .35-1 .35-.35 1-.35-1-1-.35 1-.35z" fill="#B08D57"/><path d="M-2.6 1.6l.18.5.5.18-.5.18-.18.5-.18-.5-.5-.18.5-.18zM2.4 2.6l.18.5.5.18-.5.18-.18.5-.18-.5-.5-.18.5-.18z" fill="#D8B774"/></svg>`;
+  const sl=genSlots(k,P).filter(o=>o.v<4.4&&Math.abs(o.u)<4.6&&(k!=='horseshoe'||true));
+  const pick=[];const sc=o=>o.scG!=null?Math.min(o.scG,o.scB):o.sc;
+  sl.sort((a,b)=>sc(a)-sc(b));for(const o of sl){if(pick.length>=16)break;if(pick.some(p=>Math.hypot(p.u-o.u,p.v-o.v)<.7))continue;pick.push(o)}
+  const rectish=['chevron','diamond','stacks','fan','arc','horseshoe','garden'].includes(k);
+  let g='';for(const o of pick){const col=o.u<-.05?'#3E5F88':o.u>.05?'#B96F7E':'#9C8752';
+    g+=rectish?`<rect x="-.36" y="-.15" width=".72" height=".3" rx=".08" fill="${col}" transform="translate(${f(o.u)} ${f(o.v)}) rotate(${f(o.a)})"/>`:`<circle cx="${f(o.u)}" cy="${f(o.v)}" r=".27" fill="${col}"/>`}
+  const dance=k==='horseshoe'?`<rect x="-1.1" y=".5" width="2.2" height="1.8" fill="none" stroke="#9aa" stroke-dasharray=".2 .15" stroke-width=".8"/>`:'';
+  return `<svg viewBox="-5 -1.2 10 6" aria-hidden="true"><rect x="-1.1" y="-.95" width="2.2" height=".45" rx=".12" fill="#EADCC2" stroke="#B08D57" stroke-width=".8"/>${dance}${g}</svg>`;
+}
+function openStyles(){closeSeatCard();$('#styleBar').classList.add('open');renderStyleBar();if(window.matchMedia('(max-width:860px)').matches){$('#panel').classList.add('collapsed');$('#bCollapse').textContent='▴'}}
+function closeStyles(){$('#styleBar').classList.remove('open')}
+function renderStyleBar(keepStatus){
+  const b=$('#styleBar');const st=keepStatus&&$('#sbStatus')?$('#sbStatus').innerHTML:'Pick a style. The planner fits every table, keeps walkways clear, puts the closest family nearest the couple and keeps each side together.';
+  const act=LO.picked||LO.style;
+  b.innerHTML=`<div class="sb-h"><b>✦ Layout styles</b>
+    <span class="seg-l">Spacing</span><div class="seg">${[['airy','Airy'],['balanced','Balanced'],['compact','Compact']].map(([k,n])=>`<button data-sp="${k}" aria-pressed="${LO.space===k}">${n}</button>`).join('')}</div>
+    <span class="seg-l">Angle</span><div class="seg">${[15,30,45].map(a=>`<button data-an="${a}" aria-pressed="${LO.ang===a}">${a}°</button>`).join('')}</div>
+    <span class="seg-l">Tables</span><div class="seg">${[['keep','Keep shapes'],['round','Round'],['rect','Long']].map(([k,n])=>`<button data-sh="${k}" aria-pressed="${LO.shape===k}">${n}</button>`).join('')}</div>
+    <label class="check" style="margin:0;font-size:13px"><input type="checkbox" id="sbAisle" ${LO.aisle?'checked':''}> Center aisle</label>
+    <button class="x" id="sbClose" aria-label="Close">×</button></div>
+    <div class="sb-cards">${LSTYLES.map(([k,n])=>`<button class="sbc ${k==='smart'?'smart':''}" data-st="${k}" aria-pressed="${act===k||(k==='smart'&&LO.style==='smart')}">${styleThumb(k)}${n}</button>`).join('')}</div>
+    <div class="sb-status" id="sbStatus">${st}</div>`;
+  b.querySelectorAll('[data-st]').forEach(x=>x.onclick=()=>applyStyle(x.dataset.st));
+  b.querySelectorAll('[data-sp]').forEach(x=>x.onclick=()=>{LO.space=x.dataset.sp;LO.style?applyStyle(LO.style):renderStyleBar()});
+  b.querySelectorAll('[data-an]').forEach(x=>x.onclick=()=>{LO.ang=+x.dataset.an;if(LO.style&&['chevron','smart'].includes(LO.style))applyStyle(LO.style);else if((LO.picked||LO.style)==='chevron')applyStyle('chevron');else renderStyleBar()});
+  b.querySelectorAll('[data-sh]').forEach(x=>x.onclick=()=>{LO.shape=x.dataset.sh;LO.style?applyStyle(LO.style):renderStyleBar()});
+  $('#sbAisle').onchange=e=>{LO.aisle=e.target.checked;LO.style?applyStyle(LO.style):renderStyleBar()};
+  $('#sbClose').onclick=closeStyles;
+}
+$('#bStyles').onclick=()=>{$('#styleBar').classList.contains('open')?closeStyles():openStyles()};
 
 /* ---------- drag a guest to another chair (mouse, touch or pen) ---------- */
 const COARSE=window.matchMedia('(pointer:coarse)').matches;
@@ -2013,7 +2241,7 @@ function openSeatCard(tid,s){
   computeSeatMap();const g=seatMap[tid+':'+s],c=$('#seatCard');
   const groups=[...new Set(S.guests.map(x=>x.group).filter(Boolean))].sort();
   const tSide=tableSide(t)||t.side||'both',tGroup=tableGroup(t)||(t.groups&&t.groups[0])||'';
-  const head=`<div class="sc-h"><b>${esc(tableName(t))}<small>Table ${esc(tableNo(t))}, seat ${s+1} of ${t.seats}${g?'':', open'}</small></b><button class="x" id="scPrev" aria-label="Previous seat">‹</button><button class="x" id="scNext" aria-label="Next seat">›</button><button class="x" id="scClose" aria-label="Close">×</button></div>`;
+  const head=`<div class="sc-h">${g?avInline(g,'lg'):''}<b>${esc(tableName(t))}<small>Table ${esc(tableNo(t))}, seat ${s+1} of ${t.seats}${g?'':', open'}</small></b><button class="x" id="scPrev" aria-label="Previous seat">‹</button><button class="x" id="scNext" aria-label="Next seat">›</button><button class="x" id="scClose" aria-label="Close">×</button></div>`;
   const dl=`<datalist id="scGroups">${groups.map(x=>`<option value="${esc(x)}">`).join('')}</datalist>`;
   if(g){
     c.innerHTML=head+`<div class="sc-b">${dl}
@@ -2026,6 +2254,7 @@ function openSeatCard(tid,s){
       <div class="row"><label for="scH">Household</label><input id="scH" class="fld" value="${esc(g.hh)}" placeholder="Sits with this family"></div>
       <div class="two"><div class="row"><select id="scM" aria-label="Meal"><option value="">Meal not set</option>${MEALS.map(m=>`<option ${g.meal===m?'selected':''}>${m}</option>`).join('')}</select></div>
         <label class="check" style="margin:0"><input type="checkbox" id="scK" ${g.kid?'checked':''}> Child</label></div>
+      <div class="row"><label for="scGe">Icon</label><select id="scGe">${Object.entries(GENDER).map(([k,v])=>`<option value="${k}" ${g.gender===k?'selected':''}>${v}</option>`).join('')}</select>${avInline(g,'lg')}</div>
       <div class="row"><label for="scNo">Notes</label><input id="scNo" class="fld" value="${esc(g.notes)}" placeholder="e.g. wheelchair, near exit"></div>
       <div class="sc-sep">Add someone next to ${esc(shortName(g.name))}</div>
       <div class="row"><input id="scAddN" class="fld" type="text" dir="auto" placeholder="Full name" autocomplete="off"><button class="btn gold" id="scAdd">Add</button></div>
@@ -2060,10 +2289,10 @@ function openSeatCard(tid,s){
   $('#scPrev').onclick=()=>step(-1);$('#scNext').onclick=()=>step(1);
   if(g){
     const set=(id,fn,ev='change')=>{const el=$(id);el.addEventListener(ev,()=>{mutate(()=>fn(el),{panel:false});renderPanel()})};
-    set('#scN',el=>{const v=el.value.trim();if(v){g.name=v;g.confirm=false}});
+    set('#scN',el=>{const v=el.value.trim();if(v){g.name=v;g.confirm=false;if(!g.gender){g.gender=inferGender(g);if(g.gender)setTimeout(()=>openSeatCard(seatCard.tid,seatCard.s),0)}}});
     set('#scSide',el=>{g.side=el.value});set('#scR',el=>{g.rsvp=el.value;if(el.value==='no'){toast(`${g.name} marked not coming. Free the seat if you want to give it away.`)}});
     set('#scG',el=>{g.group=el.value.trim()});set('#scRel',el=>{g.rel=el.value.trim()});set('#scH',el=>{g.hh=el.value.trim()});
-    set('#scM',el=>{g.meal=el.value});set('#scK',el=>{g.kid=el.checked;if(g.kid&&!g.meal){g.meal='Kids';$('#scM').value='Kids'}});set('#scNo',el=>{g.notes=el.value});
+    set('#scM',el=>{g.meal=el.value});set('#scK',el=>{g.kid=el.checked;if(g.kid&&!g.meal){g.meal='Kids';$('#scM').value='Kids'}});set('#scNo',el=>{g.notes=el.value});set('#scGe',el=>{g.gender=el.value;openSeatCard(seatCard.tid,seatCard.s)});
     const addNext=()=>{const n=$('#scAddN').value.trim();if(!n){$('#scAddN').focus();return}let ng,at;
       mutate(()=>{computeSeatMap();ng=addGuest({name:n,side:g.side,group:g.group,hh:g.hh||g.name.replace(/\s*\(.*\)/,'')});
         at=nearestFreeTo(t,s);const adj=at>=0&&(Math.abs(at-s)===1||(TYPES[t.type].shape==='round'&&Math.abs(at-s)===t.seats-1));
@@ -2115,7 +2344,7 @@ function changeShape(tabs,shape){
 }
 
 /* ---------- planning sheet ---------- */
-const GCOLS=[['name','Name','text'],['side','Side','side'],['group','Group','text'],['rel','Relationship','text'],['hh','Household','text'],['kid','Child','check'],['pri','Priority','pri'],['table','Table','table'],['seat','Seat','ro'],['meal','Meal','meal'],['rsvp','RSVP','rsvp'],['notes','Notes','text']];
+const GCOLS=[['name','Name','text'],['gender','Icon','gender'],['side','Side','side'],['group','Group','text'],['rel','Relationship','text'],['hh','Household','text'],['kid','Child','check'],['pri','Priority','pri'],['table','Table','table'],['seat','Seat','ro'],['meal','Meal','meal'],['rsvp','RSVP','rsvp'],['notes','Notes','text']];
 const TCOLS=[['no','No.','text'],['title','Name','text'],['groups','For groups','text'],['side','Side','tside'],['pri','Priority','pri'],['seats','Seats','num'],['reserve','Kept free','num'],['seated','Seated','ro'],['free','Open','ro'],['who','Guests','ro']];
 function openSheet(v){sheetView=v||sheetView;$('#sheetM').classList.add('open');document.querySelectorAll('[data-sv]').forEach(x=>x.setAttribute('aria-pressed',x.dataset.sv===sheetView));renderSheet()}
 function closeSheet(){$('#sheetM').classList.remove('open');sheetQ='';renderPanel()}
@@ -2138,6 +2367,7 @@ function cellHTML(type,val,r,c,extra){
   if(type==='side')return `<select ${at}>${Object.entries(SIDES).map(([k,v])=>`<option value="${k}" ${val===k?'selected':''}>${v}</option>`).join('')}</select>`;
   if(type==='tside')return `<select ${at}><option value="">Mixed</option>${Object.entries(SIDES).map(([k,v])=>`<option value="${k}" ${val===k?'selected':''}>${v}</option>`).join('')}</select>`;
   if(type==='pri')return `<select ${at}>${Object.entries(PRI).map(([k,v])=>`<option value="${k}" ${+val===+k?'selected':''}>${k}. ${v}</option>`).join('')}</select>`;
+  if(type==='gender')return `<select ${at}>${Object.entries(GENDER).map(([k,v])=>`<option value="${k}" ${val===k?'selected':''}>${v}</option>`).join('')}</select>`;
   if(type==='rsvp')return `<select ${at}>${Object.entries(RSVP).map(([k,v])=>`<option value="${k}" ${val===k?'selected':''}>${v}</option>`).join('')}</select>`;
   if(type==='meal')return `<input type="text" list="mealList" ${at} value="${esc(val)}">`;
   if(type==='table')return `<select ${at}><option value="">No seat</option>${orderedTables().map(t=>`<option value="${t.id}" ${val===t.id?'selected':''}>${esc(tableNo(t))}. ${esc(t.title||'')}</option>`).join('')}</select>`;
@@ -2151,7 +2381,7 @@ function renderSheet(focus){
       <div class="filters" style="margin:0">${[['','All'],['unseated','No seat'],['confirm','Names to confirm'],['waiting','Waiting'],['groom','Groom'],['bride','Bride']].map(([k,v])=>`<button class="fchip" data-sq="${k}" aria-pressed="${sheetQ===k}">${v}</button>`).join('')}</div>
       <button class="btn sm gold" id="shAdd">Add row</button>
       ${sheetSel.size?`<span class="cap">${sheetSel.size} selected:</span><select id="shBulkT"><option value="">Seat at table…</option>${orderedTables().map(t=>`<option value="${t.id}">${esc(tableNo(t))}. ${esc(t.title||'')}</option>`).join('')}</select><select id="shBulkS"><option value="">Set side…</option>${Object.entries(SIDES).map(([k,v])=>`<option value="${k}">${v}</option>`).join('')}</select><button class="btn sm danger" id="shDel">Delete</button>`:''}`;
-    body.innerHTML=`<datalist id="mealList">${MEALS.map(m=>`<option value="${m}">`).join('')}</datalist><table class="xl"><thead><tr><th class="nosort"><input type="checkbox" id="shAll" aria-label="Select all"></th>${GCOLS.map(([k,n])=>`<th data-sk="${k}" style="min-width:${({name:190,side:100,group:150,rel:140,hh:130,kid:56,pri:175,table:240,seat:56,meal:110,rsvp:120,notes:220})[k]}px">${n}${sheetSort.k===k?(sheetSort.d>0?' ▲':' ▼'):''}</th>`).join('')}<th class="nosort"></th></tr></thead><tbody>
+    body.innerHTML=`<datalist id="mealList">${MEALS.map(m=>`<option value="${m}">`).join('')}</datalist><table class="xl"><thead><tr><th class="nosort"><input type="checkbox" id="shAll" aria-label="Select all"></th>${GCOLS.map(([k,n])=>`<th data-sk="${k}" style="min-width:${({name:190,gender:110,side:100,group:150,rel:140,hh:130,kid:56,pri:175,table:240,seat:56,meal:110,rsvp:120,notes:220})[k]}px">${n}${sheetSort.k===k?(sheetSort.d>0?' ▲':' ▼'):''}</th>`).join('')}<th class="nosort"></th></tr></thead><tbody>
       ${list.map((g,r)=>`<tr class="${g.confirm?'flag':''} ${sheetSel.has(g.id)?'sel':''}" data-id="${g.id}"><td class="rn"><input type="checkbox" data-pick="${g.id}" ${sheetSel.has(g.id)?'checked':''} aria-label="Select ${esc(g.name)}"></td>${GCOLS.map(([k,,ty])=>{
         const v=k==='table'?(g.t||''):k==='seat'?(g.t?g.s+1:''):g[k];return `<td class="${ty==='ro'?'ro':ty==='check'?'ck':''}">${cellHTML(ty,v??'',r,k)}</td>`}).join('')}<td class="ck"><button class="x" data-rm="${g.id}" aria-label="Delete ${esc(g.name)}">×</button></td></tr>`).join('')}
     </tbody></table>`;
@@ -2193,7 +2423,7 @@ function setGuestField(g,c,v){
     if(c==='table'){computeSeatMap();if(g.t)delete seatMap[g.t+':'+g.s];g.t=null;g.s=null;if(v){const t=byId(v);if(freeSeats(t)+(t.reserve||0)<1)t.seats=Math.min(seatCap(t),t.seats+1);const s=firstFree(t);if(s>=0){g.t=t.id;g.s=s}else toast(`${tableName(t)} is full.`)}}
     else if(c==='kid'){g.kid=!!v;if(g.kid&&!g.meal)g.meal='Kids'}
     else if(c==='pri')g.pri=+v;
-    else if(c==='name'){g.name=String(v).trim()||g.name;g.confirm=false;const o=g.hh;inferGuest(g);g.hh=o||g.hh}
+    else if(c==='name'){g.name=String(v).trim()||g.name;g.confirm=false;const o=g.hh;if(!g.gender)g.gender=inferGender(g);inferGuest(g);g.hh=o||g.hh}
     else if(c==='rsvp'){g.rsvp=v;if(v==='no'){g.t=null;g.s=null}}
     else g[c]=v;
   },{panel:false});
@@ -2223,6 +2453,7 @@ function sheetPaste(e,el,list){
   mutate(()=>{computeSeatMap();grid.forEach((row,i)=>{let g=list[r0+i];if(!g){if(!row[0]&&start===0)return;g=addGuest({name:'New guest'});added++}
     row.forEach((val,j)=>{const k=cols[start+j];if(!k)return;val=val.trim();
       if(k==='side')g.side=/bride|عروس/i.test(val)?'bride':/groom|عريس/i.test(val)?'groom':'both';
+      else if(k==='gender')g.gender=/^(f|w|female|woman|girl|أنثى|انثى|ست|بنت)/i.test(val)?'f':/^(m|male|man|boy|ذكر|راجل|ولد)/i.test(val)?'m':'';
       else if(k==='kid')g.kid=/^(y|yes|1|true|x|child|✓|نعم)/i.test(val);
       else if(k==='pri')g.pri=Math.max(1,Math.min(5,parseInt(val)||3));
       else if(k==='rsvp')g.rsvp=/^(n|no|not|declin|لا|معتذر)/i.test(val)?'no':/pend|wait/i.test(val)?'pending':'yes';
@@ -2231,8 +2462,8 @@ function sheetPaste(e,el,list){
   renderSheet();toast(`Pasted ${grid.length} rows${added?`, ${added} new guests`:''}.`);
 }
 function sheetTSV(){
-  const h=['Name','Side','Group','Relationship','Household','Child','Priority','Table','Table name','Seat','Meal','RSVP','Notes'];
-  const rows=S.guests.map(g=>{const t=g.t&&byId(g.t);return [g.name,SIDES[g.side],g.group,g.rel,g.hh,g.kid?'Yes':'',g.pri,t?tableNo(t):'',t?t.title:'',t?g.s+1:'',g.meal,RSVP[g.rsvp],g.notes]});
+  const h=['Name','Gender','Side','Group','Relationship','Household','Child','Priority','Table','Table name','Seat','Meal','RSVP','Notes'];
+  const rows=S.guests.map(g=>{const t=g.t&&byId(g.t);return [g.name,g.gender==='m'?'Male':g.gender==='f'?'Female':'',SIDES[g.side],g.group,g.rel,g.hh,g.kid?'Yes':'',g.pri,t?tableNo(t):'',t?t.title:'',t?g.s+1:'',g.meal,RSVP[g.rsvp],g.notes]});
   return [h,...rows];
 }
 $('#shCopy').onclick=async()=>{const txt=sheetTSV().map(r=>r.map(c=>String(c??'').replace(/\t|\n/g,' ')).join('\t')).join('\n');try{await navigator.clipboard.writeText(txt);toast('Copied. Paste into Excel or Google Sheets.')}catch(e){toast('Copy is blocked here. Use Download Excel.')}};
@@ -2315,6 +2546,7 @@ document.addEventListener('keydown',e=>{
   if(mod&&e.key.toLowerCase()==='a'){e.preventDefault();sel=new Set(S.items.filter(i=>!TYPES[i.type].zone).map(i=>i.id));renderOverlay();setTab('edit');return}
   if(e.key==='Delete'||e.key==='Backspace'){e.preventDefault();if(selSeat&&seatMap[selSeat.tid+':'+selSeat.s]){unseat(seatMap[selSeat.tid+':'+selSeat.s].id);return}deleteSel();return}
   if(e.key==='Escape'&&$('#seatCard').classList.contains('open')){closeSeatCard();return}
+  if(e.key==='Escape'&&$('#styleBar').classList.contains('open')){closeStyles();return}
   if(e.key==='Escape'){if(placing){stopPlacing();return}measure=null;sel=new Set();selSeat=null;renderItems();renderOverlay();renderPanel();return}
   if(e.key.toLowerCase()==='r'&&sel.size){const d=e.shiftKey?-15:15;if(sel.size===1){const it=selItems()[0];if(!it.locked)mutate(()=>{it.rot=normRot(it.rot+d)})}else rotateGroup(d);return}
   const arrows={ArrowLeft:[-1,0],ArrowRight:[1,0],ArrowUp:[0,-1],ArrowDown:[0,1]};
@@ -2470,10 +2702,11 @@ function renderEdit(b){
     let seatBlock='';
     if(T.table){
       const list=guestsAt(it),opts=guestOptions(),meals={};list.forEach(g=>{if(g&&g.meal)meals[g.meal]=(meals[g.meal]||0)+1});
-      seatBlock=`<h2>Guests at this table</h2><div class="btns" style="margin-top:-2px"><button class="btn sm" id="eAddChair">Add a chair</button></div>
+      const cm=list.filter(g=>g&&!g.kid&&g.gender==='m').length,cf=list.filter(g=>g&&!g.kid&&g.gender==='f').length,ck=list.filter(g=>g&&g.kid).length,cu=list.filter(g=>g&&!g.kid&&!g.gender).length;
+      seatBlock=`<h2>Guests at this table</h2><div class="avsum"><span>${avInline({side:'both',gender:'m'})}${cm} men</span><span>${avInline({side:'both',gender:'f'})}${cf} women</span><span>${avInline({side:'both',kid:true})}${ck} children</span>${cu?`<span>${avInline({side:'both'})}${cu} not set</span>`:''}</div><div class="btns" style="margin-top:-2px"><button class="btn sm" id="eAddChair">Add a chair</button></div>
         <p class="note">${list.filter(Boolean).length} of ${it.seats} seated${Object.keys(meals).length?`. Meals: ${Object.entries(meals).map(([m,n])=>`${n} ${m}`).join(', ')}`:''}.</p>
         <ol class="seats">${list.map((g,i)=>{const cur=selSeat&&selSeat.tid===it.id&&selSeat.s===i;
-          return `<li data-i="${i}" class="${cur?'cur':''}"><span class="sn">${i+1}</span>${g?`<span class="sg"><i class="dot s-${g.side}"></i><span>${esc(g.name)}</span><small>${esc(g.meal||'')}</small></span><button class="x" data-unseat="${g.id}" aria-label="Free this seat">×</button>`
+          return `<li data-i="${i}" class="${cur?'cur':''}"><span class="sn">${i+1}</span>${g?`<span class="sg">${avInline(g)}<span>${esc(g.name)}</span><small>${esc(g.meal||'')}</small></span><button class="x" data-unseat="${g.id}" aria-label="Free this seat">×</button>`
             :(opts?`<select data-seatsel="${i}" aria-label="Choose a guest for seat ${i+1}"><option value="">Open seat, choose a guest</option>${opts}</select>`:`<span class="sg cap">Open seat</span>`)}</li>`}).join('')}</ol>`;
     }
     const seatsFld=(T.table||T.standing)?`<div class="row"><label for="fS">${T.standing?'Standing':'Seats'}</label><input id="fS" type="number" min="1" max="${seatCap(it)}" value="${it.seats}"><span class="cap" id="capNote">${T.standing?'':`up to ${seatCap(it)}`}</span></div>`:
@@ -2584,7 +2817,7 @@ function renderGuestList(){
   for(const g of list){
     if(g.group!==last&&gFilter!=='unseated'&&!q){last=g.group;h+=`<li style="border:0"><h3 style="margin:14px 0 2px">${esc(g.group||'No group')}</h3></li>`}
     const t=g.t&&byId(g.t),open=openGuest===g.id;
-    h+=`<li draggable="true" data-g="${g.id}"><div class="grow"><button class="gmain" data-gtoggle="${g.id}" aria-expanded="${open}"><i class="dot s-${g.side}"></i><span class="gn"><b>${esc(g.name)}</b><small>${[g.meal,g.rsvp!=='yes'?RSVP[g.rsvp]:''].filter(Boolean).join(', ')||'&nbsp;'}</small></span></button>
+    h+=`<li draggable="true" data-g="${g.id}"><div class="grow"><button class="gmain" data-gtoggle="${g.id}" aria-expanded="${open}">${avInline(g,'lg')}<span class="gn"><b>${esc(g.name)}</b><small>${[g.meal,g.rsvp!=='yes'?RSVP[g.rsvp]:''].filter(Boolean).join(', ')||'&nbsp;'}</small></span></button>
       ${t?`<button class="tchip" data-gfind="${g.id}" title="Show on the plan">${esc(tableNo(t))}, seat ${g.s+1}</button>`:(g.rsvp==='no'?'<span class="cap">Not coming</span>':`<button class="btn sm" data-gplace="${g.id}">Seat</button>`)}</div>
       ${open?`<div class="gedit">
         <div class="row"><label>Name</label><input class="fld" data-gf-name value="${esc(g.name)}"></div>
@@ -2594,6 +2827,7 @@ function renderGuestList(){
           <div class="row"><input class="fld" data-gf-group list="groupList" placeholder="Group" value="${esc(g.group)}"></div></div>
         <div class="two"><div class="row"><input class="fld" data-gf-rel placeholder="Relationship" value="${esc(g.rel)}"></div><div class="row"><input class="fld" data-gf-hh placeholder="Household (sits together)" value="${esc(g.hh)}"></div></div>
         <div class="two"><div class="row"><select data-gf-pri aria-label="Priority">${Object.entries(PRI).map(([k,v])=>`<option value="${k}" ${+g.pri===+k?'selected':''}>${v}</option>`).join('')}</select></div><label class="check" style="margin:0"><input type="checkbox" data-gf-kid ${g.kid?'checked':''}> Child</label></div>
+        <div class="row"><label>Icon</label><select data-gf-gender>${Object.entries(GENDER).map(([k,v])=>`<option value="${k}" ${g.gender===k?'selected':''}>${v}</option>`).join('')}</select></div>
         <div class="row"><input class="fld" data-gf-notes placeholder="Notes, e.g. wheelchair, near the exit" value="${esc(g.notes)}"></div>
         ${g.rsvp==='no'&&g.t?'<p class="warn">Marked not coming but still has a seat.</p>':''}
         <div class="btns">${g.t?`<button class="btn sm" data-gunseat="${g.id}">Free the seat</button>`:''}<button class="btn sm danger" data-gdel="${g.id}">Remove guest</button></div></div>`:''}
@@ -2612,6 +2846,7 @@ function renderGuestList(){
     const bind=(sel,key)=>{const el=ed.querySelector(sel);if(el)el.addEventListener('change',()=>{mutate(()=>{g[key]=key==='name'?(el.value.trim()||g.name):el.value})})};
     bind('[data-gf-name]','name');bind('[data-gf-side]','side');bind('[data-gf-rsvp]','rsvp');bind('[data-gf-meal]','meal');bind('[data-gf-group]','group');bind('[data-gf-notes]','notes');bind('[data-gf-rel]','rel');bind('[data-gf-hh]','hh');
     const pr=ed.querySelector('[data-gf-pri]');if(pr)pr.addEventListener('change',()=>mutate(()=>{g.pri=+pr.value}));
+    const ge=ed.querySelector('[data-gf-gender]');if(ge)ge.addEventListener('change',()=>mutate(()=>{g.gender=ge.value}));
     const kd=ed.querySelector('[data-gf-kid]');if(kd)kd.addEventListener('change',()=>mutate(()=>{g.kid=kd.checked;if(g.kid&&!g.meal)g.meal='Kids'}));
     const nm=ed.querySelector('[data-gf-name]');if(nm)nm.addEventListener('change',()=>{g.confirm=false});
   });
@@ -2626,7 +2861,7 @@ function refreshEditValues(){
 /* ---------- boot ---------- */
 function migrate(d){
   d.plan=d.plan||{cap:100,extra:10,bride:50,groom:60};
-  (d.guests||[]).forEach(g=>{g.rel=g.rel||'';g.hh=g.hh||'';g.kid=!!g.kid;g.confirm=!!g.confirm;if(!g.pri){const gr=(g.group||'').toLowerCase();g.pri=/immediate/.test(gr)?1:/family|side/.test(gr)?2:/work|colleague/.test(gr)?5:/friend/.test(gr)?4:3}});
+  (d.guests||[]).forEach(g=>{if(g.gender==null){g.gender=inferGender({name:g.name||'',rel:g.rel||''})}g.rel=g.rel||'';g.hh=g.hh||'';g.kid=!!g.kid;g.confirm=!!g.confirm;if(!g.pri){const gr=(g.group||'').toLowerCase();g.pri=/immediate/.test(gr)?1:/family|side/.test(gr)?2:/work|colleague/.test(gr)?5:/friend/.test(gr)?4:3}});
   d.walls=d.walls||[];d.doors=d.doors||[];
   if(!d.floor||!Array.isArray(d.floor.rows)){const keep=S;S=d;d.floor=makeFloor('d');S=keep}
   d.guests=d.guests||[];d.gnext=d.gnext||(d.guests.length+1);d.venue.couple=d.venue.couple||'';
