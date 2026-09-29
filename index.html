@@ -43,7 +43,30 @@
   --nm:#E6E0D3; --title:#3A2E1C; --gold-soft:#4A3F2C;
 }
 html{scroll-padding-top:env(safe-area-inset-top,0px)}
-html,body{height:100%;margin:0}
+html,body{height:100%;margin:0;overscroll-behavior:none;-webkit-tap-highlight-color:transparent}
+button,select,.tab,.tb,.fchip,.shp,.tool,.mat,.pbtn{touch-action:manipulation}
+.chit{fill:transparent;pointer-events:all}
+.ghost{position:fixed;left:0;top:0;z-index:60;pointer-events:none;display:none;align-items:center;gap:8px;padding:8px 14px;border-radius:999px;background:var(--hdr);color:var(--hdr-ink);font-size:14px;font-weight:500;white-space:nowrap;box-shadow:0 12px 30px -8px rgba(0,0,0,.5);border:1.5px solid var(--gold);margin:-52px 0 0 -40px;opacity:.95}
+.ghost.on{display:inline-flex}
+.ghost.ok{background:var(--gold);color:#fff;border-color:#fff}
+.ghost small{font-size:11px;opacity:.85}
+.droptgt{fill:rgba(176,141,87,.25);stroke:var(--gold);stroke-width:3}
+.dropfrom{fill:none;stroke:var(--muted);stroke-width:2;stroke-dasharray:4 3}
+.stage.gdragging #svg{cursor:grabbing}
+.glist>li[data-g]{-webkit-touch-callout:none;-webkit-user-select:none;user-select:none}
+.glist>li.lp{background:color-mix(in srgb,var(--gold) 14%,transparent)}
+@media (pointer:coarse){
+  .tb{min-height:42px;padding:8px 13px;font-size:14px}
+  .btn{min-height:42px}
+  .btn.sm{min-height:36px;padding:6px 12px;font-size:13px}
+  .x{width:40px;height:40px}
+  .fchip{padding:8px 13px;font-size:13px}
+  .row input[type=number],.row input[type=text],.row input[type=search],.row select,.fld{min-height:42px;font-size:16px}
+  .seats li{min-height:52px}
+  .grow{min-height:56px}
+  .sc-list li{padding:12px 10px}
+  .tab{padding:15px 4px 13px}
+}
 body{background:var(--bg);display:grid;grid-template-columns:1fr 368px;grid-template-rows:auto 1fr;height:100%;overflow:hidden}
 *{box-sizing:border-box}
 button,input,select,textarea{font:inherit;color:inherit}
@@ -494,6 +517,7 @@ aside.panel.building .buildhead{display:flex}
   <div class="zoomlbl" id="zoomlbl"></div>
   <div class="tiltnote">3D preview. Tap 3D again to keep editing.</div>
   <div class="placing" id="placing"><span>Tap a seat for <b id="placingName"></b></span><button id="placingCancel">Cancel</button></div>
+  <div class="ghost" id="ghost"></div>
   <div class="seatcard" id="seatCard" role="dialog" aria-label="Seat"></div>
   <div class="toast" id="toast"></div>
 </main>
@@ -821,7 +845,7 @@ function presetMake(key,o={}){const p=PRESETS.find(p=>p.key===key);const it=make
 
 /* ---------- rendering ---------- */
 function chairEl(x,y,a,cls,tid,i){
-  return `<rect class="ch${cls}" data-seat="${i}" x="-.23" y="-.21" width=".46" height=".42" rx=".12" transform="translate(${f(x)} ${f(y)}) rotate(${f(a)})"/>`;
+  return `<rect class="ch${cls}" data-seat="${i}" x="-.23" y="-.21" width=".46" height=".42" rx=".12" transform="translate(${f(x)} ${f(y)}) rotate(${f(a)})"/><circle class="chit" data-seat="${i}" cx="${f(x)}" cy="${f(y)}" r=".36"/>`;
 }
 function labelEl(it,text,cls='il',fs){
   const size=fs||Math.max(.28,Math.min(.62,Math.min(it.w,it.h)*.32));
@@ -1022,17 +1046,22 @@ function renderOverlay(){
   if(S.venue.walk)for(const it of S.items){const T=TYPES[it.type];if(T.zone||T.soft)continue;s+=outline(geom(it,chairPad(it)+S.venue.aisle/2),'walk')}
   for(const id of conflicts){const it=byId(id);if(it)s+=outline(geom(it,chairPad(it)),'bad')}
   for(const id of sel){const it=byId(id);if(it)s+=outline(geom(it,chairPad(it)+.12),'sel')}
+  if(gdrag){
+    if(gdrag.from){const it=byId(gdrag.from.tid);const p=it&&seatWorld(it,gdrag.from.s);if(p)s+=`<circle class="dropfrom" cx="${f(p.x)}" cy="${f(p.y)}" r=".45"/>`}
+    const tg=gdrag.target;if(tg){const it=byId(tg.tid);if(it){if(tg.s!=null){const p=seatWorld(it,tg.s);if(p)s+=`<circle class="droptgt" cx="${f(p.x)}" cy="${f(p.y)}" r=".5"/>`}else s+=outline(geom(it,chairPad(it)+.1),'droptgt')}}
+  }
   if(selSeat){const it=byId(selSeat.tid);const p=it&&seatWorld(it,selSeat.s);if(p)s+=`<circle class="seatring" cx="${f(p.x)}" cy="${f(p.y)}" r=".42"/>`}
   if(sel.size===1){
     const it=byId([...sel][0]);
     if(it&&!it.locked){
-      const circ=isCircle(it),top=(circ?it.w/2:it.h/2)+chairPad(it)+.12,rd=top+28*k;
+      const circ=isCircle(it),top=(circ?it.w/2:it.h/2)+chairPad(it)+.12,rd=top+(COARSE?40:28)*k;
       const c=Math.cos(rad(it.rot)),sn=Math.sin(rad(it.rot)),P=(lx,ly)=>[it.x+lx*c-ly*sn,it.y+lx*sn+ly*c];
       const [ax,ay]=P(0,-top),[rx,ry]=P(0,-rd);
       const ex=(circ?it.w/2*Math.SQRT1_2:it.w/2)+.05,ey=(circ?it.w/2*Math.SQRT1_2:it.h/2)+.05,[sx,sy]=P(ex,ey);
       s+=`<line class="hline" x1="${f(ax)}" y1="${f(ay)}" x2="${f(rx)}" y2="${f(ry)}"/>`;
-      s+=`<g data-handle="rot" data-id="${it.id}"><circle class="hdl-hit" cx="${f(rx)}" cy="${f(ry)}" r="${f(20*k)}"/><circle class="hdl" cx="${f(rx)}" cy="${f(ry)}" r="${f(8*k)}"/><path d="M${f(rx-4*k)} ${f(ry)}a${f(4*k)} ${f(4*k)} 0 1 1 ${f(4*k)} ${f(4*k)}" fill="none" stroke="var(--gold)" stroke-width="1.5"/></g>`;
-      s+=`<g data-handle="scale" data-id="${it.id}"><circle class="hdl-hit" cx="${f(sx)}" cy="${f(sy)}" r="${f(20*k)}"/><rect class="hdl" x="${f(sx-7*k)}" y="${f(sy-7*k)}" width="${f(14*k)}" height="${f(14*k)}" rx="${f(2*k)}"/></g>`;
+      const HK=COARSE?1.45:1;
+      s+=`<g data-handle="rot" data-id="${it.id}"><circle class="hdl-hit" cx="${f(rx)}" cy="${f(ry)}" r="${f(22*HK*k)}"/><circle class="hdl" cx="${f(rx)}" cy="${f(ry)}" r="${f(8*HK*k)}"/><path d="M${f(rx-4*k)} ${f(ry)}a${f(4*k)} ${f(4*k)} 0 1 1 ${f(4*k)} ${f(4*k)}" fill="none" stroke="var(--gold)" stroke-width="1.5"/></g>`;
+      s+=`<g data-handle="scale" data-id="${it.id}"><circle class="hdl-hit" cx="${f(sx)}" cy="${f(sy)}" r="${f(22*HK*k)}"/><rect class="hdl" x="${f(sx-7*HK*k)}" y="${f(sy-7*HK*k)}" width="${f(14*HK*k)}" height="${f(14*HK*k)}" rx="${f(2*k)}"/></g>`;
     }
   }
   if(mode==='build')s+=buildOverlay(k);
@@ -1313,7 +1342,7 @@ const pointers=new Map();let drag=null,pinch=null;
 svg.addEventListener('pointerdown',e=>{
   if(tilt)return;
   svg.setPointerCapture(e.pointerId);pointers.set(e.pointerId,{x:e.clientX,y:e.clientY});
-  if(pointers.size===2){if(drag&&drag.pre&&drag.moved)pushUndo(drag.pre);drag=null;hideMarquee();
+  if(pointers.size===2){if(gdrag){gdrag.target=null;ghostEnd()}if(drag&&drag.pre&&drag.moved)pushUndo(drag.pre);drag=null;hideMarquee();
     const [a,b]=[...pointers.values()],r=svg.getBoundingClientRect();pinch={d:Math.hypot(a.x-b.x,a.y-b.y),mx:(a.x+b.x)/2-r.left,my:(a.y+b.y)/2-r.top,v:{...view}};return}
   if(pointers.size>2)return;
   const w=toWorld(e);
@@ -1324,15 +1353,17 @@ svg.addEventListener('pointerdown',e=>{
   const g=e.target.closest('.it'),seatEl=e.target.closest('[data-seat]');
   if(placing&&g){const it=byId(g.dataset.id);
     if(TYPES[it.type].table){drag={mode:'place',tid:it.id,seat:seatEl?+seatEl.dataset.seat:null,sx:e.clientX,sy:e.clientY};return}}
+  if(g&&tool!=='box'&&seatEl&&!e.shiftKey){const occ=seatMap[g.dataset.id+':'+seatEl.dataset.seat];
+    if(occ){drag={mode:'guest',gid:occ.id,tid:g.dataset.id,s:+seatEl.dataset.seat,sx:e.clientX,sy:e.clientY,pt:e.pointerType,started:false};return}}
   if(g&&tool!=='box'){
     const id=g.dataset.id;
     if(e.shiftKey||e.metaKey||e.ctrlKey){sel.has(id)?sel.delete(id):sel.add(id)}else if(!sel.has(id))sel=new Set([id]);
     const its=selItems().filter(i=>!i.locked);
-    drag={mode:'move',pre:snapshot(),moved:false,start:w,lead:id,seat:seatEl?+seatEl.dataset.seat:null,orig:its.map(i=>({id:i.id,x:i.x,y:i.y}))};
+    drag={mode:'move',pt:e.pointerType,pre:snapshot(),moved:false,start:w,lead:id,seat:seatEl?+seatEl.dataset.seat:null,orig:its.map(i=>({id:i.id,x:i.x,y:i.y}))};
     renderOverlay();return;
   }
   if(tool==='box'||e.shiftKey){drag={mode:'marquee',sx:w.sx,sy:w.sy,add:e.shiftKey};return}
-  drag={mode:'pan',sx:e.clientX,sy:e.clientY,tx:view.tx,ty:view.ty,moved:false};stage.classList.add('pan');
+  drag={mode:'pan',pt:e.pointerType,sx:e.clientX,sy:e.clientY,tx:view.tx,ty:view.ty,moved:false};stage.classList.add('pan');
 });
 svg.addEventListener('pointermove',e=>{
   if(!pointers.has(e.pointerId)){if(mode==='build'&&e.pointerType==='mouse'){hover=toWorld(e);renderOverlay()}return}
@@ -1342,6 +1373,9 @@ svg.addEventListener('pointermove',e=>{
     view.s=ns;view.tx=mx-(pinch.mx-pinch.v.tx)*ns/pinch.v.s;view.ty=my-(pinch.my-pinch.v.ty)*ns/pinch.v.s;applyView();return}
   if(!drag)return;const w=toWorld(e);
   if(drag.mode.startsWith('b-')){hover=w;buildMove(e,w);return}
+  if(drag.mode==='guest'){
+    if(!drag.started){if(Math.hypot(e.clientX-drag.sx,e.clientY-drag.sy)<(drag.pt==='mouse'?5:9))return;drag.started=true;ghostStart(drag.gid,e.clientX,e.clientY,{tid:drag.tid,s:drag.s})}
+    ghostMove(e.clientX,e.clientY);return}
   if(drag.mode==='place'){if(Math.hypot(e.clientX-drag.sx,e.clientY-drag.sy)>6)drag.cancel=true;return}
   if(drag.mode==='pan'){const dx=e.clientX-drag.sx,dy=e.clientY-drag.sy;if(Math.abs(dx)+Math.abs(dy)>3)drag.moved=true;view.tx=drag.tx+dx;view.ty=drag.ty+dy;applyView();return}
   if(drag.mode==='measure'){measure.b=snapPt(w);renderOverlay();return}
@@ -1366,6 +1400,10 @@ function endPointer(e){
   if(!drag)return;const d=drag;drag=null;stage.classList.remove('pan');
   if(d.mode.startsWith('b-')){buildUp(d);return}
   if(d.mode==='pan'&&mode==='build')return;
+  if(d.mode==='guest'){if(d.started)ghostEnd();else tapSeat(d.tid,d.s,d.pt);return}
+  if(d.mode==='pan'&&!d.moved&&d.pt&&d.pt!=='mouse'){const now=Date.now(),r=svg.getBoundingClientRect();
+    if(lastTap&&now-lastTap.t<320&&Math.hypot(e.clientX-lastTap.x,e.clientY-lastTap.y)<30){zoomAt(e.clientX-r.left,e.clientY-r.top,1.8);lastTap=null;return}
+    lastTap={t:now,x:e.clientX,y:e.clientY}}
   if(d.mode==='place'){if(!d.cancel){const gid=placing;const ok=assign(gid,d.tid,d.seat);if(ok!==false)stopPlacing()}return}
   if(d.mode==='pan'&&!d.moved)closeSeatCard();
   if(d.mode==='pan'&&!d.moved&&(sel.size||selSeat)){sel=new Set();selSeat=null;renderItems();renderOverlay();renderPanel()}
@@ -1374,6 +1412,7 @@ function endPointer(e){
     const hits=S.items.filter(i=>!TYPES[i.type].zone&&i.x>=x0&&i.x<=x1&&i.y>=y0&&i.y<=y1).map(i=>i.id);
     sel=d.add?new Set([...sel,...hits]):new Set(hits);selSeat=null;renderOverlay();if(sel.size)setTab('edit');else renderPanel()}}
   if(d.mode==='measure'){renderOverlay();const a=measure.a,b=measure.b;if(a&&b&&Math.hypot(a.x-b.x,a.y-b.y)>.05)toast(`${Math.hypot(a.x-b.x,a.y-b.y).toFixed(2)} m`)}
+  if(d.mode==='move'&&!d.moved&&d.pt&&d.pt!=='mouse'&&view.s<14){const it=byId(d.lead);selSeat=null;closeSeatCard();centerOn(it.x,it.y,30);renderItems();renderOverlay();setTab('edit');toast('Zoomed in. Tap a chair to edit, or drag a guest to another chair.');return}
   if(d.mode==='move'&&!d.moved){
     const prev=selSeat;selSeat=(d.seat!=null&&sel.size===1)?{tid:d.lead,s:d.seat}:null;
     if(prev&&byId(prev.tid))rerenderItem(byId(prev.tid));
@@ -1873,6 +1912,71 @@ function renderSmart(b){
   const lim2=(id,k)=>{$(id).onchange=e=>{mutate(()=>{S.plan[k]=Math.max(0,+e.target.value||0)})}};lim2('#lCap','cap');lim2('#lEx','extra');lim2('#lB','bride');lim2('#lG','groom');
 }
 
+/* ---------- drag a guest to another chair (mouse, touch or pen) ---------- */
+const COARSE=window.matchMedia('(pointer:coarse)').matches;
+let gdrag=null,lastTap=null;
+function tapSeat(tid,s,pt){
+  if(pt&&pt!=='mouse'&&view.s<14){const it=byId(tid);sel=new Set([tid]);selSeat=null;closeSeatCard();centerOn(it.x,it.y,30);renderItems();renderOverlay();setTab('edit');toast('Zoomed in. Tap a chair to edit, or drag a guest to another chair.');return}
+  const prev=selSeat;sel=new Set([tid]);selSeat={tid,s};
+  if(prev&&byId(prev.tid))rerenderItem(byId(prev.tid));rerenderItem(byId(tid));
+  renderOverlay();setTab('edit');
+  const row=document.querySelector(`.seats li[data-i="${s}"]`);if(row)row.scrollIntoView({block:'center'});
+  openSeatCard(tid,s);
+}
+function ghostStart(gid,x,y,from){
+  const g=gById(gid);if(!g)return;gdrag={gid,from,target:null,x,y};
+  const el=$('#ghost');el.innerHTML=`<i class="dot s-${g.side}"></i>${esc(g.name)}<small id="ghostHint"></small>`;el.classList.add('on');
+  closeSeatCard();stage.classList.add('gdragging');try{navigator.vibrate&&navigator.vibrate(12)}catch(e){}
+  ghostMove(x,y);requestAnimationFrame(autoPan);
+}
+function ghostMove(x,y){
+  if(!gdrag)return;gdrag.x=x;gdrag.y=y;const el=$('#ghost');el.style.transform=`translate(${x}px,${y}px)`;
+  const hitEl=(document.elementsFromPoint(x,y)||[]).find(el=>el.closest&&el.closest('#items .it'));let t=null;
+  if(hitEl&&stage.contains(hitEl)){const it=hitEl.closest('.it'),se=hitEl.closest('[data-seat]');
+    if(it){const tb=byId(it.dataset.id);if(tb&&TYPES[tb.type].table)t={tid:tb.id,s:se?+se.dataset.seat:null}}}
+  const same=t&&gdrag.from&&t.tid===gdrag.from.tid&&t.s===gdrag.from.s;if(same)t=null;
+  gdrag.target=t;el.classList.toggle('ok',!!t);
+  let hint='';if(t){const it=byId(t.tid);const o=t.s!=null?seatMap[t.tid+':'+t.s]:null;hint=o?`swap with ${shortName(o.name)}`:t.s!=null?`${tableNo(it)}, seat ${t.s+1}`:`${tableName(it)}`}
+  const h=$('#ghostHint');if(h)h.textContent=hint?'→ '+hint:'';
+  renderOverlay();
+}
+function autoPan(){
+  if(!gdrag)return;const r=stage.getBoundingClientRect(),m=48,x=gdrag.x,y=gdrag.y;let dx=0,dy=0;
+  if(x>r.left&&x<r.right&&y>r.top&&y<r.bottom){if(x<r.left+m)dx=12;else if(x>r.right-m)dx=-12;if(y<r.top+m+50)dy=12;else if(y>r.bottom-m)dy=-12}
+  if(dx||dy){view.tx+=dx;view.ty+=dy;applyView();ghostMove(x,y)}
+  requestAnimationFrame(autoPan);
+}
+function ghostEnd(){
+  const d=gdrag;gdrag=null;$('#ghost').classList.remove('on','ok');stage.classList.remove('gdragging');renderOverlay();
+  if(!d)return;if(!d.target){if(d.from)toast('Drop on a chair to move, or on a person to swap.');return}
+  dropGuest(d.gid,d.target.tid,d.target.s);
+}
+function dropGuest(gid,tid,s){
+  const g=gById(gid),it=byId(tid);if(!g||!it)return;computeSeatMap();
+  if(s==null){s=firstFree(it);if(s<0){toast(`${tableName(it)} is full. Drop on a person to swap instead.`);return}}
+  if(g.t===tid&&g.s===s){toast(`${g.name} is already in that seat.`);return}
+  const other=seatMap[tid+':'+s];const had=!!g.t;
+  mutate(()=>{if(other&&other!==g){other.t=g.t;other.s=g.s}g.t=tid;g.s=s;if(g.rsvp==='no')g.rsvp='yes'});
+  if(other&&other!==g)toast(had?`Swapped ${g.name} and ${other.name}.`:`${g.name} took ${other.name}'s seat. ${other.name} is now on the no-seat list.`);
+  else toast(`${g.name} moved to ${tableName(it)}, seat ${s+1}.`);
+  sel=new Set([tid]);selSeat={tid,s};renderItems();renderOverlay();if(tab==='edit'||tab==='guests')renderPanel();
+}
+// long-press a name in the guest list, then drag it onto a chair (touch screens)
+function bindListTouch(li){
+  li.addEventListener('touchstart',e=>{
+    if(e.touches.length>1||e.target.closest('.btn,.tchip,input,select'))return;
+    const t0=e.touches[0],sx=t0.clientX,sy=t0.clientY;let active=false;
+    const timer=setTimeout(()=>{active=true;li.classList.add('lp');ghostStart(li.dataset.g,sx,sy,null);toast('Drag onto a chair on the plan.')},380);
+    const mv=ev=>{const t=ev.touches[0];if(!active){if(Math.hypot(t.clientX-sx,t.clientY-sy)>8){clearTimeout(timer);done()}return}ev.preventDefault();ghostMove(t.clientX,t.clientY)};
+    const up=ev=>{clearTimeout(timer);done();li.classList.remove('lp');if(active){ev.preventDefault();ghostEnd()}};
+    const done=()=>{document.removeEventListener('touchmove',mv);document.removeEventListener('touchend',up);document.removeEventListener('touchcancel',up)};
+    document.addEventListener('touchmove',mv,{passive:false});document.addEventListener('touchend',up);document.addEventListener('touchcancel',up);
+  },{passive:true});
+}
+// stop the tablet's own page zoom so pinches go to the plan
+document.addEventListener('gesturestart',e=>e.preventDefault());
+document.addEventListener('dblclick',e=>{if(!e.target.closest('input,textarea'))e.preventDefault()},{passive:false});
+
 /* ---------- seat card: tap a chair to edit who sits there or add someone ---------- */
 let seatCard=null; // {tid,s}
 // swallow the phantom click a touch-tap fires onto the card that just opened under the finger
@@ -1926,7 +2030,8 @@ function openSeatCard(tid,s){
       <div class="sc-sep">Add someone next to ${esc(shortName(g.name))}</div>
       <div class="row"><input id="scAddN" class="fld" type="text" dir="auto" placeholder="Full name" autocomplete="off"><button class="btn gold" id="scAdd">Add</button></div>
       <p class="cap" style="margin:0">Joins the same family and side, and sits beside them. A chair is added if the table is full.</p>
-      <div class="btns" style="margin-top:12px"><button class="btn sm" id="scMove">Move to another seat</button><button class="btn sm" id="scFree">Free this seat</button><button class="btn sm danger" id="scDel">Remove guest</button></div>
+      <p class="cap" style="margin:12px 0 0">Tip: drag ${esc(shortName(g.name))}'s chair onto any other chair to move them, or onto a person to swap places.</p>
+      <div class="btns" style="margin-top:8px"><button class="btn sm" id="scMove">Move or swap</button><button class="btn sm" id="scFree">Free this seat</button><button class="btn sm danger" id="scDel">Remove guest</button></div>
     </div>`;
   }else{
     const un=S.guests.filter(x=>!x.t&&x.rsvp!=='no');
@@ -1965,7 +2070,7 @@ function openSeatCard(tid,s){
         if(!adj)at=insertChairAfter(t,s);ng.t=t.id;ng.s=at},{panel:false});
       renderPanel();toast(`${ng.name} added beside ${g.name}${t.seats>guestsAt(t).filter(Boolean).length-1?'':''}.`);openSeatCard(tid,s);setTimeout(()=>{const i=$('#scAddN');if(i)i.focus()},0)};
     $('#scAdd').onclick=addNext;$('#scAddN').onkeydown=e=>{if(e.key==='Enter')addNext()};
-    $('#scMove').onclick=()=>{closeSeatCard();startPlacing(g.id);toast(`Tap the new seat for ${g.name}.`)};
+    $('#scMove').onclick=()=>{closeSeatCard();startPlacing(g.id);toast(`Tap an empty chair to move ${g.name}, or a person to swap.`)};
     $('#scFree').onclick=()=>{unseat(g.id);openSeatCard(tid,s)};
     $('#scDel').onclick=()=>{const nm=g.name;mutate(()=>{S.guests=S.guests.filter(x=>x!==g)});toast(`${nm} removed. Undo brings them back.`);openSeatCard(tid,s)};
     if(g.confirm)setTimeout(()=>{const i=$('#scN');if(i){i.focus();i.select()}},0);
@@ -2452,7 +2557,7 @@ function renderGuests(b){
     <h3>${gs.total?'Everyone':'No guests yet'}</h3>
     ${gs.total?`<div class="row"><input id="gQ" type="search" placeholder="Find a guest or group" value="${esc(gQuery)}"></div>
     <div class="filters">${[['all','All'],['unseated','Not seated'],['bride','Bride'],['groom','Groom'],['pending','Waiting'],['no','Not coming']].map(([k,v])=>`<button class="fchip" data-gf="${k}" aria-pressed="${gFilter===k}">${v}</button>`).join('')}</div>
-    <p class="note" style="margin-top:0">Tap Seat, then tap a chair on the plan. On a computer you can also drag a name onto a chair.</p>`:''}
+    <p class="note" style="margin-top:0">Tap Seat, then tap a chair on the plan. You can also drag a name onto a chair; on a tablet, press and hold the name first. Drag any seated guest's chair to move or swap them.</p>`:''}
     <ul class="glist" id="glist"></ul>`;
   renderGuestList();
   const add=()=>{const n=$('#nName').value.trim();if(!n){$('#nName').focus();return}
@@ -2501,6 +2606,7 @@ function renderGuestList(){
   ul.querySelectorAll('[data-gunseat]').forEach(x=>x.onclick=()=>unseat(x.dataset.gunseat));
   ul.querySelectorAll('[data-gdel]').forEach(x=>x.onclick=()=>{const id=x.dataset.gdel;mutate(()=>{S.guests=S.guests.filter(g=>g.id!==id)});openGuest=null});
   ul.querySelectorAll('li[data-g]').forEach(li=>{
+    bindListTouch(li);
     li.addEventListener('dragstart',e=>{e.dataTransfer.setData('text/guest',li.dataset.g);e.dataTransfer.effectAllowed='move'});
     const g=gById(li.dataset.g);const ed=li.querySelector('.gedit');if(!ed)return;
     const bind=(sel,key)=>{const el=ed.querySelector(sel);if(el)el.addEventListener('change',()=>{mutate(()=>{g[key]=key==='name'?(el.value.trim()||g.name):el.value})})};
