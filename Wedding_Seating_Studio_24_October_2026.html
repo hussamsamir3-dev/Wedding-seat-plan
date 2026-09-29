@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<title>Wedding Seating Studio — 24 October 2026</title>
+<style>
+:root{--bg:#f3efe8;--paper:#fffdf9;--ink:#26322c;--muted:#78827c;--sage:#78917f;--sage2:#e7eee9;--sand:#d9c5a4;--gold:#b7945b;--rose:#d9b7ad;--line:#ddd8cf;--shadow:0 18px 55px #31403918}
+*{box-sizing:border-box} body{margin:0;font-family:Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:linear-gradient(135deg,#ebe6dd,#f8f5ef);color:var(--ink)}
+button,input,select{font:inherit}.app{min-height:100vh}.top{position:sticky;top:0;z-index:50;background:#fffdf9e8;backdrop-filter:blur(18px);border-bottom:1px solid #e6e0d7;padding:12px 18px;display:flex;align-items:center;gap:14px;box-shadow:0 8px 30px #25342d0d}
+.brand{display:flex;gap:12px;align-items:center;min-width:260px}.seal{width:42px;height:42px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#d9c9a8,#9d7b45);box-shadow:inset 0 0 0 4px #fff8,0 6px 15px #4b392426;display:grid;place-items:center;color:white;font-weight:900}.brand b{display:block;font-size:15px}.brand small{color:var(--muted)}
+.nav{display:flex;gap:7px;flex:1}.nav button,.btn{border:1px solid #ded8cf;background:white;border-radius:11px;padding:9px 12px;color:var(--ink);cursor:pointer}.nav button.active,.btn.primary{background:var(--ink);color:white;border-color:var(--ink)}.btn.gold{background:var(--gold);color:white;border-color:var(--gold)}
+.stats{display:flex;gap:7px}.pill{padding:8px 10px;border-radius:11px;background:var(--sage2);font-size:12px;white-space:nowrap}.pill strong{font-size:15px}
+main{padding:18px;max-width:1600px;margin:auto}.page{display:none}.page.active{display:block}.hero{display:flex;justify-content:space-between;align-items:end;margin:6px 0 14px}.hero h1{margin:0;font-size:28px;letter-spacing:-.7px}.hero p{margin:5px 0 0;color:var(--muted)}
+.grid{display:grid;grid-template-columns:minmax(0,1fr) 330px;gap:14px}.card{background:var(--paper);border:1px solid #e5dfd5;border-radius:18px;box-shadow:var(--shadow)}
+.hallwrap{padding:12px}.halltoolbar{display:flex;gap:8px;flex-wrap:wrap;padding:3px 2px 12px}.hall{position:relative;height:700px;overflow:hidden;border-radius:15px;border:1px solid #d9d3ca;background:
+radial-gradient(ellipse at 50% 4%,#fff9 0 8%,transparent 22%),
+linear-gradient(#ffffff14,#00000006),
+repeating-linear-gradient(90deg,#d9c9ae20 0 1px,transparent 1px 80px),
+linear-gradient(135deg,#d8c9af,#efe6d6 42%,#d5c3a7);box-shadow:inset 0 0 80px #6d56351a}
+.hall:before{content:"";position:absolute;inset:16px;border:1px solid #fff8;border-radius:12px;pointer-events:none}.stage{position:absolute;left:50%;top:26px;transform:translateX(-50%);width:290px;height:76px;border-radius:18px;background:linear-gradient(180deg,#fffdf8,#e9ddca);border:1px solid #c8ad7e;box-shadow:0 14px 35px #57442b26;text-align:center;padding-top:12px}.stage b{letter-spacing:2px;font-size:11px;color:#7b6849}.sweet{margin:8px auto 0;width:150px;height:26px;border-radius:8px;background:#8b6d43;color:white;font-size:11px;line-height:26px}
+.zone{position:absolute;border:1px dashed #ffffffa8;border-radius:18px;color:#665d50;font-size:10px;letter-spacing:1.5px;padding:9px;pointer-events:none}.dance{left:38%;top:45%;width:24%;height:25%;display:grid;place-items:center;background:#fff4;border-style:solid;font-weight:700}
+.tableObj{position:absolute;user-select:none;touch-action:none;cursor:grab;transform-origin:center;filter:drop-shadow(0 10px 10px #49371f22)}.tableObj.selected .topplate{outline:3px solid #536d5d;outline-offset:3px}.topplate{position:absolute;inset:18px 25px;border-radius:10px;background:linear-gradient(180deg,#fffdf9,#e8ddcb);border:1px solid #bda987;box-shadow:inset 0 1px #fff,0 7px 15px #5e4b3020;display:flex;align-items:center;justify-content:center;text-align:center;font-size:10px;font-weight:800;padding:5px}.seat{position:absolute;width:22px;height:22px;border-radius:50%;background:linear-gradient(145deg,#fff,#d8cfbf);border:1px solid #9e8e74;box-shadow:0 3px 6px #4b3d2922;display:grid;place-items:center;font-size:8px;font-weight:800;color:#4e473e}.seat.assigned{background:linear-gradient(145deg,#9bb09f,#6f8978);color:white;border-color:#607866}.side{padding:15px}.side h3{margin:0 0 12px}.formrow{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px}.formrow label,.field label{font-size:11px;color:var(--muted);display:block;margin-bottom:4px}.field{margin-bottom:9px}.field input,.field select,.formrow input{width:100%;border:1px solid #ddd7cd;border-radius:9px;padding:9px;background:white}.side .btn{width:100%;margin-top:6px}.legend{margin-top:14px;border-top:1px solid var(--line);padding-top:12px;font-size:12px;color:var(--muted)}.dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:5px}.guestHead{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px}.guestHead input,.guestHead select{border:1px solid #ddd7cd;border-radius:10px;padding:10px;background:white}.guestHead input{min-width:240px;flex:1}.guestTable{width:100%;border-collapse:separate;border-spacing:0;background:var(--paper);border:1px solid #e1dbd2;border-radius:15px;overflow:hidden;box-shadow:var(--shadow)}.guestTable th{position:sticky;top:68px;background:#e9eee9;padding:10px;text-align:left;font-size:11px;letter-spacing:.4px}.guestTable td{border-top:1px solid #eee9e1;padding:8px 10px;font-size:12px}.guestTable tr:hover td{background:#faf7f1}.guestTable input,.guestTable select{width:100%;border:1px solid transparent;background:transparent;padding:6px;border-radius:7px}.guestTable input:focus,.guestTable select:focus{outline:none;border-color:#b7aa94;background:white}.tag{display:inline-block;padding:4px 7px;border-radius:999px;background:var(--sage2);font-size:10px}.mini{font-size:10px;color:var(--muted)}.summaryCards{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:12px}.sum{padding:14px}.sum strong{font-size:26px;display:block}.sum span{color:var(--muted);font-size:12px}.progress{height:9px;background:#e8e3da;border-radius:999px;overflow:hidden;margin-top:8px}.progress i{display:block;height:100%;background:linear-gradient(90deg,var(--sage),var(--gold));width:0}.toast{position:fixed;right:18px;bottom:18px;background:#26322c;color:white;padding:11px 15px;border-radius:11px;opacity:0;transform:translateY(10px);transition:.2s;z-index:99}.toast.show{opacity:1;transform:none}
+@media(max-width:900px){.stats{display:none}.brand{min-width:0}.grid{grid-template-columns:1fr}.hall{height:620px}.summaryCards{grid-template-columns:1fr 1fr}.top{flex-wrap:wrap}.nav{order:3;width:100%}.guestTable{min-width:850px}.tableScroll{overflow:auto}}
+@media print{.top,.halltoolbar,.side,.guestHead{display:none!important}main{padding:0}.card{box-shadow:none}.hall{height:650px}.page{display:block!important;page-break-after:always}.guestTable th{position:static}}
+</style>
+</head>
+<body><div class="app">
+<header class="top"><div class="brand"><div class="seal">24</div><div><b>Wedding Seating Studio</b><small>24 October 2026 · Local planner</small></div></div>
+<nav class="nav"><button class="active" data-page="layout">Hall Layout</button><button data-page="guests">Guest Register</button></nav>
+<div class="stats"><div class="pill"><strong id="topConfirmed">56</strong> / 100 guests</div><div class="pill"><strong id="topSeats">60</strong> seats</div></div></header>
+<main>
+<section id="layout" class="page active">
+<div class="hero"><div><h1>Hall Layout</h1><p>Drag tables, resize them, change seat count, and assign numbered seats. Everything saves automatically on this device.</p></div><button class="btn" onclick="window.print()">Print / PDF</button></div>
+<div class="grid"><div class="card hallwrap"><div class="halltoolbar"><button class="btn primary" id="addTable">+ Add rectangular table</button><button class="btn" id="autoLayout">Auto arrange</button><button class="btn" id="resetView">Reset demo layout</button><button class="btn gold" id="saveNow">Save now</button></div>
+<div id="hall" class="hall"><div class="stage"><b>BRIDE & GROOM</b><div class="sweet">2-seat sweetheart table</div></div><div class="zone dance">DANCE / MINGLING</div></div></div>
+<aside class="card side"><h3>Selected Table</h3><div id="noSel" class="mini">Tap a table to edit it.</div><div id="editor" style="display:none">
+<div class="field"><label>Table name</label><input id="eName"></div><div class="field"><label>Group / note</label><input id="eGroup"></div>
+<div class="formrow"><div><label>Seats</label><input id="eSeats" type="number" min="2" max="24"></div><div><label>Scale</label><input id="eScale" type="number" min="60" max="180"></div></div>
+<div class="formrow"><div><label>Width</label><input id="eW" type="number" min="130" max="420"></div><div><label>Height</label><input id="eH" type="number" min="65" max="220"></div></div>
+<button class="btn primary" id="applyEdit">Apply changes</button><button class="btn" id="deleteTable">Delete table</button></div>
+<div class="legend"><b>Capacity guide</b><br><span class="dot" style="background:#78917f"></span>Assigned guest seat<br><span class="dot" style="background:#eee8dd;border:1px solid #9e8e74"></span>Available seat<br><br><b>Wedding limit:</b> 100 pax + 10 complimentary extras. Planner tracks the 100-pax core limit and shows the 110 maximum buffer separately.</div></aside></div>
+</section>
+<section id="guests" class="page">
+<div class="hero"><div><h1>Guest Register</h1><p>Your guests are preloaded. Add your wife's guests here and assign each person to a table and seat number.</p></div><button class="btn gold" id="addGuest">+ Add guest</button></div>
+<div class="summaryCards"><div class="card sum"><strong id="sTotal">56</strong><span>Current guest list</span><div class="progress"><i id="pTotal"></i></div></div><div class="card sum"><strong id="sRemaining">44</strong><span>Remaining to 100 pax</span></div><div class="card sum"><strong id="sExtra">54</strong><span>Remaining incl. 10 free extras</span></div><div class="card sum"><strong id="sAssigned">0</strong><span>Guests with seat assigned</span></div></div>
+<div class="guestHead"><input id="search" placeholder="Search guest, group or table..."><select id="filterGroup"><option value="">All groups</option></select><button class="btn" id="addWifeRows">+ Add 10 blank wife rows</button><button class="btn" id="exportData">Backup JSON</button><label class="btn">Restore JSON<input type="file" id="importData" accept=".json" hidden></label></div>
+<div class="tableScroll"><table class="guestTable"><thead><tr><th>#</th><th>Guest name</th><th>Side / group</th><th>Relationship / note</th><th>Table</th><th>Seat #</th><th>RSVP</th><th></th></tr></thead><tbody id="guestBody"></tbody></table></div>
+</section>
+</main><div id="toast" class="toast">Saved locally</div></div>
+<script>
+const KEY='weddingStudio_2026_v3';
+const baseGuests = [
+["Mervat","Mom's side",""],["Adly","Mom's side","Mervat's husband"],["Soha","Mom's side",""],["Essam","Mom's side","Soha's husband"],["Kinda","Mom's side","Soha's daughter"],["Ahmed","Mom's side",""],["Ahmed's wife","Mom's side",""],["Ahmed's wife's mom","Mom's side",""],["Sahar","Mom's side",""],["Hisham","Mom's side",""],["Hushams","Mom's side","As entered"],["Hisham's wife","Mom's side",""],["Hisham child 1","Mom's side",""],["Hisham child 2","Mom's side",""],["Hisham child 3","Mom's side",""],["Dalia","Mom's side",""],["Dalia child 1","Mom's side",""],["Dalia child 2","Mom's side",""],["Dalia child 3","Mom's side",""],["Osama","Mom's side",""],["Mona","Mom's side","Osama's wife"],["Rana","Mom's side",""],["Rana daughter 1","Mom's side",""],["Rana daughter 2","Mom's side",""],
+["Sohair","Dad's side",""],["Marwa","Dad's side",""],["Marwa child 1","Dad's side",""],["Marwa child 2","Dad's side",""],["Marwa child 3","Dad's side",""],["Mohamed (Toto)","Dad's side",""],["Mohamed's wife","Dad's side",""],
+["Dad","Immediate family",""],["Mom","Immediate family",""],["Alaa","Immediate family","Sister"],["Amr","Immediate family","Brother"],
+["Mohamed Seif","Work",""],["Mohamed Seif's wife","Work",""],["Abouelsoud","Work",""],["Abouelsoud's wife","Work",""],["Khaled","Work",""],["Khatab","Work",""],["Khatab's wife","Work",""],["Saman","Work",""],["Saman's wife","Work",""],["Saman child 1","Work",""],["Saman child 2","Work",""],["Ghaly","Work",""],["Ghaly's wife","Work",""],["Behairy","Work",""],["Behairy's wife","Work",""],["Kabbo","Work",""],["Kabbo's wife","Work",""],["Khaled El Samny","Work",""],["Khaled El Samny's wife","Work",""],["Ezzat","Work",""],["Ezzat's wife","Work",""]
+];
+const defaultTables=[
+{id:'t1',name:'Table 1',group:"Immediate Family + Dad's Side",seats:12,x:37,y:19,w:260,h:105,scale:100},
+{id:'t2',name:'Table 2',group:"Mom · Mervat / Soha / Ahmed",seats:10,x:7,y:31,w:220,h:95,scale:100},
+{id:'t3',name:'Table 3',group:"Mom · Sahar / Hisham",seats:8,x:69,y:31,w:200,h:90,scale:100},
+{id:'t4',name:'Table 4',group:"Mom · Dalia / Osama / Rana",seats:10,x:7,y:68,w:220,h:95,scale:100},
+{id:'t5',name:'Table 5',group:"Work · Leadership / Close",seats:10,x:38,y:72,w:220,h:95,scale:100},
+{id:'t6',name:'Table 6',group:"Work · Colleagues & Families",seats:12,x:69,y:68,w:250,h:100,scale:100}
+];
+function init(){let saved;try{saved=JSON.parse(localStorage.getItem(KEY))}catch(e){}
+ if(saved)return saved;
+ const guests=baseGuests.map((g,i)=>({id:'g'+(i+1),name:g[0],group:g[1],note:g[2],table:'',seat:'',rsvp:'Invited'}));
+ // initial assignments by known grouping
+ const assign=[['t2',0,8],['t3',8,15],['t4',15,24],['t1',24,35],['t5',35,44],['t6',44,56]];
+ assign.forEach(([t,a,b])=>{for(let i=a;i<b;i++){guests[i].table=t;guests[i].seat=String(i-a+1)}})
+ return {tables:structuredClone(defaultTables),guests};
+}
+let state=init(), selected=null;
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+function save(msg=true){localStorage.setItem(KEY,JSON.stringify(state)); if(msg){let t=$('#toast');t.classList.add('show');setTimeout(()=>t.classList.remove('show'),1000)} updateStats()}
+function tableBy(id){return state.tables.find(t=>t.id===id)}
+function renderHall(){const hall=$('#hall'); hall.querySelectorAll('.tableObj').forEach(x=>x.remove());
+ state.tables.forEach(t=>{const el=document.createElement('div');el.className='tableObj'+(selected===t.id?' selected':'');el.dataset.id=t.id;
+ el.style.left=t.x+'%';el.style.top=t.y+'%';el.style.width=t.w+'px';el.style.height=t.h+'px';el.style.transform=`translate(-50%,-50%) scale(${t.scale/100})`;
+ const assigned=state.guests.filter(g=>g.table===t.id && g.seat).length;
+ el.innerHTML=`<div class="topplate">${t.name}<br><span class="mini">${t.group}<br>${assigned}/${t.seats} assigned</span></div>`;
+ const top=Math.ceil(t.seats/2), bot=t.seats-top;
+ for(let i=0;i<t.seats;i++){let s=document.createElement('div');s.className='seat';s.textContent=i+1;
+   if(state.guests.some(g=>g.table===t.id && String(g.seat)===String(i+1)))s.classList.add('assigned');
+   if(i<top){s.style.top='0px';s.style.left=`calc(${(i+1)*100/(top+1)}% - 11px)`}else{let j=i-top;s.style.bottom='0px';s.style.left=`calc(${(j+1)*100/(bot+1)}% - 11px)`}
+   el.appendChild(s)}
+ el.addEventListener('pointerdown',dragStart);el.addEventListener('click',()=>selectTable(t.id));hall.appendChild(el)})
+}
+let drag=null;
+function dragStart(e){if(e.button!==undefined&&e.button!==0)return; const el=e.currentTarget,t=tableBy(el.dataset.id);selectTable(t.id);
+ const r=$('#hall').getBoundingClientRect();drag={id:t.id,dx:e.clientX-(r.left+r.width*t.x/100),dy:e.clientY-(r.top+r.height*t.y/100)};el.setPointerCapture?.(e.pointerId)}
+window.addEventListener('pointermove',e=>{if(!drag)return;const r=$('#hall').getBoundingClientRect(),t=tableBy(drag.id);t.x=Math.max(3,Math.min(97,(e.clientX-drag.dx-r.left)/r.width*100));t.y=Math.max(10,Math.min(94,(e.clientY-drag.dy-r.top)/r.height*100));renderHall()});
+window.addEventListener('pointerup',()=>{if(drag){drag=null;save(false)}})
+function selectTable(id){selected=id;renderHall();const t=tableBy(id);$('#noSel').style.display='none';$('#editor').style.display='block';$('#eName').value=t.name;$('#eGroup').value=t.group;$('#eSeats').value=t.seats;$('#eScale').value=t.scale;$('#eW').value=t.w;$('#eH').value=t.h}
+$('#applyEdit').onclick=()=>{if(!selected)return;let t=tableBy(selected);t.name=$('#eName').value||t.name;t.group=$('#eGroup').value;t.seats=Math.max(2,Math.min(24,+$('#eSeats').value||t.seats));t.scale=Math.max(60,Math.min(180,+$('#eScale').value||100));t.w=Math.max(130,Math.min(420,+$('#eW').value||220));t.h=Math.max(65,Math.min(220,+$('#eH').value||95));save();renderHall();renderGuests()}
+$('#deleteTable').onclick=()=>{if(!selected)return;if(!confirm('Delete this table? Guests assigned to it will become unassigned.'))return;state.guests.forEach(g=>{if(g.table===selected){g.table='';g.seat=''}});state.tables=state.tables.filter(t=>t.id!==selected);selected=null;$('#editor').style.display='none';$('#noSel').style.display='block';save();renderHall();renderGuests()}
+$('#addTable').onclick=()=>{let id='t'+Date.now();state.tables.push({id,name:'New Table',group:'New group',seats:10,x:50,y:55,w:220,h:95,scale:100});selected=id;save();renderHall();selectTable(id);renderGuests()}
+$('#autoLayout').onclick=()=>{const spots=[[37,19],[7,31],[69,31],[7,68],[38,72],[69,68],[18,50],[82,50],[50,86]];state.tables.forEach((t,i)=>{if(spots[i]){t.x=spots[i][0];t.y=spots[i][1]}});save();renderHall()}
+$('#resetView').onclick=()=>{if(confirm('Reset table layout only? Guest list stays unchanged.')){state.tables=structuredClone(defaultTables);selected=null;save();renderHall();renderGuests()}}
+$('#saveNow').onclick=()=>save();
+
+function groups(){return [...new Set(state.guests.map(g=>g.group).filter(Boolean))].sort()}
+function renderGuests(){let q=$('#search').value.toLowerCase(),fg=$('#filterGroup').value;const body=$('#guestBody');body.innerHTML='';
+ const tableOpts='<option value="">Unassigned</option>'+state.tables.map(t=>`<option value="${t.id}">${t.name} · ${t.group}</option>`).join('');
+ state.guests.forEach((g,i)=>{if(q&&!(`${g.name} ${g.group} ${g.note} ${tableBy(g.table)?.name||''}`.toLowerCase().includes(q)))return;if(fg&&g.group!==fg)return;
+ let tr=document.createElement('tr');tr.innerHTML=`<td>${i+1}</td><td><input data-k="name" value="${esc(g.name)}"></td><td><input data-k="group" value="${esc(g.group)}"></td><td><input data-k="note" value="${esc(g.note)}"></td><td><select data-k="table">${tableOpts}</select></td><td><input data-k="seat" type="number" min="1" value="${esc(g.seat)}"></td><td><select data-k="rsvp"><option>Invited</option><option>Confirmed</option><option>Pending</option><option>Declined</option></select></td><td><button class="btn" data-del>×</button></td>`;
+ tr.querySelector('[data-k=table]').value=g.table;tr.querySelector('[data-k=rsvp]').value=g.rsvp||'Invited';
+ tr.querySelectorAll('[data-k]').forEach(inp=>inp.onchange=()=>{g[inp.dataset.k]=inp.value;if(inp.dataset.k==='table')g.seat='';save(false);renderHall();renderGuests()});
+ tr.querySelector('[data-del]').onclick=()=>{state.guests=state.guests.filter(x=>x.id!==g.id);save();renderGuests();renderHall()};body.appendChild(tr)})
+ const sel=$('#filterGroup'),cur=sel.value;sel.innerHTML='<option value="">All groups</option>'+groups().map(x=>`<option>${esc(x)}</option>`).join('');sel.value=cur;
+ updateStats()}
+function esc(v=''){return String(v).replaceAll('&','&amp;').replaceAll('"','&quot;').replaceAll('<','&lt;')}
+$('#search').oninput=renderGuests;$('#filterGroup').onchange=renderGuests;
+function addGuest(group="Wife's side"){state.guests.push({id:'g'+Date.now()+Math.random(),name:'',group,note:'',table:'',seat:'',rsvp:'Invited'})}
+$('#addGuest').onclick=()=>{addGuest();save();renderGuests()}
+$('#addWifeRows').onclick=()=>{for(let i=0;i<10;i++)addGuest("Wife's side");save();renderGuests()}
+function updateStats(){const n=state.guests.filter(g=>g.name.trim()).length,assigned=state.guests.filter(g=>g.name.trim()&&g.table&&g.seat).length,seats=state.tables.reduce((a,t)=>a+t.seats,0);$('#topConfirmed').textContent=n;$('#topSeats').textContent=seats;$('#sTotal').textContent=n;$('#sRemaining').textContent=Math.max(0,100-n);$('#sExtra').textContent=Math.max(0,110-n);$('#sAssigned').textContent=assigned;$('#pTotal').style.width=Math.min(100,n)+'%'}
+$$('.nav button').forEach(b=>b.onclick=()=>{$$('.nav button').forEach(x=>x.classList.remove('active'));b.classList.add('active');$$('.page').forEach(x=>x.classList.remove('active'));$('#'+b.dataset.page).classList.add('active');if(b.dataset.page==='guests')renderGuests()})
+$('#exportData').onclick=()=>{let a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(state,null,2)],{type:'application/json'}));a.download='wedding-seating-backup.json';a.click();URL.revokeObjectURL(a.href)}
+$('#importData').onchange=e=>{let f=e.target.files[0];if(!f)return;let r=new FileReader();r.onload=()=>{try{state=JSON.parse(r.result);save();renderHall();renderGuests()}catch{alert('Invalid backup file')}};r.readAsText(f)}
+renderHall();renderGuests();save(false);
+</script></body></html>
