@@ -280,6 +280,10 @@ textarea{width:100%;min-height:90px;border:1px solid var(--line);border-radius:9
 
 
 /* smart + sheet */
+.shapes{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin:6px 0 4px}
+.shp{display:flex;flex-direction:column;align-items:center;gap:3px;border:1px solid var(--line);background:var(--panel);border-radius:10px;padding:7px 2px 6px;font-size:11px;color:var(--muted);min-height:64px}
+.shp svg{width:34px;height:34px}
+.shp[aria-pressed="true"]{border-color:var(--gold);background:color-mix(in srgb,var(--gold) 12%,var(--panel));color:var(--ink)}
 .ch.rsv{fill:transparent;stroke-dasharray:2 2}
 .cmd{display:flex;gap:6px;margin:4px 0 6px}
 .cmd input{flex:1;min-width:0;padding:10px 12px;border:1px solid var(--gold);border-radius:10px;background:var(--panel);font-size:14px}
@@ -1800,6 +1804,11 @@ function runCommand(txt){
       if(tbl){seatUnit(added,tbl)}else{/* sit next to their household if one exists */for(const g of added){const m2=S.guests.find(x=>x!==g&&x.t&&hhKey(x)===hhKey(g));if(m2&&freeSeats(byId(m2.t))>0)seatUnit([g],byId(m2.t))}}});
     return logAct(`Added ${added.map(g=>g.name).join(', ')}${side!=='both'?` to the ${side}'s side`:''}${added.some(g=>g.t)?`, seated at ${tableName(byId(added.find(g=>g.t).t))}`:''}.`);
   }
+  if((m=/^(?:make\s+|change\s+|turn\s+)?table\s*(\S+)\s+(?:shape\s+|into\s+|to\s+(?:a\s+|an\s+)?|(?:a\s+|an\s+)?)?(round|circle|square|rect(?:angle|angular)?|banquet|long|head(?:\s*table)?)\b/i.exec(c))){
+    const t=findTableText(m[1]);if(!t)return logAct('Table not found.');const w=m[2].toLowerCase();
+    const sh=/round|circle/.test(w)?'round':/square/.test(w)?'square':/banquet|long/.test(w)?'banquet':/head/.test(w)?'head':'rect';
+    return changeShape([t],sh);
+  }
   if(/distribut|auto.?seat|seat everyone/i.test(c))return smartDistribute({});
   if(/re-?plan|start over|reseat/i.test(c))return smartDistribute({reseat:true,arrange:true});
   if(/arrange|layout|closest/i.test(c)){mutate(arrangeTables);return logAct("Tables arranged: closest family nearest the kosha, groom's side on the left, bride's on the right.")}
@@ -1837,6 +1846,35 @@ function renderSmart(b){
   $('#sArr').onclick=()=>{mutate(arrangeTables);logAct("Tables arranged: closest family nearest the kosha, groom's side on the left, bride's on the right.")};
   $('#sRight').onclick=rightSize;$('#sBride').onclick=reserveBrideTables;$('#sSheet').onclick=()=>openSheet('guests');
   const lim2=(id,k)=>{$(id).onchange=e=>{mutate(()=>{S.plan[k]=Math.max(0,+e.target.value||0)})}};lim2('#lCap','cap');lim2('#lEx','extra');lim2('#lB','bride');lim2('#lG','groom');
+}
+
+/* ---------- change a table's shape, guests included ---------- */
+const SHAPES=[['round','Round','r10'],['square','Square','sq8'],['rect','Rectangle','rect8'],['banquet','Banquet','ban'],['head','Head table','head']];
+function shapeOf(t){if(t.type==='round')return 'round';if(t.type==='head')return 'head';if(t.type==='banquet')return 'banquet';return Math.abs(t.w-t.h)<.05?'square':'rect'}
+function reshapeTable(t,shape){
+  computeSeatMap();
+  const gs=guestsAt(t).map((g,i)=>g).filter(Boolean);           // in current seat order, so families stay side by side
+  const n=Math.max(t.seats,gs.length+(t.reserve||0),shape==='head'?1:2);
+  const r=s=>Math.round(s*10)/10;
+  if(shape==='round'){t.type='round';t.w=t.h=roundFor(n)}
+  else if(shape==='square'){t.type='rect';const L=Math.max(.9,r(Math.ceil(n/4)*.6));t.w=t.h=L}
+  else if(shape==='rect'){t.type='rect';t.w=Math.max(1.2,r(Math.ceil(n/2)*.6));t.h=.9}
+  else if(shape==='banquet'){t.type='banquet';t.w=Math.max(2,r(Math.ceil(n/2)*.6));t.h=1.2}
+  else if(shape==='head'){t.type='head';t.w=Math.max(1.2,r(n*.6));t.h=.9}
+  // grow a little if the chair maths comes up short
+  let guard=0;while(seatCap(t)<n&&guard++<20){if(shape==='round'){t.w=t.h=r(t.w+.1)}else if(shape==='square'){t.w=t.h=r(t.w+.3)}else t.w=r(t.w+.3)}
+  t.seats=Math.min(seatCap(t),n);
+  gs.forEach((g,i)=>{g.t=t.id;g.s=i});
+  computeSeatMap();
+  // keep walkway clearance: nudge to the nearest free spot if the new footprint collides
+  let moved=false;if(!canPlace(t)){const x=t.x,y=t.y;if(placeFree(t,x,y)){moved=Math.hypot(t.x-x,t.y-y)>.01}else{t.x=x;t.y=y}}
+  return {n:gs.length,moved};
+}
+function changeShape(tabs,shape){
+  let moved=0,guests=0;
+  mutate(()=>{for(const t of tabs){if(t.locked)continue;const r=reshapeTable(t,shape);guests+=r.n;if(r.moved)moved++}});
+  const name={round:'round table',square:'square table',rect:'rectangular table',banquet:'banquet table',head:'head table'}[shape];
+  logAct(`${tabs.length>1?`${tabs.length} tables are now ${name}s`:tableName(tabs[0])+' is now a '+name}, with all ${guests} guests still in their places${moved?`. Moved ${moved===1?'it':moved+' of them'} slightly to keep the walkways clear`:''}.`);
 }
 
 /* ---------- planning sheet ---------- */
@@ -2206,6 +2244,7 @@ function renderEdit(b){
     b.innerHTML=`<h2>${T.table?esc(tableName(it)):esc(T.name)}</h2>
       ${T.table?`<div class="two"><div class="row"><label for="fNum">Number</label><input id="fNum" type="text" value="${esc(tableNo(it))}"></div><div class="row" style="visibility:hidden"></div></div>`:''}
       <div class="row"><label for="fTitle">${T.table?'Table name':'Label'}</label><input id="fTitle" type="text" value="${esc(it.title)}" placeholder="${T.table?"e.g. Bride's family":T.name}"></div>
+      ${T.table?`<h3>Shape</h3><div class="shapes">${SHAPES.map(([k,n,key])=>`<button class="shp" data-shape2="${k}" aria-pressed="${shapeOf(it)===k}" title="${n}">${icon(key)}${n}</button>`).join('')}</div><p class="cap" style="margin:0 0 6px">Guests keep their order around the table. The size adjusts to fit everyone.</p>`:''}
       ${seatsFld}${seatBlock}
       <h3>Size and angle</h3>${size}
       <div class="row"><label for="fRot">Rotation</label><input id="fRot" type="range" min="-180" max="180" step="${snap?15:1}" value="${it.rot}"><input id="fRotN" type="number" min="-180" max="180" value="${it.rot}"></div>
@@ -2231,6 +2270,7 @@ function renderEdit(b){
     b.querySelectorAll('[data-seatsel]').forEach(x=>x.onchange=()=>{if(x.value)assign(x.value,it.id,+x.dataset.seatsel)});
     b.querySelectorAll('.seats li').forEach(li=>li.addEventListener('click',e=>{if(e.target.closest('select,button'))return;selSeat={tid:it.id,s:+li.dataset.i};rerenderItem(it);renderOverlay();b.querySelectorAll('.seats li').forEach(x=>x.classList.toggle('cur',x===li))}));
     $('#fLock').onchange=e=>mutate(()=>{it.locked=e.target.checked});
+    b.querySelectorAll('[data-shape2]').forEach(x=>x.onclick=()=>{if(it.locked)return toast('Unlock it first.');if(shapeOf(it)===x.dataset.shape2)return;changeShape([it],x.dataset.shape2)});
     $('#eDup').onclick=duplicateSel;$('#eDel').onclick=deleteSel;
     $('#eFront').onclick=()=>mutate(()=>{S.items=S.items.filter(i=>i!==it);S.items.push(it)});
     $('#eBack').onclick=()=>mutate(()=>{S.items=S.items.filter(i=>i!==it);S.items.unshift(it)});
@@ -2238,6 +2278,7 @@ function renderEdit(b){
   }
   const tabs=its.filter(i=>TYPES[i.type].table),seats=its.reduce((a,i)=>a+((TYPES[i.type].table||TYPES[i.type].rows)?i.seats:0),0);
   b.innerHTML=`<h2>${its.length} items selected</h2><p class="note">${seats} seats in this selection. Drag any one of them to move the group.</p>
+    ${tabs.length?`<h3>Shape for the ${tabs.length} selected ${tabs.length===1?'table':'tables'}</h3><div class="shapes">${SHAPES.map(([k,n,key])=>`<button class="shp" data-shape3="${k}" title="${n}">${icon(key)}${n}</button>`).join('')}</div>`:''}
     <h3>Rotate the group</h3><div class="btns"><button class="btn sm" data-gr="-90">−90°</button><button class="btn sm" data-gr="-15">−15°</button><button class="btn sm" data-gr="15">+15°</button><button class="btn sm" data-gr="90">+90°</button></div>
     <h3>Line up</h3><div class="btns"><button class="btn sm" data-al="left">Left edges</button><button class="btn sm" data-al="cx">Centres across</button><button class="btn sm" data-al="right">Right edges</button><button class="btn sm" data-al="top">Tops</button><button class="btn sm" data-al="cy">Centres down</button><button class="btn sm" data-al="bottom">Bottoms</button></div>
     <div class="btns"><button class="btn sm" data-ds="x">Space evenly across</button><button class="btn sm" data-ds="y">Space evenly down</button></div>
@@ -2245,6 +2286,7 @@ function renderEdit(b){
     <div class="row"><label for="mS">Seats each</label><input id="mS" type="number" min="1" max="30" value="${tabs[0].seats}"><button class="btn" id="mSet">Apply</button></div>`:''}
     <div class="btns" style="margin-top:14px"><button class="btn" id="eDup">Duplicate</button><button class="btn" id="eLock">Lock all</button><button class="btn" id="eUnlock">Unlock all</button><button class="btn danger" id="eDel">Remove</button></div>`;
   b.querySelectorAll('[data-gr]').forEach(x=>x.onclick=()=>rotateGroup(+x.dataset.gr));
+  b.querySelectorAll('[data-shape3]').forEach(x=>x.onclick=()=>changeShape(tabs,x.dataset.shape3));
   b.querySelectorAll('[data-al]').forEach(x=>x.onclick=()=>align(x.dataset.al));
   b.querySelectorAll('[data-ds]').forEach(x=>x.onclick=()=>distribute(x.dataset.ds));
   b.querySelectorAll('[data-linen]').forEach(x=>x.onclick=()=>mutate(()=>tabs.forEach(t=>t.color=x.dataset.linen)));
