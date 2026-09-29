@@ -325,6 +325,10 @@ textarea{width:100%;min-height:90px;border:1px solid var(--line);border-radius:9
 .stage.busy #svg{opacity:.75;transition:opacity .2s}
 @media (pointer:coarse){.seg button{min-height:40px;padding:8px 12px;font-size:13px}.sbc{flex-basis:112px}}
 /* avatars */
+.avlegend{position:absolute;left:12px;bottom:36px;z-index:4;display:flex;gap:10px;flex-wrap:wrap;background:color-mix(in srgb,var(--panel) 90%,transparent);border:1px solid var(--line);border-radius:10px;padding:6px 10px;font-size:12px;pointer-events:none}
+.avlegend span{display:inline-flex;align-items:center;gap:5px}
+.avlegend svg{width:18px;height:18px}
+.stage.building .avlegend{display:none}
 .av{cursor:grab}
 .av-i{display:inline-block;width:22px;height:22px;flex:0 0 22px;vertical-align:middle}
 .av-i.lg{width:34px;height:34px;flex-basis:34px}
@@ -520,42 +524,14 @@ aside.panel.building .buildhead{display:flex}
       <pattern id="m-g" width="1" height="1" patternUnits="userSpaceOnUse"><rect width="1" height="1" style="fill:var(--lawn)"/><circle cx=".2" cy=".3" r=".04" fill="rgba(60,100,40,.25)"/><circle cx=".7" cy=".75" r=".04" fill="rgba(60,100,40,.25)"/><circle cx=".65" cy=".2" r=".03" fill="rgba(60,100,40,.2)"/></pattern>
       <pattern id="m-w" width="2" height="1" patternUnits="userSpaceOnUse"><rect width="2" height="1" fill="#8ECFE2"/><path d="M0 .5q.5 -.2 1 0t1 0" fill="none" stroke="rgba(255,255,255,.6)" stroke-width=".04"/></pattern>
 
-      <clipPath id="avClip"><circle r=".94"/></clipPath>
-      <radialGradient id="avBg" cx=".35" cy=".3" r=".9"><stop offset="0" stop-color="#fff" stop-opacity=".35"/><stop offset="1" stop-color="#000" stop-opacity=".12"/></radialGradient>
-      <linearGradient id="avSuit" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#34425A"/><stop offset="1" stop-color="#1D2636"/></linearGradient>
-      <linearGradient id="avDress" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F6DDE1"/><stop offset="1" stop-color="#E4B9C1"/></linearGradient>
-      <linearGradient id="avKid" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F7E7C6"/><stop offset="1" stop-color="#E8CF9E"/></linearGradient>
-      <symbol id="av-m" viewBox="-1 -1 2 2" overflow="visible"><circle r="1" fill="currentColor"/><circle r="1" fill="url(#avBg)"/><g clip-path="url(#avClip)">
-        <path d="M-.82 1.1C-.8 .52-.46 .34 0 .34S.8 .52 .82 1.1Z" fill="url(#avSuit)"/><path d="M-.16 .34L0 .62L.16 .34Z" fill="#FBF8F2"/><path d="M-.1 .44L0 .5L.1 .44L.1 .56L0 .5L-.1 .56Z" fill="#C9A45F"/>
-        <path d="M-.11 .2h.22v.16h-.22z" fill="#E2B792"/><circle cy="-.12" r=".33" fill="#EBC6A3"/><circle cx="-.33" cy="-.1" r=".06" fill="#E2B792"/><circle cx=".33" cy="-.1" r=".06" fill="#E2B792"/>
-        <path d="M-.35 -.14C-.39 -.46-.14 -.6 .04 -.58C.29 -.56 .4 -.42 .35 -.14C.3 -.3 .14 -.34 -.02 -.33C-.18 -.32-.29 -.26-.35 -.14Z" fill="#2E2119"/></g>
-        <circle r=".97" fill="none" stroke="#C9A45F" stroke-width="1.4"/></symbol>
-      <symbol id="av-f" viewBox="-1 -1 2 2" overflow="visible"><circle r="1" fill="currentColor"/><circle r="1" fill="url(#avBg)"/><g clip-path="url(#avClip)">
-        <path d="M-.46 -.08C-.48 -.52-.22 -.64 0 -.64C.22 -.64 .48 -.52 .46 -.08L.47 .36C.3 .42-.3 .42-.47 .36Z" fill="#3A2418"/>
-        <path d="M-.8 1.1C-.78 .56-.46 .38 0 .38S.78 .56 .8 1.1Z" fill="url(#avDress)"/><path d="M-.34 .44Q0 .7 .34 .44" fill="none" stroke="#C9A45F" stroke-width="1"/><circle cy=".6" r=".045" fill="#C9A45F"/>
-        <path d="M-.1 .2h.2v.18h-.2z" fill="#E2B792"/><circle cy="-.1" r=".31" fill="#EFCDAE"/>
-        <path d="M-.33 -.13C-.3 -.43-.05 -.52 .13 -.47C.27 -.43 .34 -.32 .33 -.14C.2 -.28 .03 -.31-.12 -.25C-.2 -.21-.28 -.17-.33 -.13Z" fill="#3A2418"/>
-        <circle cx="-.3" cy=".02" r=".035" fill="#C9A45F"/><circle cx=".3" cy=".02" r=".035" fill="#C9A45F"/></g>
-        <circle r=".97" fill="none" stroke="#C9A45F" stroke-width="1.4"/></symbol>
-      <symbol id="av-u" viewBox="-1 -1 2 2" overflow="visible"><circle r="1" fill="currentColor"/><circle r="1" fill="url(#avBg)"/><g clip-path="url(#avClip)">
-        <path d="M-.8 1.1C-.78 .54-.46 .36 0 .36S.78 .54 .8 1.1Z" fill="#F4EEE2"/><circle cy="-.12" r=".32" fill="#F4EEE2"/></g>
-        <circle r=".97" fill="none" stroke="#C9A45F" stroke-width="1.4"/></symbol>
-      <symbol id="av-cm" viewBox="-1 -1 2 2" overflow="visible"><circle r="1" fill="currentColor"/><circle r="1" fill="url(#avBg)"/><g clip-path="url(#avClip)">
-        <path d="M-.66 1.1C-.64 .66-.4 .5 0 .5S.64 .66 .66 1.1Z" fill="#6E93B8"/><path d="M-.14 .5L0 .64L.14 .5Z" fill="#FBF8F2"/>
-        <circle cy="0" r=".4" fill="#F1D0AF"/><circle cx="-.2" cy=".1" r=".07" fill="#F2A9A0" opacity=".6"/><circle cx=".2" cy=".1" r=".07" fill="#F2A9A0" opacity=".6"/>
-        <path d="M-.4 -.04C-.44 -.4-.14 -.5 .04 -.48C.3 -.46 .44 -.3 .4 -.04C.3 -.2 .18 -.26 .02 -.24C.06 -.3 .04 -.36 0 -.38C-.02 -.3-.1 -.24-.2 -.22C-.3 -.2-.36 -.12-.4 -.04Z" fill="#6B4A2E"/></g>
-        <circle r=".97" fill="none" stroke="#C9A45F" stroke-width="1.4"/></symbol>
-      <symbol id="av-cf" viewBox="-1 -1 2 2" overflow="visible"><circle r="1" fill="currentColor"/><circle r="1" fill="url(#avBg)"/><g clip-path="url(#avClip)">
-        <circle cx="-.44" cy="-.12" r=".16" fill="#6B4A2E"/><circle cx=".44" cy="-.12" r=".16" fill="#6B4A2E"/>
-        <path d="M-.66 1.1C-.64 .66-.4 .5 0 .5S.64 .66 .66 1.1Z" fill="#F3C8D0"/><path d="M-.26 .56Q0 .7 .26 .56" fill="none" stroke="#FBF8F2" stroke-width="1.2"/>
-        <circle cy="0" r=".39" fill="#F3D5B8"/><circle cx="-.19" cy=".1" r=".07" fill="#F2A9A0" opacity=".65"/><circle cx=".19" cy=".1" r=".07" fill="#F2A9A0" opacity=".65"/>
-        <path d="M-.39 -.02C-.42 -.38-.16 -.5 0 -.5C.16 -.5 .42 -.38 .39 -.02C.28 -.2 .12 -.26 0 -.22C-.12 -.26-.28 -.2-.39 -.02Z" fill="#6B4A2E"/><path d="M.18 -.44l.16 -.1l.04 .16z" fill="#E08BA0"/></g>
-        <circle r=".97" fill="none" stroke="#C9A45F" stroke-width="1.4"/></symbol>
-      <symbol id="av-c" viewBox="-1 -1 2 2" overflow="visible"><circle r="1" fill="currentColor"/><circle r="1" fill="url(#avBg)"/><g clip-path="url(#avClip)">
-        <path d="M-.66 1.1C-.64 .66-.4 .5 0 .5S.64 .66 .66 1.1Z" fill="url(#avKid)"/>
-        <circle cy="0" r=".4" fill="#F1D0AF"/><circle cx="-.2" cy=".1" r=".07" fill="#F2A9A0" opacity=".6"/><circle cx=".2" cy=".1" r=".07" fill="#F2A9A0" opacity=".6"/>
-        <path d="M-.12 -.38C-.08 -.5 .08 -.54 .14 -.46C.06 -.46 0 -.42-.02 -.36Z" fill="#6B4A2E"/></g>
-        <circle r=".97" fill="none" stroke="#C9A45F" stroke-width="1.4"/></symbol>
+      <clipPath id="avClip"><circle r=".86"/></clipPath>
+      <symbol id="av-m" viewBox="-1 -1 2 2" overflow="visible"><circle r="1" fill="#fff"/><circle r=".86" fill="currentColor"/><g clip-path="url(#avClip)"><circle cy="-.2" r=".28" fill="#fff"/><path d="M-.56 .8Q-.56 .18 0 .18T.56 .8Z" fill="#fff"/></g></symbol>
+      <symbol id="av-f" viewBox="-1 -1 2 2" overflow="visible"><circle r="1" fill="#fff"/><circle r=".86" fill="currentColor"/><g clip-path="url(#avClip)"><path d="M-.36 .08V-.2A.36 .36 0 0 1 .36 -.2V.08Z" fill="#fff"/><circle cy="-.2" r=".27" fill="#fff"/><path d="M-.5 .8Q-.46 .2 0 .2T.5 .8Z" fill="#fff"/></g></symbol>
+      <symbol id="av-u" viewBox="-1 -1 2 2" overflow="visible"><circle r="1" fill="#fff"/><circle r=".86" fill="currentColor"/><g clip-path="url(#avClip)"><g opacity=".55"><circle cy="-.2" r=".28" fill="#fff"/><path d="M-.56 .8Q-.56 .18 0 .18T.56 .8Z" fill="#fff"/></g></g></symbol>
+      <symbol id="av-cm" viewBox="-1 -1 2 2" overflow="visible"><circle r="1" fill="#fff"/><circle r=".86" fill="currentColor"/><g clip-path="url(#avClip)"><circle cy="-.08" r=".24" fill="#fff"/><path d="M-.42 .8Q-.42 .28 0 .28T.42 .8Z" fill="#fff"/></g></symbol>
+      <symbol id="av-cf" viewBox="-1 -1 2 2" overflow="visible"><circle r="1" fill="#fff"/><circle r=".86" fill="currentColor"/><g clip-path="url(#avClip)"><circle cx="-.27" cy="-.2" r=".1" fill="#fff"/><circle cx=".27" cy="-.2" r=".1" fill="#fff"/><circle cy="-.08" r=".24" fill="#fff"/><path d="M-.42 .8Q-.42 .28 0 .28T.42 .8Z" fill="#fff"/></g></symbol>
+      <symbol id="av-c" viewBox="-1 -1 2 2" overflow="visible"><circle r="1" fill="#fff"/><circle r=".86" fill="currentColor"/><g clip-path="url(#avClip)"><circle cy="-.08" r=".24" fill="#fff"/><path d="M-.42 .8Q-.42 .28 0 .28T.42 .8Z" fill="#fff"/></g></symbol>
+
       <radialGradient id="glowG">
         <stop offset="0" stop-color="#FFD58A" stop-opacity=".55"/>
         <stop offset=".45" stop-color="#FFC061" stop-opacity=".18"/>
@@ -577,6 +553,7 @@ aside.panel.building .buildhead{display:flex}
     </g>
   </svg>
   <div class="marquee" id="marquee"></div>
+  <div class="avlegend" id="avLegend" aria-label="Icon colours"><span><svg viewBox="-1 -1 2 2" style="color:#2F6DB5"><use href="#av-m" x="-1" y="-1" width="2" height="2"/></svg>Man</span><span><svg viewBox="-1 -1 2 2" style="color:#D6457A"><use href="#av-f" x="-1" y="-1" width="2" height="2"/></svg>Woman</span><span><svg viewBox="-1 -1 2 2" style="color:#E39B17"><use href="#av-c" x="-1" y="-1" width="2" height="2"/></svg>Child</span><span><svg viewBox="-1 -1 2 2" style="color:#8E969C"><use href="#av-u" x="-1" y="-1" width="2" height="2"/></svg>Not set</span></div>
   <div class="scalebar" id="scalebar"></div>
   <div class="zoomlbl" id="zoomlbl"></div>
   <div class="tiltnote">3D preview. Tap 3D again to keep editing.</div>
@@ -983,7 +960,7 @@ function itemInner(it,forIcon){
     const empt=[];if(!forIcon)slots.forEach((p,i)=>{if(!seatMap[it.id+':'+i])empt.push(i)});const rsv=new Set(empt.slice(Math.max(0,empt.length-(it.reserve||0))));
     slots.forEach((p,i)=>{const g=forIcon?null:seatMap[it.id+':'+i];const cur=selSeat&&selSeat.tid===it.id&&selSeat.s===i;
       s+=chairEl(p.x,p.y,p.a,(g?' f s-'+g.side:'')+(cur?' cur':'')+(rsv.has(i)?' rsv':''),it.id,i);
-      if(g)s+=`<g class="av" data-seat="${i}" transform="translate(${f(p.x)} ${f(p.y)}) rotate(${f(-it.rot)})" style="color:${SIDE_COL[g.side]||SIDE_COL.both}"><use href="#av-${avKey(g)}" x="-.27" y="-.27" width=".54" height=".54"/></g>`;
+      if(g)s+=`<g class="av" data-seat="${i}" transform="translate(${f(p.x)} ${f(p.y)}) rotate(${f(-it.rot)})" style="color:${CAT_COL[avKey(g)]}"><use href="#av-${avKey(g)}" x="-.3" y="-.3" width=".6" height=".6"/></g>`;
       if(cur)s+=`<circle class="seatring" cx="${f(p.x)}" cy="${f(p.y)}" r=".34" style="pointer-events:none"/>`});
     if(T.shape==='round'){
       s+=`<circle class="t-top" r="${f(hw)}" fill="${linen}"/><circle r="${f(hw)}" fill="url(#sheen)"/><circle class="t-ring" r="${f(hw*.86)}"/>`;
@@ -1715,6 +1692,7 @@ const PRI={1:'Immediate family',2:'Close family',3:'VIP and relatives',4:'Friend
 function normName(n){return String(n||'').toLowerCase().replace(/\(.*?\)/g,'').replace(/[^\p{L}\p{N}' ]/gu,' ').replace(/\s+/g,' ').trim()}
 const GENDER={m:'Man',f:'Woman','':'Not set'};
 const SIDE_COL={bride:'#B96F7E',groom:'#3E5F88',both:'#9C8752'};
+const CAT_COL={m:'#2F6DB5',f:'#D6457A',cm:'#E39B17',cf:'#E39B17',c:'#E39B17',u:'#8E969C'};
 const F_NAMES='mervat soha sahar dalia rana mona marwa sohair kinda salma hana farida laila layla yasmin yasmine dina malak nada jana habiba reem mariam maryam heba rahma nadine aya lina sara sarah noha ghada amira eman iman shaimaa shimaa hoda nermeen nesma rania doaa asmaa fatma fatima aisha zeinab nahla nagwa samira samia amal afaf hala hanan inas enas manal mai may nevine nancy riham rasha sally shereen sherine suzan wafaa yara zeina salwa magda mervet soad souad fayza nabila lobna lamia azza'.split(' ');
 const M_NAMES='mohamed muhammad mohammed ahmed amr khaled khalid hisham hesham osama essam adly saman ghaly behairy kabbo ezzat khatab abouelsoud omar youssef yousef karim mostafa moustafa mahmoud ali hassan hossam tarek tareq sherif ziad seif adham wael sameh ibrahim marwan amir hany hazem walid yasser toto dad mido emad ehab ashraf ayman magdy medhat nabil nader nasser ramy ramez sayed samir tamer yehia zakaria hatem hamdy fathy gamal kamal mounir ossama anas bassem fady fawzy gaber hamada helmy'.split(' ');
 function inferGender(g){
@@ -1729,7 +1707,7 @@ function inferGender(g){
   return '';
 }
 function avKey(g){return g.kid?(g.gender==='m'?'cm':g.gender==='f'?'cf':'c'):(g.gender==='m'?'m':g.gender==='f'?'f':'u')}
-function avInline(g,cls){return `<svg class="av-i ${cls||''}" viewBox="-1 -1 2 2" aria-hidden="true" style="color:${SIDE_COL[g.side]||SIDE_COL.both}"><use href="#av-${avKey(g)}" x="-1" y="-1" width="2" height="2"/></svg>`}
+function avInline(g,cls){return `<svg class="av-i ${cls||''}" viewBox="-1 -1 2 2" aria-hidden="true" style="color:${CAT_COL[avKey(g)]}"><use href="#av-${avKey(g)}" x="-1" y="-1" width="2" height="2"/></svg>`}
 function inferGuest(g){
   const m=/^(.+?)['’]s\s+(.+)$/i.exec(g.name);
   if(m){if(!g.hh)g.hh=m[1].replace(/\s*\(.*\)\s*/,' ').trim();if(!g.rel)g.rel=m[2]}
