@@ -553,7 +553,7 @@ aside.panel.building .buildhead{display:flex}
     </g>
   </svg>
   <div class="marquee" id="marquee"></div>
-  <div class="avlegend" id="avLegend" aria-label="Icon colours"><span><svg viewBox="-1 -1 2 2" style="color:#2F6DB5"><use href="#av-m" x="-1" y="-1" width="2" height="2"/></svg>Man</span><span><svg viewBox="-1 -1 2 2" style="color:#D6457A"><use href="#av-f" x="-1" y="-1" width="2" height="2"/></svg>Woman</span><span><svg viewBox="-1 -1 2 2" style="color:#E39B17"><use href="#av-c" x="-1" y="-1" width="2" height="2"/></svg>Child</span><span><svg viewBox="-1 -1 2 2" style="color:#8E969C"><use href="#av-u" x="-1" y="-1" width="2" height="2"/></svg>Not set</span></div>
+  <div class="avlegend" id="avLegend" aria-label="Icon colours"><span><svg viewBox="-1 -1 2 2" style="color:#2F6DB5"><use href="#av-m" x="-1" y="-1" width="2" height="2"/></svg>Man</span><span><svg viewBox="-1 -1 2 2" style="color:#D6457A"><use href="#av-f" x="-1" y="-1" width="2" height="2"/></svg>Woman</span><span><svg viewBox="-1 -1 2 2" style="color:#E39B17"><use href="#av-c" x="-1" y="-1" width="2" height="2"/></svg>Child</span><span><i style="display:inline-block;width:14px;height:14px;border-radius:50%;border:3px solid #3E5F88;background:#E4ECF6"></i>Groom's table</span><span><i style="display:inline-block;width:14px;height:14px;border-radius:50%;border:3px solid #B96F7E;background:#F8E5EA"></i>Bride's table</span><span><i style="display:inline-block;width:14px;height:14px;border-radius:50%;border:3px solid #B08D57;background:#F6EEDD"></i>Both</span><span><svg viewBox="-1 -1 2 2" style="color:#8E969C"><use href="#av-u" x="-1" y="-1" width="2" height="2"/></svg>Not set</span></div>
   <div class="scalebar" id="scalebar"></div>
   <div class="zoomlbl" id="zoomlbl"></div>
   <div class="tiltnote">3D preview. Tap 3D again to keep editing.</div>
@@ -954,7 +954,9 @@ function seatNames(it,slots){
 }
 function itemInner(it,forIcon){
   const T=TYPES[it.type],w=it.w,h=it.h,hw=w/2,hh=h/2;let s='';
-  const linen=LINENS[it.color]||LINENS.ivory;
+  const tsd=T.table&&!forIcon?tableSideKey(it):'';
+  const TSC={groom:{band:'#3E5F88',tint:'#D9E6F5'},bride:{band:'#B96F7E',tint:'#F6DDE4'},mixed:{band:'#B08D57',tint:'#F1E6CF'}}[tsd];
+  const linen=TSC&&(it.color==='ivory'||!it.color)?TSC.tint:(LINENS[it.color]||LINENS.ivory);
   if(T.table){
     const slots=seatSlots(it);
     const empt=[];if(!forIcon)slots.forEach((p,i)=>{if(!seatMap[it.id+':'+i])empt.push(i)});const rsv=new Set(empt.slice(Math.max(0,empt.length-(it.reserve||0))));
@@ -963,9 +965,12 @@ function itemInner(it,forIcon){
       if(g)s+=`<g class="av" data-seat="${i}" transform="translate(${f(p.x)} ${f(p.y)}) rotate(${f(-it.rot)})" style="color:${CAT_COL[avKey(g)]}"><use href="#av-${avKey(g)}" x="-.3" y="-.3" width=".6" height=".6"/></g>`;
       if(cur)s+=`<circle class="seatring" cx="${f(p.x)}" cy="${f(p.y)}" r=".34" style="pointer-events:none"/>`});
     if(T.shape==='round'){
-      s+=`<circle class="t-top" r="${f(hw)}" fill="${linen}"/><circle r="${f(hw)}" fill="url(#sheen)"/><circle class="t-ring" r="${f(hw*.86)}"/>`;
+      s+=TSC?`<circle class="t-top" r="${f(hw)}" fill="${TSC.band}"/><circle r="${f(hw-.18)}" fill="${linen}"/>`:`<circle class="t-top" r="${f(hw)}" fill="${linen}"/>`;
+      s+=`<circle r="${f(hw)}" fill="url(#sheen)"/><circle class="t-ring" r="${f(hw*.8)}"/>`;
     }else{
-      s+=`<rect class="t-top" x="${f(-hw)}" y="${f(-hh)}" width="${f(w)}" height="${f(h)}" rx=".06" fill="${linen}"/><rect x="${f(-hw)}" y="${f(-hh)}" width="${f(w)}" height="${f(h)}" rx=".06" fill="url(#sheenL)"/>`;
+      const bw=Math.min(.16,Math.min(w,h)*.16);
+      s+=TSC?`<rect class="t-top" x="${f(-hw)}" y="${f(-hh)}" width="${f(w)}" height="${f(h)}" rx=".06" fill="${TSC.band}"/><rect x="${f(-hw+bw)}" y="${f(-hh+bw)}" width="${f(w-2*bw)}" height="${f(h-2*bw)}" rx=".04" fill="${linen}"/>`:`<rect class="t-top" x="${f(-hw)}" y="${f(-hh)}" width="${f(w)}" height="${f(h)}" rx=".06" fill="${linen}"/>`;
+      s+=`<rect x="${f(-hw)}" y="${f(-hh)}" width="${f(w)}" height="${f(h)}" rx=".06" fill="url(#sheenL)"/>`;
       if(Math.min(w,h)>.6)s+=`<rect class="t-ring" x="${f(-hw+.08)}" y="${f(-hh+.08)}" width="${f(w-.16)}" height="${f(h-.16)}" rx=".04"/>`;
     }
     if(!forIcon){s+=tableText(it);if(showNames)s+=seatNames(it,slots)}
@@ -1705,6 +1710,13 @@ function inferGender(g){
   const first=normName(g.name).split(' ')[0];
   if(F_NAMES.includes(first))return 'f';if(M_NAMES.includes(first))return 'm';
   return '';
+}
+function tableSideKey(t){
+  if(t.sideSet)return t.sideSet;
+  const c={groom:0,bride:0,both:0};guestsAt(t).forEach(g=>{if(g)c[g.side]=(c[g.side]||0)+1});
+  const n=c.groom+c.bride+c.both;if(!n)return t.side==='groom'||t.side==='bride'?t.side:'';
+  if(c.groom&&c.bride&&Math.min(c.groom,c.bride)>=Math.max(c.groom,c.bride)*.34)return 'mixed';
+  return c.groom>c.bride?'groom':c.bride>c.groom?'bride':'mixed';
 }
 function avKey(g){return g.kid?(g.gender==='m'?'cm':g.gender==='f'?'cf':'c'):(g.gender==='m'?'m':g.gender==='f'?'f':'u')}
 function avInline(g,cls){return `<svg class="av-i ${cls||''}" viewBox="-1 -1 2 2" aria-hidden="true" style="color:${CAT_COL[avKey(g)]}"><use href="#av-${avKey(g)}" x="-1" y="-1" width="2" height="2"/></svg>`}
@@ -2691,7 +2703,7 @@ function renderEdit(b){
       (T.rows?`<p class="note">${it.seats} chairs. Resize the block to change the count.</p>`:'');
     const linen=T.table?`<h3>Linen</h3><div class="swatches">${Object.entries(LINENS).map(([k,v])=>`<button class="sw" data-linen="${k}" title="${k}" aria-label="${k} linen" aria-pressed="${it.color===k}" style="background:${v}"></button>`).join('')}</div>`:'';
     b.innerHTML=`<h2>${T.table?esc(tableName(it)):esc(T.name)}</h2>
-      ${T.table?`<div class="two"><div class="row"><label for="fNum">Number</label><input id="fNum" type="text" value="${esc(tableNo(it))}"></div><div class="row" style="visibility:hidden"></div></div>`:''}
+      ${T.table?`<div class="two"><div class="row"><label for="fNum">Number</label><input id="fNum" type="text" value="${esc(tableNo(it))}"></div><div class="row"><label for="fSide">Side</label><select id="fSide"><option value="">Automatic</option><option value="groom" ${it.sideSet==='groom'?'selected':''}>Groom</option><option value="bride" ${it.sideSet==='bride'?'selected':''}>Bride</option><option value="mixed" ${it.sideSet==='mixed'?'selected':''}>Both families</option></select></div></div>`:''}
       <div class="row"><label for="fTitle">${T.table?'Table name':'Label'}</label><input id="fTitle" type="text" value="${esc(it.title)}" placeholder="${T.table?"e.g. Bride's family":T.name}"></div>
       ${T.table?`<h3>Shape</h3><div class="shapes">${SHAPES.map(([k,n,key])=>`<button class="shp" data-shape2="${k}" aria-pressed="${shapeOf(it)===k}" title="${n}">${icon(key)}${n}</button>`).join('')}</div><p class="cap" style="margin:0 0 6px">Guests keep their order around the table. The size adjusts to fit everyone.</p>`:''}
       ${seatsFld}${seatBlock}
@@ -2720,6 +2732,7 @@ function renderEdit(b){
     b.querySelectorAll('.seats li').forEach(li=>li.addEventListener('click',e=>{if(e.target.closest('select,button'))return;selSeat={tid:it.id,s:+li.dataset.i};rerenderItem(it);renderOverlay();b.querySelectorAll('.seats li').forEach(x=>x.classList.toggle('cur',x===li));openSeatCard(it.id,+li.dataset.i)}));
     $('#fLock').onchange=e=>mutate(()=>{it.locked=e.target.checked});
     if($('#eAddChair'))$('#eAddChair').onclick=()=>{let at;mutate(()=>{at=insertChairAfter(it,it.seats-1)});selSeat={tid:it.id,s:at};rerenderItem(it);renderOverlay();openSeatCard(it.id,at)};
+    if($('#fSide'))$('#fSide').onchange=e=>mutate(()=>{it.sideSet=e.target.value;if(e.target.value==='groom'||e.target.value==='bride')it.side=e.target.value});
     b.querySelectorAll('[data-shape2]').forEach(x=>x.onclick=()=>{if(it.locked)return toast('Unlock it first.');if(shapeOf(it)===x.dataset.shape2)return;changeShape([it],x.dataset.shape2)});
     $('#eDup').onclick=duplicateSel;$('#eDel').onclick=deleteSel;
     $('#eFront').onclick=()=>mutate(()=>{S.items=S.items.filter(i=>i!==it);S.items.push(it)});
