@@ -130,9 +130,13 @@ button.chip{cursor:pointer}
 .tnum{font-family:"Jost",sans-serif;font-weight:500;text-anchor:middle;dominant-baseline:central;fill:var(--gold-deep);letter-spacing:.02em}
 .ttl{font-family:"Cormorant Garamond",serif;font-weight:600;font-style:italic;text-anchor:middle;dominant-baseline:central;fill:var(--title)}
 .tocc{font-family:"Jost",sans-serif;text-anchor:middle;dominant-baseline:central;fill:#6F6250}
-.nm{font-family:"Jost",sans-serif;font-weight:500;fill:var(--nm);dominant-baseline:central}
-.nm.s-bride{fill:color-mix(in srgb,var(--bride) 70%,var(--nm))}
-.nm.s-groom{fill:color-mix(in srgb,var(--groom) 70%,var(--nm))}
+.nm{font-family:"Jost",sans-serif;font-weight:600;fill:var(--nm);dominant-baseline:central;paint-order:stroke fill;stroke:var(--nm-halo,rgba(255,255,255,.94));stroke-width:.09px;vector-effect:none;stroke-linejoin:round}
+#svg text.nm{vector-effect:none!important;stroke-width:.09px!important}
+#svg .gd,#svg .gdt{vector-effect:none!important}
+[data-theme="dark"] .nm{--nm-halo:rgba(12,20,18,.9)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .nm{--nm-halo:rgba(12,20,18,.9)}}
+.nm.s-bride{fill:color-mix(in srgb,var(--bride) 85%,var(--nm))}
+.nm.s-groom{fill:color-mix(in srgb,var(--groom) 85%,var(--nm))}
 .il{font-size:.55px;font-weight:600;text-anchor:middle;dominant-baseline:central;fill:var(--ink)}
 .il.light{fill:#F6F0E4}
 .il.halo{paint-order:stroke;stroke:#fff;stroke-width:3px;vector-effect:none;fill:#1B2421}
@@ -143,6 +147,8 @@ button.chip{cursor:pointer}
 .screenb{fill:var(--screen);stroke:#000;stroke-width:1}
 .kosha-b{fill:var(--kosha);stroke:var(--kosha-edge);stroke-width:1.2}
 .kosha-s{fill:#C9A27C;stroke:var(--kosha-edge);stroke-width:1}
+.kosha-t{fill:#FFFDF8;stroke:#B08D57;stroke-width:1.2}
+.kosha-g{fill:none;stroke:#E8A6B8;stroke-width:3;stroke-linecap:round;stroke-dasharray:1 4}
 .stepb{fill:color-mix(in srgb,var(--kosha) 85%,#000);stroke:var(--kosha-edge);stroke-width:.8}
 .buffetb{fill:#EDE7DA;stroke:#8C8068;stroke-width:1}
 .dish{fill:#C3C8CC;stroke:#6F767C;stroke-width:.7}
@@ -307,7 +313,10 @@ textarea{width:100%;min-height:90px;border:1px solid var(--line);border-radius:9
 /* 3D view */
 .v3d{position:absolute;inset:0;z-index:30;display:none;background:#0c1114}
 .v3d.open{display:block}
-.v3d canvas{position:absolute;inset:0;width:100%;height:100%;touch-action:none;display:block;outline:none}
+.v3d canvas{position:absolute;inset:0;width:100%;height:100%;touch-action:none;display:block;outline:none;transition:filter .4s}
+.v3d.cine canvas{filter:saturate(1.32) contrast(1.1) brightness(1.03)}
+.v3d.cine .v3d-vig{background:radial-gradient(ellipse at 50% 42%,rgba(255,190,120,.06) 0%,rgba(0,0,0,0) 50%,rgba(8,18,30,.38) 100%)}
+.v3d.cine::after{content:"";position:absolute;inset:0;pointer-events:none;z-index:1;background:linear-gradient(180deg,rgba(30,90,140,.10),rgba(0,0,0,0) 40%,rgba(255,150,80,.10));mix-blend-mode:soft-light}
 .v3d-bar{position:absolute;top:10px;left:10px;right:10px;display:flex;gap:8px;flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;z-index:2;pointer-events:none}
 .v3d-bar::-webkit-scrollbar{display:none}
 .v3d-bar .tgroup{pointer-events:auto;background:rgba(12,22,20,.72);border-color:rgba(176,141,87,.45);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
@@ -335,6 +344,7 @@ textarea{width:100%;min-height:90px;border:1px solid var(--line);border-radius:9
 .dot2{width:10px;height:10px;border-radius:50%;display:inline-block;border:1px solid rgba(0,0,0,.12)}
 .gd{stroke-width:.06;stroke-dasharray:.18 .12;fill:none}
 .gd-ok{stroke:#2E8B57;fill:#2E8B57}.gd-warn{stroke:#D08A1A;fill:#D08A1A}.gd-bad{stroke:#C0392B;fill:#C0392B}
+.gd,.gdt{vector-effect:none}
 .gdt{font:600 .4px "Jost",system-ui,sans-serif;paint-order:stroke;stroke:#fff;stroke-width:.08;stroke-dasharray:none}
 .ideas li.tip{border-left:3px solid var(--gold);padding-left:8px}
 /* kosha style picker */
@@ -757,18 +767,19 @@ aside.panel.building .buildhead{display:flex}
     </g>
   </svg>
   <div class="marquee" id="marquee"></div>
-  <div class="avlegend" id="avLegend" aria-label="Icon colours"><span style="opacity:.55;font-size:11px">Version 30 Sep, organizer + décor</span><span><svg viewBox="-1 -1 2 2" style="color:#2F6DB5"><use href="#av-m" x="-1" y="-1" width="2" height="2"/></svg>Man</span><span><svg viewBox="-1 -1 2 2" style="color:#D6457A"><use href="#av-f" x="-1" y="-1" width="2" height="2"/></svg>Woman</span><span><svg viewBox="-1 -1 2 2" style="color:#E39B17"><use href="#av-c" x="-1" y="-1" width="2" height="2"/></svg>Child</span><span><i style="display:inline-block;width:14px;height:14px;border-radius:50%;border:3px solid #3E5F88;background:#E4ECF6"></i>Groom's table</span><span><i style="display:inline-block;width:14px;height:14px;border-radius:50%;border:3px solid #B96F7E;background:#F8E5EA"></i>Bride's table</span><span><i style="display:inline-block;width:14px;height:14px;border-radius:50%;border:3px solid #B08D57;background:#F6EEDD"></i>Both</span><span><svg viewBox="-1 -1 2 2" style="color:#8E969C"><use href="#av-u" x="-1" y="-1" width="2" height="2"/></svg>Not set</span></div>
+  <div class="avlegend" id="avLegend" aria-label="Icon colours"><span style="opacity:.55;font-size:11px">Version 30 Sep, sweetheart table</span><span><svg viewBox="-1 -1 2 2" style="color:#2F6DB5"><use href="#av-m" x="-1" y="-1" width="2" height="2"/></svg>Man</span><span><svg viewBox="-1 -1 2 2" style="color:#D6457A"><use href="#av-f" x="-1" y="-1" width="2" height="2"/></svg>Woman</span><span><svg viewBox="-1 -1 2 2" style="color:#E39B17"><use href="#av-c" x="-1" y="-1" width="2" height="2"/></svg>Child</span><span><i style="display:inline-block;width:14px;height:14px;border-radius:50%;border:3px solid #3E5F88;background:#E4ECF6"></i>Groom's table</span><span><i style="display:inline-block;width:14px;height:14px;border-radius:50%;border:3px solid #B96F7E;background:#F8E5EA"></i>Bride's table</span><span><i style="display:inline-block;width:14px;height:14px;border-radius:50%;border:3px solid #B08D57;background:#F6EEDD"></i>Both</span><span><svg viewBox="-1 -1 2 2" style="color:#8E969C"><use href="#av-u" x="-1" y="-1" width="2" height="2"/></svg>Not set</span></div>
   <div class="scalebar" id="scalebar"></div>
   <div class="zoomlbl" id="zoomlbl"></div>
   <div class="tiltnote">3D preview. Tap 3D again to keep editing.</div>
   <div class="placing" id="placing"><span>Tap a seat for <b id="placingName"></b></span><button id="placingCancel">Cancel</button></div>
   <div class="ghost" id="ghost"></div>
-  <div class="v3d" id="v3d" aria-label="3D view">
+  <div class="v3d cine" id="v3d" aria-label="3D view">
     <canvas id="v3dCanvas" tabindex="0"></canvas>
     <div class="v3d-bar">
       <div class="tgroup"><button class="tb" id="v3dClose" title="Back to the 2D plan (Esc)">← 2D plan</button><button class="tb" data-v3="hold" aria-pressed="false" title="Freeze the camera so your finger reveals names instead of moving the view">✋ Hold view</button></div>
       <div class="tgroup"><button class="tb" data-v3view="overview">Overview</button><button class="tb" data-v3view="entrance">From the entrance</button><button class="tb" data-v3view="couple">Couple's view</button><button class="tb" data-v3view="top">Top</button></div>
       <div class="tgroup"><button class="tb" id="v3dDay">☀ Day</button><button class="tb" data-v3="people" aria-pressed="true">Guests</button><button class="tb" data-v3="names" aria-pressed="true">Names</button><button class="tb" data-v3="auto" aria-pressed="false">Auto-rotate</button></div>
+      <div class="tgroup"><button class="tb" data-v3="mingle" aria-pressed="false" title="Guests get up and socialise around the hall">Mingle</button><button class="tb" data-v3="cine" aria-pressed="true" title="Rich cinematic colour grade">Cinematic</button></div>
     </div>
     <div class="v3d-flare" id="v3dFlare" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></div>
     <div class="v3d-vig" aria-hidden="true"></div>
@@ -1060,6 +1071,54 @@ const SUPABASE_ANON_KEY = "sb_publishable_Lz--X6lvwPcGmTzmx0_tnw_tixfRxqo";
       if (ch0)
         S.floor.rows[cy] = row.join("");
     }
+  }
+  function retileTolip(oldW, oldH) {
+    const W = S.venue.w, H = S.venue.h, main = mainFloorChar();
+    S.floor = makeFloor(main);
+    fillRect(0, 0, W, 0.5, "s");
+    fillRect(0, H - 0.5, W, H, "s");
+    fillRect(0, 0, 0.5, H, "s");
+    fillRect(W - 0.5, 0, W, H, "s");
+    const nb = Math.max(2, Math.round(W / 5));
+    for (let k = 0; k < nb; k++) {
+      const cx = W * (k + 0.5) / nb;
+      fillRect(cx - 0.5, 1, cx + 0.5, H - 1, "m");
+    }
+    const doors = S.doors;
+    S.walls = [];
+    S.doors = [];
+    const wl = (x1, y1, x2, y2, kind) => {
+      const w = { id: "w" + S.next++, x1, y1, x2, y2, kind };
+      S.walls.push(w);
+      return w;
+    };
+    wl(0, 0, W, 0, "rail");
+    const south = wl(W, H, 0, H, "rail");
+    wl(0, H, 0, 0, "glass");
+    const east = wl(W, 0, W, H, "facade");
+    for (const x of [W / 2 - Math.min(5.2, W * 0.26), W / 2 + Math.min(5.2, W * 0.26)])
+      S.doors.push({ id: "d" + S.next++, wall: south.id, t: (W - x) / W, wd: 2.6, kind: "opening" });
+    S.doors.push({ id: "d" + S.next++, wall: east.id, t: Math.max(0.1, (H - 3.2) / H), wd: 2.4, kind: "door" });
+    const dx = W - oldW, dy = H - oldH;
+    for (const it of S.items) {
+      if (TYPES[it.type].table)
+        continue;
+      if (it.x > oldW - 0.01)
+        it.x += dx;
+      else if (it.x > oldW * 0.72)
+        it.x += dx;
+      else if (it.x > oldW * 0.28)
+        it.x += dx / 2;
+      if (it.y > oldH - 0.01)
+        it.y += dy;
+      else if (it.y > oldH * 0.72)
+        it.y += dy;
+    }
+    for (const t of S.items.filter((i) => TYPES[i.type].table)) {
+      t.x = Math.min(t.x, W - 1);
+      t.y = Math.min(t.y, H - 1);
+    }
+    settleTables();
   }
   function resizeFloor() {
     const { cols, rows } = fDims(), full = S.floor.rows.every((r) => !r.includes(".")), pad = full ? "d" : ".";
@@ -1672,8 +1731,13 @@ const SUPABASE_ANON_KEY = "sb_publishable_Lz--X6lvwPcGmTzmx0_tnw_tixfRxqo";
       case "kosha": {
         s += '<rect class="kosha-b" x="'.concat(f(-hw), '" y="').concat(f(-hh), '" width="').concat(f(w), '" height="').concat(f(h), '" rx=".25"/>');
         s += '<rect class="stepb" x="'.concat(f(-hw * 0.7), '" y="').concat(f(hh - 0.45), '" width="').concat(f(w * 0.7), '" height=".45" rx=".08"/>');
-        const sw2 = Math.min(w * 0.5, 3.2);
-        s += '<rect class="kosha-s" x="'.concat(f(-sw2 / 2), '" y="').concat(f(-hh + 0.55), '" width="').concat(f(sw2), '" height=".85" rx=".3"/>');
+        if ((it.kstyle || "sofa") === "desk") {
+          const tw = Math.min(w - 1.6, 2.4);
+          s += '<circle class="kosha-s" cx="-.45" cy="'.concat(f(-hh + 0.95), '" r=".3"/><circle class="kosha-s" cx=".45" cy="').concat(f(-hh + 0.95), '" r=".3"/><rect class="kosha-t" x="').concat(f(-tw / 2), '" y="').concat(f(-hh + 1.3), '" width="').concat(f(tw), '" height=".8" rx=".08"/><path class="kosha-g" d="M').concat(f(-tw / 2), " ").concat(f(-hh + 2.1), "Q0 ").concat(f(-hh + 2.45), " ").concat(f(tw / 2), " ").concat(f(-hh + 2.1), '"/>');
+        } else {
+          const sw2 = Math.min(w * 0.5, 3.2);
+          s += '<rect class="kosha-s" x="'.concat(f(-sw2 / 2), '" y="').concat(f(-hh + 0.55), '" width="').concat(f(sw2), '" height=".85" rx=".3"/>');
+        }
         const n = Math.max(4, Math.floor(w / 0.45));
         for (let i = 0; i < n; i++)
           s += '<circle class="flower" cx="'.concat(f(-hw + 0.25 + (w - 0.5) * i / (n - 1)), '" cy="').concat(f(-hh + 0.22), '" r=".2"/>');
@@ -3876,7 +3940,7 @@ const SUPABASE_ANON_KEY = "sb_publishable_Lz--X6lvwPcGmTzmx0_tnw_tixfRxqo";
   function roundFor(n) {
     return n <= 6 ? 1.2 : n <= 8 ? 1.5 : n <= 10 ? 1.8 : n <= 12 ? 2.2 : Math.ceil(n * 0.55 / Math.PI * 10) / 10 + 0.1;
   }
-  const KSTYLES = [["sofa", "Classic velvet sofa", "Loveseat under a rose arch"], ["thrones", "Royal thrones", "Two gold high-back thrones"], ["florawall", "Flower wall", "Loveseat before a full rose wall"], ["canopy", "Draped canopy", "Four-post chiffon canopy, sofa"], ["gazebo", "Crystal gazebo", "Round dome with crystal strands, two chairs"], ["mirror", "Mirror stage", "Mirror floor, LED backdrop, modern sofa"], ["majlis", "Oriental majlis", "Floor cushions, lanterns, arabesque arch"], ["boho", "Boho pampas", "Macram\xE9 arch, pampas, rattan chairs"], ["rustic", "Rustic wood arch", "Timber arch, greenery, wooden bench"], ["swing", "Floral swing", "Hanging swing seat in a flower frame"]];
+  const KSTYLES = [["desk", "Sweetheart table", "The couple at a dressed table facing the guests"], ["sofa", "Classic velvet sofa", "Loveseat under a rose arch"], ["thrones", "Royal thrones", "Two gold high-back thrones"], ["florawall", "Flower wall", "Loveseat before a full rose wall"], ["canopy", "Draped canopy", "Four-post chiffon canopy, sofa"], ["gazebo", "Crystal gazebo", "Round dome with crystal strands, two chairs"], ["mirror", "Mirror stage", "Mirror floor, LED backdrop, modern sofa"], ["majlis", "Oriental majlis", "Floor cushions, lanterns, arabesque arch"], ["boho", "Boho pampas", "Macram\xE9 arch, pampas, rattan chairs"], ["rustic", "Rustic wood arch", "Timber arch, greenery, wooden bench"], ["swing", "Floral swing", "Hanging swing seat in a flower frame"]];
   function coupleNames() {
     return S.venue.couple || "Hossam & Salma";
   }
@@ -4127,9 +4191,12 @@ const SUPABASE_ANON_KEY = "sb_publishable_Lz--X6lvwPcGmTzmx0_tnw_tixfRxqo";
         t.y = y;
         t.rot = rt;
       }
+      settleTables();
       return;
     }
-    return arrangeTablesOld();
+    const out = arrangeTablesOld();
+    settleTables();
+    return out;
   }
   function arrangeTablesOld() {
     const tabs = S.items.filter((i) => TYPES[i.type].table && !i.locked && !isCoupleTable(i));
@@ -4229,6 +4296,19 @@ const SUPABASE_ANON_KEY = "sb_publishable_Lz--X6lvwPcGmTzmx0_tnw_tixfRxqo";
     const tabs = S.items.filter((i) => TYPES[i.type].table && !isCoupleTable(i));
     if (!tabs.length)
       return out;
+    {
+      const bad = tabs.filter((t) => !t.locked && !canPlace(t));
+      if (bad.length)
+        out.unshift({ t: "".concat(bad.length, " ").concat(bad.length > 1 ? "tables overlap" : "table overlaps", " another table or object. Each can slide to the nearest free spot with a clear walkway, or the whole room can be re-planned properly."), b: "Slide free", f: () => {
+          const pre = snapshot(), prev = posMap();
+          const un = settleTables();
+          pushUndo(pre);
+          renderAll();
+          renderPanel();
+          animateFrom(prev);
+          toast(un.length ? "".concat(un.length, " still need room. Try Re-plan.") : "Every table now has its own space.");
+        } }, { t: "Or let the organizer re-plan the whole room: families front, colleagues at the back, no overlaps.", b: "Re-plan room", f: () => applyOrganizer() });
+    }
     const F = coupleFocus(), A = F.k ? { x: F.k.x, y: F.k.y } : { x: F.x, y: F.y }, fr = rad(F.rot || 0), U = (t) => (t.x - A.x) * Math.cos(fr) + (t.y - A.y) * Math.sin(fr), D = (t) => Math.hypot(t.x - A.x, t.y - A.y);
     const nm = coupleNames().split(/\s*&\s*/), gN = nm[0] || "the groom", bN = nm[1] || "the bride";
     const wrong = tabs.filter((t) => {
@@ -5024,6 +5104,7 @@ const SUPABASE_ANON_KEY = "sb_publishable_Lz--X6lvwPcGmTzmx0_tnw_tixfRxqo";
         }
       }
     }
+    placed = res.filter((r) => placedSet.has(r[0]) && canPlace(r[0])).length;
     let occl = 0, angSpread = 0;
     const pts = res.map(([t, x, y]) => ({ t, x, y, r: (isCircle(t) ? t.w : Math.max(t.w, t.h)) / 2 + 0.35, d: Math.hypot(x - A.x, y - A.y), w: 6 - Math.min(5, tablePri(t)) }));
     for (const a of pts) {
@@ -5132,19 +5213,39 @@ const SUPABASE_ANON_KEY = "sb_publishable_Lz--X6lvwPcGmTzmx0_tnw_tixfRxqo";
         $("#sbStatus").textContent = "There are no tables to arrange yet.";
         return;
       }
+      const prevPos = posMap();
       for (const [t, x, y, rt] of r.res) {
         t.x = x;
         t.y = y;
         t.rot = rt;
       }
+      let unfit = settleTables();
+      r.placed = r.total - unfit.length;
+      let swapped = "";
+      if (unfit.length) {
+        const o = organize();
+        if (o && o.placed === o.total) {
+          const want = (LSTYLES.find((x) => x[0] === style) || [0, style])[1];
+          for (const [t, x, y, rt] of o.res) {
+            t.x = x;
+            t.y = y;
+            t.rot = rt;
+          }
+          unfit = settleTables();
+          swapped = "".concat(want, " could only fit ").concat(r.placed, " of ").concat(r.total, " tables here. To keep anything from overlapping, the professional organizer layout is used instead. For ").concat(want, ", try Compact spacing, round tables or fewer tables.");
+          r = o;
+          r.placed = r.total - unfit.length;
+        }
+      }
       pushUndo(pre);
       renderAll();
       renderPanel();
+      animateFrom(prevPos);
       stage.classList.remove("busy");
       const name = (LSTYLES.find((x) => x[0] === r.style) || [0, "the professional organizer"])[1];
       const gap = (S.venue.aisle + r.extra).toFixed(1);
       const msg = r.placed === r.total ? "<b>".concat(style === "smart" ? "Smart pick chose " + name : name).concat(["chevron", "diamond"].includes(r.style) ? ", ".concat(r.style === "diamond" ? 45 : LO.ang, "\xB0") : "", ".</b> All ").concat(r.total, " tables placed around ").concat(esc(coupleNames()), ", who stay exactly where they are. Both families up front and side by side, friends behind them, colleagues together at the back, groom's side left and bride's right").concat(LO.face ? ", long tables pointed at them so both rows see them by turning left or right, round tables turned so the head of each family faces them" : "", ", ").concat(r.occl ? "a few partly blocked views" : "clear sightlines from every table", ", ").concat(r.tight ? "".concat(r.tight, " table").concat(r.tight > 1 ? "s" : "", " tighter than ideal near the floor edge or an object") : "generous space around the dance floor, bar, buffet and every other object", ", at least ").concat(gap, " m between chair backs. Undo goes back.") : "<b>".concat(name, ":</b> ").concat(r.placed, " of ").concat(r.total, " tables fit. Try Compact spacing, turn off the center aisle, or make the floor bigger in Build mode.");
-      $("#sbStatus").innerHTML = msg;
+      $("#sbStatus").innerHTML = swapped ? "<b>".concat(esc(swapped.split(". ")[0]), ".</b> ").concat(esc(swapped.split(". ").slice(1).join(". "))) : msg;
       renderStyleBar(true);
       logAct("".concat(style === "smart" ? "Smart pick: " + name : name, " layout applied, ").concat(r.placed, " of ").concat(r.total, " tables placed."));
     }, 30);
@@ -6716,11 +6817,13 @@ const SUPABASE_ANON_KEY = "sb_publishable_Lz--X6lvwPcGmTzmx0_tnw_tixfRxqo";
     const th2 = theme();
     const cur = S.venue.theme && S.venue.theme.preset;
     const fm = mainFloorChar();
-    return '<h3 class="hh">'.concat(ic("sparkles"), 'D\xE9cor &amp; theme</h3>\n  <div class="thgrid">').concat(THEMES.map(([k, n, t]) => '<button class="thc'.concat(cur === k ? " on" : "", '" data-th="').concat(k, '"><span class="thsw">').concat([colorOf(t.linen), colorOf(t.runner) || "#C9A45F", FPAL[t.flowers][0], FPAL[t.flowers][1], ACCENTS[t.accent][1]].map((c) => '<i style="background:'.concat(c, '"></i>')).join(""), "</span><b>").concat(n, "</b></button>")).join(""), '</div>\n  <div class="dlab">Floor finish</div><div class="chips">').concat(["t", "m", "s", "p", "d", "c"].map((ch) => '<button class="chip2'.concat(fm === ch ? " on" : "", '" data-fl="').concat(ch, '">').concat(MATS[ch].name, "</button>")).join(""), '</div>\n  <div class="dlab">Floor tint</div><div class="sws">').concat(Object.entries(TINTS).map(([c, n]) => sw(c, th2.floorTint.toUpperCase() === c, n, 'data-tint="'.concat(c, '"'))).join(""), '</div>\n  <div class="dlab">Tablecloths</div><div class="sws">').concat(sw("#FDFBF6", !th2.linen, "Side colours", 'data-lin=""')).concat(Object.keys(LINENS).map((k) => sw(k, th2.linen === k, k[0].toUpperCase() + k.slice(1), 'data-lin="'.concat(k, '"'))).join(""), '</div>\n  <div class="dlab">Runners &amp; sashes</div><div class="sws">').concat(sw("linear-gradient(90deg,#3E5F88 50%,#B96F7E 50%)", th2.runner === "side", "Side colours", 'data-run="side"').replace("--c:linear", "background:linear")).concat(["gold", "#D8A39A", "#E3CFA5", "white", "black", "navy", "burgundy", "#6E8F5A"].map((v) => sw(v, th2.runner === v, v, 'data-run="'.concat(v, '"'))).join(""), '</div>\n  <div class="dlab">Chairs</div><div class="chips">').concat(Object.entries(CHAIRS).map(([k, n]) => '<button class="chip2'.concat(th2.chair === k ? " on" : "", '" data-ch="').concat(k, '">').concat(n, "</button>")).join(""), '</div>\n  <div class="dlab">Metal accents</div><div class="chips">').concat(Object.entries(ACCENTS).map(([k, [n, c]]) => '<button class="chip2'.concat(th2.accent === k ? " on" : "", '" data-ac="').concat(k, '"><i class="dot2" style="background:').concat(c, '"></i>').concat(n, "</button>")).join(""), '</div>\n  <div class="dlab">Flowers</div><div class="chips">').concat(Object.entries(FPAL).map(([k, c]) => '<button class="chip2 fl'.concat(th2.flowers === k ? " on" : "", '" data-fp="').concat(k, '">').concat(c.slice(0, 4).map((x) => '<i class="dot2" style="background:'.concat(x, '"></i>')).join("")).concat(FPAL_N[k], "</button>")).join(""), '</div>\n  <div class="dlab">Centrepiece size</div><div class="chips">').concat([["auto", "By table size"], ["low", "Low posy"], ["medium", "Medium"], ["tall", "Tall stand"]].map(([k, n]) => '<button class="chip2'.concat(th2.fsize === k ? " on" : "", '" data-fs="').concat(k, '">').concat(n, "</button>")).join(""), '</div>\n  <div class="dlab">Lighting</div><div class="chips">').concat(Object.entries(LIGHTS).map(([k, n]) => '<button class="chip2'.concat(th2.lights === k ? " on" : "", '" data-li="').concat(k, '">').concat(n, "</button>")).join(""), '</div>\n  <div class="dlab">Kosha drapes</div><div class="sws">').concat(Object.entries(DRAPES).map(([c, n]) => sw(c, th2.drape === c, n, 'data-dr="'.concat(c, '"'))).join(""), "</div>");
+    return '<h3 class="hh">'.concat(ic("sparkles"), 'D\xE9cor &amp; theme</h3>\n  <div class="thgrid">').concat(THEMES.map(([k, n, t]) => '<button class="thc'.concat(cur === k ? " on" : "", '" data-dth="').concat(k, '"><span class="thsw">').concat([colorOf(t.linen), colorOf(t.runner) || "#C9A45F", FPAL[t.flowers][0], FPAL[t.flowers][1], ACCENTS[t.accent][1]].map((c) => '<i style="background:'.concat(c, '"></i>')).join(""), "</span><b>").concat(n, "</b></button>")).join(""), '</div>\n  <div class="dlab">Floor finish</div><div class="chips">').concat(["t", "m", "s", "p", "d", "c"].map((ch) => '<button class="chip2'.concat(fm === ch ? " on" : "", '" data-fl="').concat(ch, '">').concat(MATS[ch].name, "</button>")).join(""), '</div>\n  <div class="dlab">Floor tint</div><div class="sws">').concat(Object.entries(TINTS).map(([c, n]) => sw(c, th2.floorTint.toUpperCase() === c, n, 'data-tint="'.concat(c, '"'))).join(""), '</div>\n  <div class="dlab">Tablecloths</div><div class="sws">').concat(sw("#FDFBF6", !th2.linen, "Side colours", 'data-lin=""')).concat(Object.keys(LINENS).map((k) => sw(k, th2.linen === k, k[0].toUpperCase() + k.slice(1), 'data-lin="'.concat(k, '"'))).join(""), '</div>\n  <div class="dlab">Runners &amp; sashes</div><div class="sws">').concat(sw("linear-gradient(90deg,#3E5F88 50%,#B96F7E 50%)", th2.runner === "side", "Side colours", 'data-run="side"').replace("--c:linear", "background:linear")).concat(["gold", "#D8A39A", "#E3CFA5", "white", "black", "navy", "burgundy", "#6E8F5A"].map((v) => sw(v, th2.runner === v, v, 'data-run="'.concat(v, '"'))).join(""), '</div>\n  <div class="dlab">Chairs</div><div class="chips">').concat(Object.entries(CHAIRS).map(([k, n]) => '<button class="chip2'.concat(th2.chair === k ? " on" : "", '" data-ch="').concat(k, '">').concat(n, "</button>")).join(""), '</div>\n  <div class="dlab">Metal accents</div><div class="chips">').concat(Object.entries(ACCENTS).map(([k, [n, c]]) => '<button class="chip2'.concat(th2.accent === k ? " on" : "", '" data-ac="').concat(k, '"><i class="dot2" style="background:').concat(c, '"></i>').concat(n, "</button>")).join(""), '</div>\n  <div class="dlab">Flowers</div><div class="chips">').concat(Object.entries(FPAL).map(([k, c]) => '<button class="chip2 fl'.concat(th2.flowers === k ? " on" : "", '" data-fp="').concat(k, '">').concat(c.slice(0, 4).map((x) => '<i class="dot2" style="background:'.concat(x, '"></i>')).join("")).concat(FPAL_N[k], "</button>")).join(""), '</div>\n  <div class="dlab">Centrepiece size</div><div class="chips">').concat([["auto", "By table size"], ["low", "Low posy"], ["medium", "Medium"], ["tall", "Tall stand"]].map(([k, n]) => '<button class="chip2'.concat(th2.fsize === k ? " on" : "", '" data-fs="').concat(k, '">').concat(n, "</button>")).join(""), '</div>\n  <div class="dlab">Lighting</div><div class="chips">').concat(Object.entries(LIGHTS).map(([k, n]) => '<button class="chip2'.concat(th2.lights === k ? " on" : "", '" data-li="').concat(k, '">').concat(n, "</button>")).join(""), '</div>\n  <div class="dlab">Kosha drapes</div><div class="sws">').concat(Object.entries(DRAPES).map(([c, n]) => sw(c, th2.drape === c, n, 'data-dr="'.concat(c, '"'))).join(""), "</div>");
   }
   function bindDecor(b) {
-    b.querySelectorAll("[data-th]").forEach((x) => x.onclick = () => {
-      const t = THEMES.find((q) => q[0] === x.dataset.th);
+    b.querySelectorAll("[data-dth]").forEach((x) => x.onclick = () => {
+      const t = THEMES.find((q) => q[0] === x.dataset.dth);
+      if (!t)
+        return;
       setTheme(Object.assign({}, t[2], { preset: t[0] }), "".concat(t[1], " applied: linens, runners, chairs, flowers, metals and lighting."));
     });
     b.querySelectorAll("[data-fl]").forEach((x) => x.onclick = () => setFloorFinish(x.dataset.fl));
@@ -6740,6 +6843,35 @@ const SUPABASE_ANON_KEY = "sb_publishable_Lz--X6lvwPcGmTzmx0_tnw_tixfRxqo";
     if (mode !== "build" && tab === "venue") {
       b.insertAdjacentHTML("afterbegin", '<div class="decor">'.concat(decorHTML(), "</div>"));
       bindDecor(b);
+    }
+    if (mode !== "build" && tab === "edit" && sel.size === 1) {
+      const it = byId([...sel][0]);
+      if (it && !TYPES[it.type].table) {
+        const extra = it.type === "tower" ? '<div class="row"><label for="fHt">Height, m</label><input id="fHt" type="number" min="6" max="160" step="1" value="'.concat(Math.round(it.ht || (it.w * it.h > 700 ? 40 : 50)), '"></div>') : it.type === "sunken" ? '<div class="two"><div class="row"><label for="fDp">Drop, m</label><input id="fDp" type="number" min=".3" max="3" step=".1" value="'.concat(it.depth || 1, '"></div><div class="row"><label for="fSt">Steps</label><input id="fSt" type="number" min="3" max="20" step="1" value="').concat(it.steps || 10, '"></div></div>') : "";
+        b.insertAdjacentHTML("beforeend", '<h3 class="hh">'.concat(ic("shrink"), "Size &amp; scale</h3>").concat(extra, '<div class="chips">').concat([80, 90, 110, 125].map((p) => '<button class="chip2" data-scl="'.concat(p, '">').concat(p < 100 ? "\u2212" : "+").concat(Math.abs(p - 100), "%</button>")).join(""), "</div>"));
+        if ($("#fHt"))
+          $("#fHt").onchange = (e) => mutate(() => {
+            it.ht = Math.max(6, Math.min(160, +e.target.value || 40));
+          });
+        if ($("#fDp"))
+          $("#fDp").onchange = (e) => mutate(() => {
+            it.depth = Math.max(0.3, Math.min(3, +e.target.value || 1));
+          });
+        if ($("#fSt"))
+          $("#fSt").onchange = (e) => mutate(() => {
+            it.steps = Math.max(3, Math.min(20, Math.round(+e.target.value || 10)));
+          });
+        b.querySelectorAll("[data-scl]").forEach((x) => x.onclick = () => mutate(() => {
+          const k = +x.dataset.scl / 100, T = TYPES[it.type];
+          it.w = Math.max(T.min || 0.3, Math.min(T.max || 200, +(it.w * k).toFixed(2)));
+          if (!T.uniform)
+            it.h = Math.max(T.min || 0.3, Math.min(T.max || 200, +(it.h * k).toFixed(2)));
+          else
+            it.h = it.w;
+          if (it.ht)
+            it.ht = +(it.ht * k).toFixed(1);
+        }));
+      }
     }
     if (mode !== "build" && tab === "edit" && sel.size === 1) {
       const it = byId([...sel][0]);
@@ -6817,12 +6949,20 @@ const SUPABASE_ANON_KEY = "sb_publishable_Lz--X6lvwPcGmTzmx0_tnw_tixfRxqo";
         v.name = t.value || "Terrace";
       });
       $("#vW").oninput = set((t) => {
+        const ow = v.w, oh = v.h;
         v.w = Math.max(10, Math.min(250, +t.value || 10));
-        resizeFloor();
+        if (v.site === "tolip")
+          retileTolip(ow, oh);
+        else
+          resizeFloor();
       }, true);
       $("#vH").oninput = set((t) => {
+        const ow = v.w, oh = v.h;
         v.h = Math.max(10, Math.min(250, +t.value || 10));
-        resizeFloor();
+        if (v.site === "tolip")
+          retileTolip(ow, oh);
+        else
+          resizeFloor();
       }, true);
       $("#vS").onchange = (e) => mutate(() => {
         v.sea = e.target.value;
@@ -7395,10 +7535,13 @@ const SUPABASE_ANON_KEY = "sb_publishable_Lz--X6lvwPcGmTzmx0_tnw_tixfRxqo";
     const kept = S.items.find((i) => i.type === "kosha");
     S.items = tables.slice();
     S.items.push(make("kosha", { x: W / 2, y: 2.3, w: 6, h: 3, rot: 0 }));
-    if (kept) {
+    {
       const k = S.items[S.items.length - 1];
-      k.title = kept.title;
-      k.color = kept.color;
+      k.kstyle = kept && kept.kstyle && kept.kstyle !== "sofa" ? kept.kstyle : "desk";
+      if (kept) {
+        k.title = kept.title;
+        k.color = kept.color;
+      }
     }
     S.items.push(make("dance", { x: W / 2 + 0.9, y: 7.6, w: 5, h: 4.2 }));
     S.items.push(make("dj", { x: 1.6, y: 2.4, rot: 90 }));
@@ -7415,7 +7558,49 @@ const SUPABASE_ANON_KEY = "sb_publishable_Lz--X6lvwPcGmTzmx0_tnw_tixfRxqo";
       t.y = H / 2;
     }
   }
+  function settleTables() {
+    const F = coupleFocus(), A = F.k ? { x: F.k.x, y: F.k.y } : { x: F.x, y: F.y };
+    const rank = (t) => {
+      const r = tableRole(t);
+      return (r.cat === "fam" ? 0 : r.cat === "friends" ? 100 : 200) + r.pri * 10;
+    };
+    const tabs = S.items.filter((i) => TYPES[i.type].table && !i.locked && !isCoupleTable(i)).sort((a, b) => rank(a) - rank(b));
+    const unfit = [];
+    for (const t of tabs) {
+      if (canPlace(t))
+        continue;
+      const x0 = t.x, y0 = t.y, r0 = t.rot;
+      let ok = false;
+      for (const rt of [r0, viewRot(t, x0, y0, A), normRot(r0 + 90), normRot(F.rot || 0), normRot((F.rot || 0) + 90)]) {
+        t.rot = rt;
+        if (placeFree(t, Math.round(x0 * 2) / 2, Math.round(y0 * 2) / 2)) {
+          ok = true;
+          break;
+        }
+      }
+      if (!ok) {
+        t.x = x0;
+        t.y = y0;
+        t.rot = r0;
+        unfit.push(t);
+      }
+    }
+    return unfit;
+  }
   function organize() {
+    let last = null;
+    for (const md of ["cols", "radial", "rows", "mixed"]) {
+      const r = organizeMode(md);
+      if (!r)
+        return null;
+      if (r.placed === r.total)
+        return r;
+      if (!last || r.placed > last.placed)
+        last = r;
+    }
+    return last;
+  }
+  function organizeMode(md) {
     const F = coupleFocus(), A = F.k ? { x: F.k.x, y: F.k.y } : { x: F.x, y: F.y }, fr = rad(F.rot || 0), fwd = [-Math.sin(fr), Math.cos(fr)], right = [Math.cos(fr), Math.sin(fr)];
     const tabs = S.items.filter((i) => TYPES[i.type].table && !i.locked && !isCoupleTable(i));
     if (!tabs.length)
@@ -7499,11 +7684,17 @@ const SUPABASE_ANON_KEY = "sb_publishable_Lz--X6lvwPcGmTzmx0_tnw_tixfRxqo";
         for (const [c] of list) {
           t.x = c.x;
           t.y = c.y;
-          t.rot = viewRot(t, c.x, c.y, A);
-          if (pass < 3 ? placeRoomy(t) : canPlace(t)) {
-            done = true;
-            break;
+          const vr = viewRot(t, c.x, c.y, A), ax = normRot((F.rot || 0) + (t.w >= t.h ? 90 : 0)), rw = normRot((F.rot || 0) + (t.w >= t.h ? 0 : 90));
+          const rots = isCircle(t) ? [vr] : md === "cols" ? [ax] : md === "rows" ? [rw] : md === "radial" ? [normRot(Math.round(vr / 15) * 15)] : [vr, ax, rw];
+          for (const rt of rots) {
+            t.rot = rt;
+            if (pass < 3 ? placeRoomy(t) : canPlace(t)) {
+              done = true;
+              break;
+            }
           }
+          if (done)
+            break;
         }
         if (done)
           break;
@@ -7520,6 +7711,7 @@ const SUPABASE_ANON_KEY = "sb_publishable_Lz--X6lvwPcGmTzmx0_tnw_tixfRxqo";
       }
     }
     const res = tabs.map((t) => [t, t.x, t.y, t.rot]);
+    n = tabs.filter((t) => t.x > -900 && canPlace(t)).length;
     for (const [t, x, y, r] of orig) {
       t.x = x;
       t.y = y;
@@ -7536,6 +7728,7 @@ const SUPABASE_ANON_KEY = "sb_publishable_Lz--X6lvwPcGmTzmx0_tnw_tixfRxqo";
       t.y = y;
       t.rot = rt;
     }
+    r.placed = r.total - settleTables().length;
     pushUndo(pre);
     renderAll();
     renderPanel();
@@ -7553,6 +7746,7 @@ const SUPABASE_ANON_KEY = "sb_publishable_Lz--X6lvwPcGmTzmx0_tnw_tixfRxqo";
           t.y = y;
           t.rot = rt;
         }
+        settleTables();
         return r;
       }
     }
@@ -7617,10 +7811,20 @@ const SUPABASE_ANON_KEY = "sb_publishable_Lz--X6lvwPcGmTzmx0_tnw_tixfRxqo";
       autoArrange();
     return true;
   }
+  function ensureDeskKosha() {
+    if (!S || !S.preloads || S.preloads.includes("deskKosha"))
+      return false;
+    S.preloads.push("deskKosha");
+    for (const k of S.items)
+      if (k.type === "kosha" && (!k.kstyle || k.kstyle === "sofa"))
+        k.kstyle = "desk";
+    return true;
+  }
   function ensureTolipSite() {
     if (S && S.venue && S.venue.site === "tolip" && S.items.some((i) => i.type === "tower")) {
       const pre = snapshot();
-      if (upgradeCatering()) {
+      const d = ensureDeskKosha();
+      if (upgradeCatering() || d) {
         pushUndo(pre);
         renderAll();
         renderPanel();
@@ -7632,6 +7836,8 @@ const SUPABASE_ANON_KEY = "sb_publishable_Lz--X6lvwPcGmTzmx0_tnw_tixfRxqo";
     S.preloads = S.preloads || [];
     if (!S.preloads.includes("tolipSite"))
       S.preloads.push("tolipSite");
+    if (!S.preloads.includes("deskKosha"))
+      S.preloads.push("deskKosha");
     pushUndo(snapshot());
     applyTolipSite();
     autoArrange();
@@ -8730,7 +8936,7 @@ const SUPABASE_ANON_KEY = "sb_publishable_Lz--X6lvwPcGmTzmx0_tnw_tixfRxqo";
   const PL = () => window.__plan;
   let T = null;
   let renderer, scene, camera, root, sunL, hemiL, pmrem, envDay, envNight, skyDay, skyNight, skyGold = null, envGold = null, SUNDIR = null, sunSprite = null, clock, isOpen = false, raf = 0, waterMats = [], glowPts = [], labels = [], builtOnce = false;
-  const st = { day: true, tod: "day", people: true, names: true, auto: false, hold: false };
+  const st = { day: true, tod: "day", people: true, names: true, auto: false, hold: false, mingle: false, cine: true };
   const ctl = { tx: 28, ty: 0, tz: 17, r: 60, th: 0, ph: 0.9, fly: null };
   const wrap = document.getElementById("v3d"), cv = document.getElementById("v3dCanvas"), busy = document.getElementById("v3dBusy");
   function loadThree() {
@@ -9116,9 +9322,9 @@ const SUPABASE_ANON_KEY = "sb_publishable_Lz--X6lvwPcGmTzmx0_tnw_tixfRxqo";
       return skyGoldTex();
     const c = cvs(1024, 512), x = c.getContext("2d"), g = x.createLinearGradient(0, 0, 0, 512);
     if (day) {
-      g.addColorStop(0, "#3F7FC7");
-      g.addColorStop(0.38, "#86B6E3");
-      g.addColorStop(0.49, "#DCE9F2");
+      g.addColorStop(0, "#1F63C4");
+      g.addColorStop(0.38, "#6FA9EA");
+      g.addColorStop(0.49, "#D3E8F7");
       g.addColorStop(0.5, "#CFD9DE");
       g.addColorStop(1, "#8C8F86");
     } else {
@@ -9222,7 +9428,7 @@ const SUPABASE_ANON_KEY = "sb_publishable_Lz--X6lvwPcGmTzmx0_tnw_tixfRxqo";
         return m;
       }),
       sea: mat("sea", () => {
-        const m = new T.MeshPhysicalMaterial({ color: col("#1A5F80"), roughness: 0.18, metalness: 0.1, normalMap: normalMap(128, 8, 4), clearcoat: 0.6, normalScale: new T.Vector2(0.35, 0.35) });
+        const m = new T.MeshPhysicalMaterial({ color: col("#0F6E8C"), roughness: 0.18, metalness: 0.1, normalMap: normalMap(128, 8, 4), clearcoat: 0.6, normalScale: new T.Vector2(0.35, 0.35) });
         m.normalMap.repeat.set(0.12, 0.12);
         waterMats.push(m);
         return m;
@@ -9398,6 +9604,336 @@ const SUPABASE_ANON_KEY = "sb_publishable_Lz--X6lvwPcGmTzmx0_tnw_tixfRxqo";
     MC.chairG = g;
     return g;
   }
+  let MINGLE = null, WALKERS = [], NAV = null, SPOTS = [];
+  function pickMinglers(S) {
+    const api = PL(), sm = api.seatMap(), ids = /* @__PURE__ */ new Set();
+    const all = Object.values(sm).filter(Boolean);
+    for (const g of all) {
+      if (ids.size >= 40)
+        break;
+      if (hash(String(g.id), 5) < (g.kid ? 0.35 : 0.55))
+        ids.add(g.id);
+    }
+    return ids;
+  }
+  function buildNav(S) {
+    const api = PL(), C = 0.25, W = S.venue.w, H = S.venue.h, cols = Math.ceil(W / C), rows = Math.ceil(H / C), grid = new Uint8Array(cols * rows), FC = api.CELL, fr = S.floor.rows;
+    for (let j = 0; j < rows; j++)
+      for (let i = 0; i < cols; i++) {
+        const x = (i + 0.5) * C, y = (j + 0.5) * C, ch = (fr[Math.floor(y / FC)] || "")[Math.floor(x / FC)];
+        grid[j * cols + i] = ch && ch !== "." && ch !== "w" ? 1 : 0;
+      }
+    for (const it of S.items) {
+      const T2 = api.TYPES[it.type];
+      if (!T2 || T2.zone === "over" || T2.zone === "soft")
+        continue;
+      const pad = T2.table ? 0.75 : 0.3, c = Math.cos(rad(it.rot || 0)), s = Math.sin(rad(it.rot || 0)), hw = it.w / 2 + pad, hh = (it.h || it.w) / 2 + pad, R = Math.hypot(hw, hh);
+      const i0 = Math.max(0, Math.floor((it.x - R) / C)), i1 = Math.min(cols - 1, Math.ceil((it.x + R) / C)), j0 = Math.max(0, Math.floor((it.y - R) / C)), j1 = Math.min(rows - 1, Math.ceil((it.y + R) / C));
+      for (let j = j0; j <= j1; j++)
+        for (let i = i0; i <= i1; i++) {
+          const dx = (i + 0.5) * C - it.x, dy = (j + 0.5) * C - it.y;
+          if (api.TYPES[it.type].shape === "round" || api.TYPES[it.type].uniform) {
+            if (Math.hypot(dx, dy) < hw)
+              grid[j * cols + i] = 0;
+          } else {
+            const lx = dx * c + dy * s, ly = -dx * s + dy * c;
+            if (Math.abs(lx) < hw && Math.abs(ly) < hh)
+              grid[j * cols + i] = 0;
+          }
+        }
+    }
+    const g2 = grid.slice();
+    for (let j = 0; j < rows; j++)
+      for (let i = 0; i < cols; i++) {
+        if (!grid[j * cols + i])
+          continue;
+        for (const [di, dj] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) {
+          const a = i + di, b = j + dj;
+          if (a < 0 || b < 0 || a >= cols || b >= rows || !grid[b * cols + a]) {
+            g2[j * cols + i] = 0;
+            break;
+          }
+        }
+      }
+    return { C, cols, rows, grid: g2 };
+  }
+  function navFree(x, z) {
+    if (!NAV)
+      return false;
+    const i = Math.floor(x / NAV.C), j = Math.floor(z / NAV.C);
+    return i >= 0 && j >= 0 && i < NAV.cols && j < NAV.rows && NAV.grid[j * NAV.cols + i] === 1;
+  }
+  function aStar(sx, sz, tx, tz) {
+    const { C, cols, rows, grid } = NAV, si = Math.floor(sx / C), sj = Math.floor(sz / C), ti = Math.floor(tx / C), tj = Math.floor(tz / C);
+    if (!grid[tj * cols + ti])
+      return null;
+    const N = cols * rows, g = new Float32Array(N).fill(1e9), came = new Int32Array(N).fill(-1), closed = new Uint8Array(N);
+    g[sj * cols + si] = 0;
+    let it = 0;
+    const hp = [], push = (f, n) => {
+      hp.push([f, n]);
+      let i = hp.length - 1;
+      while (i > 0) {
+        const p = i - 1 >> 1;
+        if (hp[p][0] <= hp[i][0])
+          break;
+        [hp[p], hp[i]] = [hp[i], hp[p]];
+        i = p;
+      }
+    }, pop = () => {
+      const top = hp[0], last = hp.pop();
+      if (hp.length) {
+        hp[0] = last;
+        let i = 0;
+        for (; ; ) {
+          const l = 2 * i + 1, r = l + 1;
+          let m = i;
+          if (l < hp.length && hp[l][0] < hp[m][0])
+            m = l;
+          if (r < hp.length && hp[r][0] < hp[m][0])
+            m = r;
+          if (m === i)
+            break;
+          [hp[m], hp[i]] = [hp[i], hp[m]];
+          i = m;
+        }
+      }
+      return top;
+    };
+    push(0, sj * cols + si);
+    const open = hp;
+    while (hp.length && it++ < 9e3) {
+      const [, cur] = pop();
+      if (closed[cur])
+        continue;
+      closed[cur] = 1;
+      const ci = cur % cols, cj = cur / cols | 0;
+      if (ci === ti && cj === tj) {
+        const path = [];
+        let c = cur;
+        while (c !== -1) {
+          path.push([(c % cols + 0.5) * C, ((c / cols | 0) + 0.5) * C]);
+          c = came[c];
+        }
+        path.reverse();
+        const out = [path[0]];
+        for (let k = 2; k < path.length; k += 2)
+          out.push(path[k]);
+        out.push([tx, tz]);
+        return out;
+      }
+      for (let dj = -1; dj <= 1; dj++)
+        for (let di = -1; di <= 1; di++) {
+          if (!di && !dj)
+            continue;
+          const ni = ci + di, nj = cj + dj;
+          if (ni < 0 || nj < 0 || ni >= cols || nj >= rows)
+            continue;
+          const n = nj * cols + ni;
+          if (!grid[n] || closed[n])
+            continue;
+          if (di && dj && (!grid[cj * cols + ni] || !grid[nj * cols + ci]))
+            continue;
+          const ng = g[cur] + (di && dj ? 1.414 : 1);
+          if (ng < g[n]) {
+            g[n] = ng;
+            came[n] = cur;
+            push(ng + Math.hypot(ni - ti, nj - tj), n);
+          }
+        }
+    }
+    return null;
+  }
+  function makeSpots(S, n) {
+    const out = [];
+    let tries = 0;
+    while (out.length < n && tries++ < 4e3) {
+      const x = 0.5 + Math.random() * (S.venue.w - 1), z = 0.5 + Math.random() * (S.venue.h - 1);
+      let ok = true;
+      for (let a = 0; a < 8 && ok; a++) {
+        const ang = a / 8 * Math.PI * 2;
+        if (!navFree(x + Math.cos(ang) * 0.95, z + Math.sin(ang) * 0.95))
+          ok = false;
+      }
+      if (!ok || !navFree(x, z))
+        continue;
+      if (out.some((p) => Math.hypot(p.x - x, p.z - z) < 2.4))
+        continue;
+      out.push({ x, z, slots: [] });
+    }
+    return out;
+  }
+  function personStandingInto(acc, g, m4, kind) {
+    const Gm = geos(), seed = g.id || g.name || "x", skin = col(pick(SKIN, seed, 1)), hair = col(pick(HAIR, seed, 2));
+    const kid = g.kid, fem = g.gender === "f";
+    const k = kid ? 0.66 : 1;
+    const P = (x, y, z, rx, ry, rz, sx, sy, sz) => new T.Matrix4().multiplyMatrices(m4, M4(x * k, y * k, z * k, rx, ry, rz, (sx || 1) * k, (sy || 1) * k, (sz || 1) * k));
+    const top = kid ? col(pick(KIDS, seed, 3)) : fem ? col(pick(DRESS, seed, 3)) : col(pick(SUIT, seed, 3)), bottom = kid ? col(fem ? pick(KIDS, seed, 4) : "#3C4A63") : top, shoe = fem && !kid ? col("#C9A45F") : col("#1A1714");
+    if (fem && !kid) {
+      accAdd(acc, Gm.cone, P(0, 0.5, 0, 0, 0, 0, 0.24, 1, 0.2), bottom);
+    } else {
+      accAdd(acc, Gm.cap(0.065, 0.62), P(-0.09, 0.46, 0), bottom);
+      accAdd(acc, Gm.cap(0.065, 0.62), P(0.09, 0.46, 0), bottom);
+    }
+    accAdd(acc, Gm.box, P(-0.09, 0.03, 0.05, 0, 0, 0, 0.09, 0.06, 0.22), shoe);
+    accAdd(acc, Gm.box, P(0.09, 0.03, 0.05, 0, 0, 0, 0.09, 0.06, 0.22), shoe);
+    accAdd(acc, Gm.cap(0.16, 0.3), P(0, 1.18, 0, 0, 0, 0, 1.12, 1, 0.72), top);
+    if (!fem && !kid) {
+      accAdd(acc, Gm.box, P(0, 1.27, 0.1, 0, 0, 0, 0.1, 0.22, 0.02), col("#F5F3EE"));
+      accAdd(acc, Gm.box, P(0, 1.24, 0.115, 0, 0, 0, 0.035, 0.18, 0.012), col(pick(["#7B2D40", "#1F3B63", "#C9A45F", "#2E2E2E"], seed, 5)));
+    }
+    for (const s of [-1, 1]) {
+      accAdd(acc, Gm.cap(0.05, 0.5), P(0.23 * s, 1.08, 0, 0, 0, 0.08 * s), top);
+      accAdd(acc, Gm.sph, P(0.25 * s, 0.78, 0.02, 0, 0, 0, 0.045, 0.05, 0.05), skin);
+    }
+    accAdd(acc, Gm.cylLo, P(0, 1.44, 0, 0, 0, 0, 0.05, 0.09, 0.05), skin);
+    accAdd(acc, Gm.sph, P(0, 1.58, 0, 0, 0, 0, 0.105, 0.125, 0.11), skin);
+    const hij = fem && !kid && hash(seed, 9) < 0.42;
+    if (hij) {
+      const hc = col(pick(HIJAB, seed, 6));
+      accAdd(acc, Gm.sph, P(0, 1.59, -0.025, 0, 0, 0, 0.124, 0.14, 0.128), hc);
+      accAdd(acc, Gm.cone, P(0, 1.41, -0.02, 0, 0, 0, 0.17, 0.18, 0.15), hc);
+    } else if (fem) {
+      accAdd(acc, Gm.hairTop, P(0, 1.59, -0.01, -0.25, 0, 0, 0.118, 0.14, 0.12), hair);
+      accAdd(acc, Gm.cap(0.1, 0.22), P(0, 1.46, -0.07, 0.1, 0, 0, 1.1, 1, 0.6), hair);
+    } else
+      accAdd(acc, Gm.hairTop, P(0, 1.605, -0.015, -0.35, 0, 0, 0.113, 0.12, 0.117), hair);
+  }
+  function spawnWalkers(S) {
+    WALKERS = [];
+    if (!MINGLE || !MINGLE.size)
+      return;
+    NAV = buildNav(S);
+    SPOTS = makeSpots(S, Math.max(3, Math.ceil(MINGLE.size / 3.2)));
+    if (!SPOTS.length)
+      return;
+    const api = PL(), sm = api.seatMap(), byId = {};
+    for (const g of Object.values(sm))
+      if (g)
+        byId[g.id] = g;
+    const mat0 = mat("skinVC", () => new T.MeshStandardMaterial({ vertexColors: true, roughness: 0.72 }));
+    for (const id of MINGLE) {
+      const g = byId[id];
+      if (!g)
+        continue;
+      const acc = Acc();
+      personStandingInto(acc, g, new T.Matrix4(), g.kid ? "c" : g.gender === "f" ? "f" : "m");
+      const me = accMesh(acc, mat0);
+      if (!me)
+        continue;
+      me.castShadow = false;
+      const grp = new T.Group();
+      grp.add(me);
+      blob(grp, 0.42, 0, 0, 0.8);
+      grp.userData.dyn = true;
+      root.add(grp);
+      let x = 0, z = 0, tries = 0;
+      do {
+        x = 0.5 + Math.random() * (S.venue.w - 1);
+        z = 0.5 + Math.random() * (S.venue.h - 1);
+      } while (!navFree(x, z) && tries++ < 400);
+      const w = { g, grp, me, x, z, path: null, state: "idle", timer: Math.random() * 2, speed: (g.kid ? 1.05 : 0.75) + Math.random() * 0.3, head: Math.random() * 6.28, spot: null, phase: Math.random() * 6.28 };
+      grp.position.set(x, 0, z);
+      WALKERS.push(w);
+      if (st.names)
+        labels.push({ text: api.nickOf(g), full: g.name, x, y: g.kid ? 1.25 : 1.85, z, side: g.side, k: 1, walker: w });
+    }
+  }
+  function assignSpot(w) {
+    if (w.spot) {
+      const i = w.spot.slots.indexOf(w);
+      if (i >= 0)
+        w.spot.slots.splice(i, 1);
+    }
+    const cands = SPOTS.filter((s) => s.slots.length < 4).sort((a, b) => Math.hypot(a.x - w.x, a.z - w.z) * (0.6 + Math.random()) - Math.hypot(b.x - w.x, b.z - w.z) * (0.6 + Math.random()));
+    for (const s of cands) {
+      for (let k = 0; k < 6; k++) {
+        const ang = Math.random() * Math.PI * 2, r = 0.55 + Math.random() * 0.25, tx = s.x + Math.cos(ang) * r, tz = s.z + Math.sin(ang) * r;
+        if (!navFree(tx, tz))
+          continue;
+        if (s.slots.some((o) => o.tx != null && Math.hypot(o.tx - tx, o.tz - tz) < 0.55))
+          continue;
+        const path = aStar(w.x, w.z, tx, tz);
+        if (!path)
+          continue;
+        w.spot = s;
+        w.tx = tx;
+        w.tz = tz;
+        w.path = path;
+        w.state = "walk";
+        s.slots.push(w);
+        return;
+      }
+    }
+    w.state = "idle";
+    w.timer = 1 + Math.random() * 2;
+  }
+  function tickWalkers(t, dt) {
+    if (!WALKERS.length)
+      return;
+    let budget = 3;
+    for (const w of WALKERS) {
+      if (w.state === "idle") {
+        w.timer -= dt;
+        if (w.timer <= 0 && budget > 0) {
+          budget--;
+          assignSpot(w);
+        }
+      } else if (w.state === "walk") {
+        const p = w.path[0];
+        if (!p) {
+          w.state = "chat";
+          w.timer = 6 + Math.random() * 10;
+          continue;
+        }
+        const dx = p[0] - w.x, dz = p[1] - w.z, d = Math.hypot(dx, dz);
+        let block = false;
+        for (const o of WALKERS) {
+          if (o === w)
+            continue;
+          const ox = o.x - w.x, oz = o.z - w.z, od = Math.hypot(ox, oz);
+          if (od < 0.5 && ox * dx + oz * dz > 0 && (o.state !== "walk" || od < 0.35)) {
+            block = true;
+            break;
+          }
+        }
+        if (d < 0.08) {
+          w.path.shift();
+          continue;
+        }
+        const sp = block ? w.speed * 0.15 : w.speed, st2 = Math.min(d, sp * dt), nx = w.x + dx / d * st2, nz = w.z + dz / d * st2;
+        if (navFree(nx, nz)) {
+          w.x = nx;
+          w.z = nz;
+        } else {
+          w.path = aStar(w.x, w.z, w.tx, w.tz) || [];
+        }
+        const want = Math.atan2(dx, dz);
+        let dh = want - w.head;
+        dh = Math.atan2(Math.sin(dh), Math.cos(dh));
+        w.head += dh * Math.min(1, dt * 8);
+        w.grp.position.y = Math.abs(Math.sin(t * 9 + w.phase)) * 0.035;
+        w.me.rotation.z = Math.sin(t * 9 + w.phase) * 0.035;
+      } else if (w.state === "chat") {
+        w.timer -= dt;
+        const s = w.spot;
+        if (s) {
+          const want = Math.atan2(s.x - w.x, s.z - w.z);
+          let dh = want - w.head;
+          dh = Math.atan2(Math.sin(dh), Math.cos(dh));
+          w.head += dh * Math.min(1, dt * 4);
+        }
+        w.grp.position.y = 0;
+        w.me.rotation.z = Math.sin(t * 1.3 + w.phase) * 0.02;
+        w.me.rotation.x = Math.sin(t * 0.9 + w.phase) * 0.015;
+        if (w.timer <= 0)
+          assignSpot(w);
+      }
+      w.grp.position.x = w.x;
+      w.grp.position.z = w.z;
+      w.grp.rotation.y = w.head;
+    }
+  }
   function disposeRoot() {
     if (LBL)
       LBL.innerHTML = "";
@@ -9428,6 +9964,8 @@ const SUPABASE_ANON_KEY = "sb_publishable_Lz--X6lvwPcGmTzmx0_tnw_tixfRxqo";
     root = new T.Group();
     scene.add(root);
     applyTheme(api, m);
+    WALKERS = [];
+    MINGLE = st.mingle && st.people ? pickMinglers(api.S) : null;
     const W = S.venue.w, H = S.venue.h;
     const sea = S.venue.sea;
     let gx0 = -80, gx1 = W + 80, gz0 = -80, gz1 = H + 80;
@@ -9563,6 +10101,8 @@ const SUPABASE_ANON_KEY = "sb_publishable_Lz--X6lvwPcGmTzmx0_tnw_tixfRxqo";
       CUR = null;
     }
     FL = Acc();
+    if (MINGLE)
+      spawnWalkers(S);
     buildLights(S, m);
     buildParticles(S);
     root.userData.clicks = tableClicks;
@@ -10265,10 +10805,10 @@ const SUPABASE_ANON_KEY = "sb_publishable_Lz--X6lvwPcGmTzmx0_tnw_tixfRxqo";
       const ry = -rad(p.a + it.rot);
       chairs.push({ x: wx, z: wz, ry, tid: it.id, s: i });
       const gu = smap[it.id + ":" + i];
-      if (gu && st.people) {
+      if (gu && st.people && !(MINGLE && MINGLE.has(gu.id))) {
         const kind = gu.kid ? "c" : gu.gender === "f" ? "f" : "m";
         personInto(people, gu, M4(wx, 0, wz, 0, ry, 0), kind);
-        if (st.names)
+        if (st.names && !(MINGLE && MINGLE.has(gu.id)))
           labels.push({ text: api.nickOf(gu), full: gu.name, x: wx, y: gu.kid ? 1.08 : 1.52, z: wz, side: gu.side, k: 1, inner: CUR });
       }
       const sx = p.x - Math.sin(rad(p.a)) * 0.5, sy = p.y + Math.cos(rad(p.a)) * 0.5;
@@ -10415,7 +10955,95 @@ const SUPABASE_ANON_KEY = "sb_publishable_Lz--X6lvwPcGmTzmx0_tnw_tixfRxqo";
         glowPts.push([0, 0, 0, g, -(w / 2 - 0.35), 1.95, h / 2 - 0.4, 0.5], [0, 0, 0, g, w / 2 - 0.35, 1.95, h / 2 - 0.4, 0.5]);
       };
       const R = Math.min(w * 0.45, 2.6);
-      if (ks === "sofa") {
+      if (ks === "desk") {
+        const tw = Math.min(w - 1.6, 2.4), td = 0.8, tz = sz + 0.62, TH0 = 0.76, cl = clothMat(PL().colorOf(TH && TH.linen) || "#FFFFFF");
+        add(g, box(tw, TH0 - 0.02, td), cl, 0, T0 + (TH0 - 0.02) / 2, tz);
+        add(g, box(tw + 0.24, 0.02, td + 0.24), cl, 0, T0 + TH0, tz);
+        {
+          const pg = new T.PlaneGeometry(tw + 0.24, TH0, 24, 6), pp = pg.attributes.position;
+          for (let i = 0; i < pp.count; i++) {
+            const x = pp.getX(i), y = pp.getY(i), k = (TH0 / 2 - y) / TH0;
+            pp.setZ(i, Math.sin(x * 18) * 0.018 * k);
+          }
+          pg.computeVertexNormals();
+          add(g, pg, cl, 0, T0 + TH0 / 2, tz + td / 2 + 0.121);
+        }
+        const sc = TH && TH.runner && TH.runner !== "side" ? PL().colorOf(TH.runner) || TH.runner : "#C9A45F", sash = mat("sash" + sc, () => std(sc, { roughness: 0.5 }));
+        add(g, box(tw * 0.34, 4e-3, td + 0.25), sash, 0, T0 + TH0 + 0.012, tz, { noShadow: true });
+        for (let i = 0; i < 70; i++) {
+          const t = i / 69, x = -tw / 2 - 0.05 + t * (tw + 0.1), y = T0 + TH0 - 0.05 - Math.sin(t * Math.PI) * 0.34 + (r() - 0.5) * 0.08;
+          fl(g, x, y, tz + td / 2 + 0.16 + (r() - 0.5) * 0.06, 0.06 + r() * 0.04, i % 5 === 0 ? "#3F7A3A" : FLH[i % 5]);
+        }
+        for (let i = 0; i < 24; i++) {
+          const sx = i % 2 ? 1 : -1;
+          fl(g, sx * (tw / 2 + 0.1) + (r() - 0.5) * 0.08, T0 + 0.1 + r() * (TH0 - 0.1), tz + td / 2 + 0.12, 0.055, i % 4 === 0 ? "#3F7A3A" : FLH[i % 5]);
+        }
+        for (const sx of [-1, 1]) {
+          const cx = sx * (tw / 2 - 0.25);
+          add(g, new T.CylinderGeometry(0.06, 0.1, 0.03, 16), m.gold, cx, T0 + TH0 + 0.02, tz);
+          add(g, new T.CylinderGeometry(0.012, 0.018, 0.42, 10), m.gold, cx, T0 + TH0 + 0.23, tz);
+          for (const a of [-1, 0, 1]) {
+            const ax = cx + a * 0.1;
+            add(g, new T.CylinderGeometry(0.012, 0.012, 0.08, 8), m.gold, ax, T0 + TH0 + 0.44 - (a ? 0.04 : 0), tz);
+            add(g, new T.CylinderGeometry(0.013, 0.013, 0.12, 8), m.porcelain, ax, T0 + TH0 + 0.52 - (a ? 0.04 : 0), tz, { noShadow: true });
+            glowPts.push([0, 0, 0, g, ax, T0 + TH0 + 0.62 - (a ? 0.04 : 0), tz, 0.22]);
+          }
+        }
+        for (const sx of [-1, 1]) {
+          const px = sx * 0.45;
+          add(g, new T.CylinderGeometry(0.15, 0.15, 8e-3, 24), m.gold, px, T0 + TH0 + 0.016, tz - 0.12, { noShadow: true });
+          add(g, new T.CylinderGeometry(0.13, 0.12, 0.014, 24), m.porcelain, px, T0 + TH0 + 0.026, tz - 0.12, { noShadow: true });
+          add(g, new T.LatheGeometry([[0, 0], [0.03, 0], [4e-3, 0.01], [4e-3, 0.12], [0.026, 0.14], [0.03, 0.25], [0.024, 0.25]].map(([a, b]) => new T.Vector2(a, b)), 12), m.glass, px + sx * 0.18, T0 + TH0 + 0.01, tz - 0.02, { noShadow: true });
+        }
+        fl(g, 0, T0 + TH0 + 0.12, tz, 0.12, FLH[0]);
+        for (let i = 0; i < 14; i++) {
+          const a = r() * Math.PI * 2, rr = 0.08 + r() * 0.07;
+          fl(g, Math.cos(a) * rr * 2.2, T0 + TH0 + 0.06 + r() * 0.1, tz + Math.sin(a) * rr * 0.6, 0.045 + r() * 0.02, i % 4 === 0 ? "#3F7A3A" : FLH[i % 5]);
+        }
+        const velv = mat("velvetIvory", () => std("#F2E8DA", { roughness: 0.88 }));
+        for (const sx of [-1, 1]) {
+          const c = new T.Group();
+          c.position.set(sx * 0.45, T0, sz - 0.05);
+          g.add(c);
+          for (const [lx, lz] of [[-0.24, -0.22], [0.24, -0.22], [-0.24, 0.22], [0.24, 0.22]])
+            add(c, new T.CylinderGeometry(0.018, 0.014, 0.44, 8), m.gold, lx, 0.22, lz);
+          add(c, box(0.56, 0.1, 0.52), velv, 0, 0.47, 0);
+          add(c, box(0.6, 0.03, 0.56), m.gold, 0, 0.425, 0);
+          add(c, box(0.5, 0.85, 0.07), velv, 0, 0.98, -0.25);
+          add(c, new T.CylinderGeometry(0.25, 0.25, 0.07, 24, 1, false, 0, Math.PI), velv, 0, 1.4, -0.25, { rx: Math.PI / 2, rz: Math.PI / 2 });
+          add(c, new T.TorusGeometry(0.27, 0.018, 8, 24, Math.PI), m.gold, 0, 1.4, -0.21);
+          for (const bx of [-0.27, 0.27])
+            add(c, new T.CylinderGeometry(0.018, 0.018, 0.9, 8), m.gold, bx, 0.95, -0.21);
+          for (let i = 0; i < 10; i++) {
+            const a = r() * Math.PI;
+            fl(c, Math.cos(a) * 0.24, 1.4 + Math.sin(a) * 0.24, -0.2, 0.035, FLH[i % 5]);
+          }
+        }
+        const bw = Math.min(w - 0.4, 4.6), dr = mat("drape" + (TH ? TH.drape : "#FFFFFF"), () => std(TH ? TH.drape : "#FFFFFF", { roughness: 0.9, side: T.DoubleSide, transparent: true, opacity: 0.95 }));
+        {
+          const pg = new T.PlaneGeometry(bw, 2.7, 40, 6), pp = pg.attributes.position;
+          for (let i = 0; i < pp.count; i++)
+            pp.setZ(i, Math.sin(pp.getX(i) * 9) * 0.05);
+          pg.computeVertexNormals();
+          add(g, pg, dr, 0, T0 + 1.35, bz);
+        }
+        add(g, box(bw + 0.16, 0.1, 0.1), m.gold, 0, T0 + 2.72, bz);
+        for (const sx of [-1, 1])
+          add(g, box(0.08, 2.7, 0.08), m.gold, sx * (bw / 2 + 0.04), T0 + 1.35, bz);
+        for (let k = 0; k < 11; k++) {
+          const x = -bw / 2 + 0.2 + k * (bw - 0.4) / 10;
+          for (let j = 0; j < 8; j++)
+            glowPts.push([0, 0, 0, g, x, T0 + 2.6 - j * 0.3, bz + 0.06, 0.12]);
+        }
+        for (let i = 0; i < 160; i++) {
+          const t = r(), x = -bw / 2 + t * bw, y = T0 + 2.62 + Math.sin(t * Math.PI) * 0.15 + (r() - 0.5) * 0.12;
+          fl(g, x, y, bz + 0.1 + (r() - 0.5) * 0.1, 0.07 + r() * 0.05, i % 6 === 0 ? "#3F7A3A" : FLH[i % 5]);
+        }
+        stands();
+        seatTop = 0.9;
+        dx = 0.45;
+        cz = sz;
+      } else if (ks === "sofa") {
         sofa(0, sz, Math.min(w * 0.55, 3.2), m.ivoryVelvet);
         add(g, new T.TorusGeometry(R, 0.05, 8, 48, Math.PI), m.gold, 0, T0, bz);
         flowerArc(R, T0, bz, 200);
@@ -10722,7 +11350,7 @@ const SUPABASE_ANON_KEY = "sb_publishable_Lz--X6lvwPcGmTzmx0_tnw_tixfRxqo";
     sunken(it, m) {
       const g = place(new T.Group(), it);
       CUR.add(g);
-      const w = it.w, d = it.h, D = 1, hw = w / 2, hd = d / 2, steps = 10, rise = D / steps, run = 0.3, L = steps * run, sw = Math.min(1.4, w * 0.45);
+      const w = it.w, d = it.h, D = it.depth || 1, hw = w / 2, hd = d / 2, steps = Math.max(3, Math.round(it.steps || 10)), rise = D / steps, run = 0.3, L = steps * run, sw = Math.min(1.4, w * 0.45);
       const trav = mat("travertine", () => {
         const c = cvs(512, 512), x = c.getContext("2d"), r = rnd(83);
         for (let i = 0; i < 4; i++)
@@ -11212,7 +11840,7 @@ const SUPABASE_ANON_KEY = "sb_publishable_Lz--X6lvwPcGmTzmx0_tnw_tixfRxqo";
     hemiL.intensity = gold ? 0.3 : day ? 0.4 : 0.1;
     hemiL.color.set(gold ? 16767408 : day ? 14675711 : 5326446);
     hemiL.groundColor.set(gold ? 8018496 : day ? 9075296 : 1380376);
-    renderer.toneMappingExposure = gold ? 1.02 : day ? 0.95 : 1.2;
+    renderer.toneMappingExposure = (gold ? 1.05 : day ? 1 : 1.25) * (st.cine ? 1.04 : 1);
     const S0 = PL().S, d = Math.max(S0.venue.w, S0.venue.h), cx0 = S0.venue.w / 2, cz0 = S0.venue.h / 2;
     if (gold)
       sunL.position.set(cx0 - d * 1.6, d * 0.32, cz0 - d * 0.5);
@@ -11265,9 +11893,13 @@ const SUPABASE_ANON_KEY = "sb_publishable_Lz--X6lvwPcGmTzmx0_tnw_tixfRxqo";
       PV = new T.Vector3();
     const r = wrap.getBoundingClientRect(), W = r.width, H = r.height, cp = camera.position;
     for (const L of labels) {
-      PV.set(L.x, L.y, L.z);
-      if (L.inner)
-        PV.applyMatrix4(L.inner.matrixWorld);
+      if (L.walker)
+        PV.set(L.walker.x, L.y + L.walker.grp.position.y, L.walker.z);
+      else {
+        PV.set(L.x, L.y, L.z);
+        if (L.inner)
+          PV.applyMatrix4(L.inner.matrixWorld);
+      }
       const d = camera.position.distanceTo(PV);
       PV.project(camera);
       const vis = PV.z < 1 && PV.z > -1 && Math.abs(PV.x) < 1.15 && Math.abs(PV.y) < 1.15;
@@ -11854,7 +12486,7 @@ const SUPABASE_ANON_KEY = "sb_publishable_Lz--X6lvwPcGmTzmx0_tnw_tixfRxqo";
     raf = requestAnimationFrame(loop);
     if (!isOpen)
       return;
-    const active = ctl.fly || st.auto || ptrs.size || performance.now() - lastInput < 900;
+    const active = ctl.fly || st.auto || WALKERS.length || ptrs.size || performance.now() - lastInput < 900;
     frameN++;
     if (!active && frameN % 2)
       return;
@@ -11872,6 +12504,7 @@ const SUPABASE_ANON_KEY = "sb_publishable_Lz--X6lvwPcGmTzmx0_tnw_tixfRxqo";
       ctl.th += dt * 0.12;
     tickCars(Math.min(dt, 0.05));
     tickParticles(t, Math.min(dt, 0.05));
+    tickWalkers(t, Math.min(dt, 0.05));
     if (TWEENS.length) {
       const now = performance.now();
       TWEENS = TWEENS.filter((w) => {
@@ -11936,7 +12569,27 @@ const SUPABASE_ANON_KEY = "sb_publishable_Lz--X6lvwPcGmTzmx0_tnw_tixfRxqo";
       dn.textContent = st.tod === "day" ? "\u2600 Day" : st.tod === "golden" ? "\u25D0 Golden hour" : "\u263E Evening";
   }
   window.__v3dCenter = () => isOpen ? { x: ctl.tx, y: ctl.tz } : null;
-  window.__v3dDebug = () => ({ rigs: Object.keys(RIGS).length, rootKids: root ? root.children.length : 0, sceneKids: scene.children.length, items: PL().S.items.length });
+  window.__v3dSim = (n) => {
+    let t = 0;
+    for (let i = 0; i < n; i++) {
+      t += 0.05;
+      tickWalkers(t, 0.05);
+    }
+    let minD = 9, bad = 0;
+    for (const a of WALKERS) {
+      if (!navFree(a.x, a.z))
+        bad++;
+      for (const b of WALKERS)
+        if (a !== b)
+          minD = Math.min(minD, Math.hypot(a.x - b.x, a.z - b.z));
+    }
+    return { minD: +minD.toFixed(2), offNav: bad, walk: WALKERS.filter((w) => w.state === "walk").length, chat: WALKERS.filter((w) => w.state === "chat").length, idle: WALKERS.filter((w) => w.state === "idle").length };
+  };
+  window.__v3dLook = (px, py, pz, tx, ty, tz) => {
+    setFromPos(px, py, pz, tx, ty, tz);
+    ctl.fly = null;
+  };
+  window.__v3dDebug = () => ({ walkers: WALKERS.length, walking: WALKERS.filter((w) => w.state === "walk").length, chatting: WALKERS.filter((w) => w.state === "chat").length, rigs: Object.keys(RIGS).length, rootKids: root ? root.children.length : 0, sceneKids: scene.children.length, items: PL().S.items.length });
   window.__v3dProj = (x, y, z) => {
     const v = new T.Vector3(x, y, z).project(camera), r = cv.getBoundingClientRect();
     return [r.left + (v.x * 0.5 + 0.5) * r.width, r.top + (-v.y * 0.5 + 0.5) * r.height];
@@ -12018,7 +12671,13 @@ const SUPABASE_ANON_KEY = "sb_publishable_Lz--X6lvwPcGmTzmx0_tnw_tixfRxqo";
       }
       return;
     }
-    if (k === "people" || k === "names") {
+    if (k === "cine") {
+      wrap.classList.toggle("cine", st.cine);
+      return;
+    }
+    if (k === "people" || k === "names" || k === "mingle") {
+      if (k === "mingle")
+        hint(st.mingle ? "Guests are up and mingling. They walk around tables and objects and gather in small groups." : "Everyone is back in their seat.");
       busy.classList.add("on");
       setTimeout(() => {
         build();
