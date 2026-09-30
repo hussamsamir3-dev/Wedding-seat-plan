@@ -352,6 +352,22 @@ textarea{width:100%;min-height:90px;border:1px solid var(--line);border-radius:9
 .sb-status b{color:var(--ink);font-weight:500}
 .stage.busy #svg{opacity:.75;transition:opacity .2s}
 @media (pointer:coarse){.seg button{min-height:40px;padding:8px 12px;font-size:13px}.sbc{flex-basis:112px}}
+/* launch gate: nothing is usable until an invited account signs in */
+.gate{position:fixed;inset:0;z-index:200;display:none;align-items:center;justify-content:center;padding:20px;
+  background:radial-gradient(ellipse at 50% 30%,#1D3A33 0%,#0E1F1B 60%,#08120F 100%)}
+.gate.open{display:flex}
+.gate-card{width:min(380px,100%);background:#FBF8F2;border-radius:22px;padding:34px 28px 26px;box-shadow:0 30px 80px -20px rgba(0,0,0,.6);display:flex;flex-direction:column;gap:8px;text-align:center;color:#1E2B27}
+.gate-mono{width:74px;height:74px;margin:0 auto 6px;border-radius:50%;border:1.5px solid #B08D57;display:flex;align-items:center;justify-content:center;font:italic 600 26px "Cormorant Garamond",Georgia,serif;color:#1D3A33}
+.gate-mono span{color:#B08D57;margin:0 2px}
+.gate-card h1{margin:0;font:italic 600 30px/1.1 "Cormorant Garamond",Georgia,serif}
+.gate-sub{margin:0 0 14px;color:#8A7A5E;font-size:13px;letter-spacing:.12em;text-transform:uppercase}
+.gate-card label{text-align:left;font-size:12px;color:#5E6B66;margin-top:4px}
+.gate-card input{height:46px;border-radius:12px;border:1px solid #D9CFBD;padding:0 14px;font:inherit;font-size:16px;background:#fff;color:#1E2B27}
+.gate-card input:focus{outline:2px solid #B08D57;outline-offset:1px}
+.gate-card .btn{height:48px;margin-top:12px;font-size:16px;justify-content:center}
+.gate-msg{margin:10px 0 0;font-size:13px;color:#6B6456;min-height:18px}
+.gate-msg.err{color:#B0413E}
+body.gated #app,body.gated .app,body.gated header{filter:blur(8px);pointer-events:none}
 /* online status chip */
 .chip.net{margin-left:6px;flex:0 0 auto}
 .chip.net::before{content:"";width:8px;height:8px;border-radius:50%;background:#9AA7A2;display:inline-block;margin-right:6px;align-self:center}
@@ -640,6 +656,19 @@ aside.panel.building .buildhead{display:flex}
     <div class="sheetfoot" id="sheetFoot"></div>
   </div>
 </div>
+<div class="gate" id="authM" role="dialog" aria-modal="true" aria-labelledby="authTitle">
+  <form class="gate-card" id="authForm" autocomplete="on" onsubmit="return false">
+    <div class="gate-mono">H<span>&amp;</span>S</div>
+    <h1 id="authTitle">Hossam &amp; Salma</h1>
+    <p class="gate-sub">Wedding seat plan</p>
+    <label for="authUser">Email</label>
+    <input id="authUser" type="email" autocomplete="username" placeholder="you@example.com" required>
+    <label for="authPw">Password</label>
+    <input id="authPw" type="password" autocomplete="current-password" placeholder="Password" required>
+    <button class="btn gold" id="authIn" type="submit">Sign in</button>
+    <p class="gate-msg" id="authMsg">Only invited guests of the planning team can open this plan.</p>
+  </form>
+</div>
 <div class="modal" id="imp" role="dialog" aria-modal="true" aria-labelledby="impTitle">
   <div class="sheet" style="width:min(900px,100%)">
     <header>
@@ -669,8 +698,15 @@ aside.panel.building .buildhead{display:flex}
 </div>
 
 <script>
+/* ===== Supabase connection: paste your Project URL and anon public key here (Project Settings, API) ===== */
+const SUPABASE_URL='https://tucirtuxuzmifciywnqf.supabase.co';
+const SUPABASE_ANON_KEY='sb_publishable_Lz--X6lvwPcGmTzmx0_tnw_tixfRxqo';
+/* ===================================================================================================== */
 (function(){
 "use strict";
+try{const cs=document.currentScript,head="<!DOCTYPE html>\n"+document.documentElement.outerHTML;
+  document.addEventListener('DOMContentLoaded',()=>{let t='';for(let n=cs.nextSibling;n;n=n.nextSibling)t+=n.nodeType===1?n.outerHTML:(n.nodeType===3?n.textContent:'');
+    window.__pristine=head.replace(/<\/body>\s*<\/html>\s*$/i,t+'</body></html>')})}catch(e){}
 /* ---------- definitions ---------- */
 const TYPES = {
   round:{name:'Round table',shape:'round',w:1.8,h:1.8,table:true,uniform:true,min:.9,max:3.2},
@@ -747,7 +783,8 @@ let undoStack=[], redoStack=[];
 let tool='select', snap=true, night=false, tilt=false, showNames=true;
 let conflicts=new Set(), measure=null, tab='smart', seatMap={}, placing=null;
 var ON={db:null,user:null,me:null,canWrite:true,ready:false,status:'local',lastState:'',lastFloor:'',timer:null,writing:false,again:false,remotePending:null,designs:[],lastBy:null,lastAt:0};
-var SB={cfg:null,ready:false,lastStr:'',lastAt:'',timer:null,writing:false,again:false,pollT:null,tick:0,designs:[]};
+var GATED=!window.claude;
+var SB={session:null,cfg:null,ready:false,lastStr:'',lastAt:'',timer:null,writing:false,again:false,pollT:null,tick:0,designs:[]};
 let sheetView='guests',sheetQ='',sheetSort={k:null,d:1},sheetSel=new Set(),actLog=[];
 let mode='plan',bTool='floor',bMat='m',brushR=1,doorW=1.8,hover=null;
 let gFilter='all', gQuery='', openGuest=null, chartView='table';
@@ -1249,7 +1286,7 @@ function endEdit(){if(pending&&pending!==snapshot())pushUndo(pending);pending=nu
 function undo(){closeSeatCard();if(!undoStack.length)return;redoStack.push(snapshot());S=JSON.parse(undoStack.pop());cleanSel();renderAll();renderPanel()}
 function redo(){closeSeatCard();if(!redoStack.length)return;undoStack.push(snapshot());S=JSON.parse(redoStack.pop());cleanSel();renderAll();renderPanel()}
 function cleanSel(){sel=new Set([...sel].filter(id=>byId(id)));if(selSeat&&!byId(selSeat.tid))selSeat=null}
-let saveT=null;function saveAuto(){if(ON.ready){scheduleOnline();return}if(SB.ready){scheduleSB();return}clearTimeout(saveT);saveT=setTimeout(()=>lsSet(LS_AUTO,snapshot()),400)}
+let saveT=null;function saveAuto(){if(ON.ready){scheduleOnline();return}if(SB.ready){scheduleSB();return}if(!window.claude)return;clearTimeout(saveT);saveT=setTimeout(()=>lsSet(LS_AUTO,snapshot()),400)}
 
 /* ---------- view ---------- */
 function fit(){
@@ -2618,6 +2655,7 @@ document.addEventListener('keydown',e=>{
   const typing=/INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName),mod=e.ctrlKey||e.metaKey;
   if($('#chart').classList.contains('open')){if(e.key==='Escape')closeChart();return}
   if($('#imp').classList.contains('open')){if(e.key==='Escape')closeImport();return}
+  if($('#authM').classList.contains('open'))return;
   if($('#sheetM').classList.contains('open')){if(e.key==='Escape'&&!/INPUT|SELECT/.test(document.activeElement.tagName))closeSheet();else if(e.key==='Escape')document.activeElement.blur();
     if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='z'&&!/INPUT/.test(document.activeElement.tagName)){e.preventDefault();e.shiftKey?redo():undo();renderSheet()}return}
   if(mod&&e.key.toLowerCase()==='z'&&!typing){e.preventDefault();e.shiftKey?redo():undo();return}
@@ -2969,6 +3007,7 @@ if(!loaded)S.updatedAt=0;
 $('#bWalk').setAttribute('aria-pressed',!!S.venue.walk);
 renderAll();renderPanel();requestAnimationFrame(fit);
 let rT=null;window.addEventListener('resize',()=>{clearTimeout(rT);rT=setTimeout(applyView,100)});
+if(GATED){showSignIn();try{localStorage.removeItem(LS_AUTO)}catch(e){}}
 setTimeout(connectOnline,0);
 /* ---------- live online saving (claude.ai page), falls back to this device ---------- */
 const CLIENT=Math.random().toString(36).slice(2,10);
@@ -2981,7 +3020,8 @@ function setNet(st,msg){ON.status=st;const c=$('#netChip');if(!c)return;c.classL
   if(st==='readonly'){c.classList.add('live');c.textContent='View only';c.title='You can see the plan live, but only editors can change it.'}
   if(st==='err'){c.classList.add('err');c.textContent='Not saved, retrying';c.title=msg||''}}
 $('#netChip').onclick=async()=>{
-  if(SB.ready){toast(`Saved online in Supabase, plan ${SB.cfg.plan}. Changes from your partner appear within a few seconds.`);return}
+  if(SB.ready){toast(`Saved online. Signed in as ${sbWho()}. Changes from your partner appear within a few seconds.`);return}
+  if(!ON.ready&&!window.claude){showSignIn();return}
   if(!ON.ready){toast('Saved on this device only. Open Saved to connect Supabase, or use the claude.ai link, to save online.');return}
   let who='';if(ON.lastBy&&ON.user){try{const ps=await ON.user.profiles([ON.lastBy]);who=(ps[ON.lastBy]&&ps[ON.lastBy].name)||''}catch(e){}}
   toast(`Saved online and shared live${ON.lastAt?`. Last change ${who?'by '+who+' ':''}at ${new Date(ON.lastAt).toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'})}`:''}.`)};
@@ -3052,8 +3092,9 @@ async function connectOnline(){
   // move designs saved on this device up to the shared list, once
   if(ON.canWrite){try{const local=JSON.parse(lsGet(LS_SAVES)||'[]');if(local.length){const ex=await db.collection('designs').get();if(ex.empty){for(const sv of local.slice(0,12)){const data=JSON.stringify(sv.data);if(data.length<250000)await db.collection('designs').add({name:sv.name,at:sv.at||Date.now(),by:ON.me||'',data})}}try{localStorage.removeItem(LS_SAVES)}catch(e){}}}catch(e){}}
 }
-/* ---------- Supabase: live online saving for the downloaded HTML file ---------- */
-const SB_KEY='tolipPlanner.supabase';
+/* ---------- Supabase: sign in with a user name and password, plan saved online ---------- */
+const SB_EMBED=/*SB_EMBED*/{url:SUPABASE_URL,key:SUPABASE_ANON_KEY,plan:'hossam-salma'}/*END_EMBED*/;
+const SB_KEY='tolipPlanner.supabase',SB_SESS='tolipPlanner.sbSession';
 const SB_SQL=`create table if not exists public.wedding_plans (
   id text primary key,
   data jsonb not null,
@@ -3063,20 +3104,37 @@ const SB_SQL=`create table if not exists public.wedding_plans (
 );
 alter table public.wedding_plans enable row level security;
 drop policy if exists "wedding plan access" on public.wedding_plans;
-create policy "wedding plan access" on public.wedding_plans
-  for all to anon using (true) with check (true);`;
-function sbCfg(){try{return JSON.parse(lsGet(SB_KEY)||'null')}catch(e){return null}}
-function sbH(x){return Object.assign({apikey:SB.cfg.key,Authorization:'Bearer '+SB.cfg.key,'Content-Type':'application/json'},x||{})}
-function sbBase(){return SB.cfg.url.replace(/\/+$/,'')+'/rest/v1/wedding_plans'}
-async function sbGet(id,cols){const r=await fetch(`${sbBase()}?id=eq.${encodeURIComponent(id)}&select=${cols||'*'}`,{headers:sbH()});if(!r.ok)throw new Error((await r.text())||r.status);const a=await r.json();return a[0]||null}
-async function sbPut(id,data){const r=await fetch(`${sbBase()}?on_conflict=id`,{method:'POST',headers:sbH({Prefer:'resolution=merge-duplicates,return=minimal'}),body:JSON.stringify({id,data,updated_at:new Date().toISOString(),updated_by:SB.cfg.name||'',client:CLIENT})});if(!r.ok)throw new Error((await r.text())||r.status)}
+drop policy if exists "wedding plan members" on public.wedding_plans;
+create policy "wedding plan members" on public.wedding_plans
+  for all to authenticated using (true) with check (true);`;
+function sbCfg(){if(SB_EMBED.url&&SB_EMBED.key)return SB_EMBED;try{return JSON.parse(lsGet(SB_KEY)||'null')}catch(e){return null}}
+function sbSess(){try{return JSON.parse(lsGet(SB_SESS)||'null')}catch(e){return null}}
+function sbSetSess(s){SB.session=s;if(s)lsSet(SB_SESS,JSON.stringify(s));else try{localStorage.removeItem(SB_SESS)}catch(e){}}
+function sbRoot(){return SB.cfg.url.replace(/\/+$/,'')}
+function sbBase(){return sbRoot()+'/rest/v1/wedding_plans'}
+function toEmail(u){u=String(u||'').trim().toLowerCase();return u.includes('@')?u:u.replace(/[^a-z0-9._-]/g,'')+'@planner.hossam-salma.app'}
+function sbWho(){const s=SB.session;if(!s)return '';const m=(s.user&&s.user.user_metadata)||{};return m.username||((s.user&&s.user.email)||'').split('@')[0]}
+async function sbAuth(path,body){
+  const r=await fetch(sbRoot()+'/auth/v1/'+path,{method:'POST',headers:{apikey:SB.cfg.key,'Content-Type':'application/json'},body:JSON.stringify(body)});
+  const j=await r.json().catch(()=>({}));if(!r.ok)throw new Error(j.msg||j.error_description||j.message||('Error '+r.status));return j;
+}
+async function sbRefresh(){const s=SB.session;if(!s||!s.refresh_token)throw new Error('signed out');const j=await sbAuth('token?grant_type=refresh_token',{refresh_token:s.refresh_token});sbSetSess(Object.assign({},j,{expires_at:Date.now()+(j.expires_in||3600)*1000}));return j}
+async function sbFetch(url,opts,retry){
+  if(SB.session&&SB.session.expires_at&&Date.now()>SB.session.expires_at-60000){try{await sbRefresh()}catch(e){}}
+  const h=Object.assign({apikey:SB.cfg.key,Authorization:'Bearer '+(SB.session?SB.session.access_token:SB.cfg.key),'Content-Type':'application/json'},(opts&&opts.headers)||{});
+  const r=await fetch(url,Object.assign({},opts,{headers:h}));
+  if(r.status===401&&!retry&&SB.session){await sbRefresh();return sbFetch(url,opts,true)}
+  return r;
+}
+async function sbGet(id,cols){const r=await sbFetch(`${sbBase()}?id=eq.${encodeURIComponent(id)}&select=${cols||'*'}`,{});if(!r.ok)throw new Error((await r.text())||r.status);const a=await r.json();return a[0]||null}
+async function sbPut(id,data){const r=await sbFetch(`${sbBase()}?on_conflict=id`,{method:'POST',headers:{Prefer:'resolution=merge-duplicates,return=minimal'},body:JSON.stringify({id,data,updated_at:new Date().toISOString(),updated_by:sbWho(),client:CLIENT})});if(!r.ok)throw new Error((await r.text())||r.status)}
 function scheduleSB(){if(!SB.ready)return;if(snapshot()===SB.lastStr)return;setNet('saving');clearTimeout(SB.timer);SB.timer=setTimeout(pushSB,900)}
 async function pushSB(){
   SB.timer=null;if(SB.writing){SB.again=true;return}
-  const str=snapshot();if(str===SB.lastStr){setNet('live','Saved to your Supabase project.');return}
+  const str=snapshot();if(str===SB.lastStr){setNet('live','Saved online.');return}
   SB.writing=true;
-  try{await sbPut(SB.cfg.plan,JSON.parse(str));SB.lastStr=str;setNet('live','Saved to your Supabase project. Your partner sees changes within a few seconds.');try{localStorage.removeItem(LS_AUTO)}catch(e){}}
-  catch(e){setNet('err','Supabase did not accept the save: '+String(e.message||e).slice(0,120));setTimeout(scheduleSB,4000)}
+  try{await sbPut(SB.cfg.plan,JSON.parse(str));SB.lastStr=str;setNet('live',`Saved online. Signed in as ${sbWho()}.`);try{localStorage.removeItem(LS_AUTO)}catch(e){}}
+  catch(e){setNet('err','Not saved yet: '+String(e.message||e).slice(0,120));setTimeout(scheduleSB,4000)}
   SB.writing=false;if(SB.again){SB.again=false;scheduleSB()}
 }
 function sbBusy(){return !!(drag||gdrag||SB.timer||SB.writing)}
@@ -3094,10 +3152,15 @@ async function pollSB(){
   }catch(e){setNet('err','Cannot reach Supabase right now. Changes will be sent when it is back.')}
 }
 async function loadSBDesigns(){try{const r=await sbGet(SB.cfg.plan+'__designs');const list=(r&&r.data&&r.data.list)||[];const changed=JSON.stringify(list.map(d=>d.id))!==JSON.stringify(SB.designs.map(d=>d.id));SB.designs=list;if(changed&&tab==='layouts'&&!sbBusy())renderPanel()}catch(e){}}
-async function saveDesignSB(name){try{const r=await sbGet(SB.cfg.plan+'__designs');const list=(r&&r.data&&r.data.list)||[];list.unshift({id:Math.random().toString(36).slice(2,10),name,at:Date.now(),by:SB.cfg.name||'',data:snapshot()});await sbPut(SB.cfg.plan+'__designs',{list:list.slice(0,30)});SB.designs=list.slice(0,30);toast('Saved online.');renderPanel()}catch(e){toast('Could not save the design to Supabase.')}}
+async function saveDesignSB(name){try{const r=await sbGet(SB.cfg.plan+'__designs');const list=(r&&r.data&&r.data.list)||[];list.unshift({id:Math.random().toString(36).slice(2,10),name,at:Date.now(),by:sbWho(),data:snapshot()});await sbPut(SB.cfg.plan+'__designs',{list:list.slice(0,30)});SB.designs=list.slice(0,30);toast('Saved online.');renderPanel()}catch(e){toast('Could not save the design online.')}}
 async function deleteDesignSB(id){try{const r=await sbGet(SB.cfg.plan+'__designs');const list=((r&&r.data&&r.data.list)||[]).filter(d=>d.id!==id);await sbPut(SB.cfg.plan+'__designs',{list});SB.designs=list;renderPanel()}catch(e){toast('Could not delete that design.')}}
 async function connectSupabase(opts){
-  opts=opts||{};SB.cfg=sbCfg();if(!SB.cfg||!SB.cfg.url||!SB.cfg.key||!SB.cfg.plan||ON.ready)return false;
+  opts=opts||{};SB.cfg=sbCfg();SB.session=sbSess();
+  if(ON.ready)return false;
+  if(!SB.cfg||!SB.cfg.url||!SB.cfg.key){if(GATED)showSignIn();return false}
+  if(!SB.cfg.plan)SB.cfg.plan='hossam-salma';
+  if(!SB.session){setNet('local');if(GATED)showSignIn();return false}
+  if(GATED&&!opts.preferRemote)showSignIn('Opening your plan…');
   setNet('connecting');
   try{
     const row=await sbGet(SB.cfg.plan);const localAt=S.updatedAt||0,remoteAt=row?Date.parse(row.updated_at)||0:0;
@@ -3106,43 +3169,66 @@ async function connectSupabase(opts){
     SB.lastAt=row?row.updated_at:'';SB.ready=true;
     clearInterval(SB.pollT);SB.pollT=setInterval(pollSB,4000);
     loadSBDesigns();
-    // move designs saved on this device to the shared list, once
-    try{const local=JSON.parse(lsGet(LS_SAVES)||'[]');if(local.length){const r=await sbGet(SB.cfg.plan+'__designs');if(!r||!(r.data&&r.data.list&&r.data.list.length)){await sbPut(SB.cfg.plan+'__designs',{list:local.slice(0,20).map(sv=>({id:Math.random().toString(36).slice(2,10),name:sv.name,at:sv.at||Date.now(),by:SB.cfg.name||'',data:JSON.stringify(sv.data)}))});loadSBDesigns()}try{localStorage.removeItem(LS_SAVES)}catch(e){}}}catch(e){}
-    if(snapshot()!==SB.lastStr)scheduleSB();else setNet('live','Saved to your Supabase project.');
+    try{const local=JSON.parse(lsGet(LS_SAVES)||'[]');if(local.length){const r=await sbGet(SB.cfg.plan+'__designs');if(!r||!(r.data&&r.data.list&&r.data.list.length)){await sbPut(SB.cfg.plan+'__designs',{list:local.slice(0,20).map(sv=>({id:Math.random().toString(36).slice(2,10),name:sv.name,at:sv.at||Date.now(),by:sbWho(),data:JSON.stringify(sv.data)}))});loadSBDesigns()}try{localStorage.removeItem(LS_SAVES)}catch(e){}}}catch(e){}
+    if(snapshot()!==SB.lastStr)scheduleSB();else setNet('live',`Saved online. Signed in as ${sbWho()}.`);
+    if(tab==='layouts')renderPanel();
+    hideSignIn();
     return true;
-  }catch(e){SB.ready=false;setNet('err','Could not connect to Supabase: '+String(e.message||e).slice(0,140));return false}
+  }catch(e){SB.ready=false;const m=String(e.message||e);
+    if(/signed out|JWT|401|refresh/i.test(m)){sbSetSess(null);showSignIn('Your session ended. Please sign in again.');setNet('local')}
+    else if(GATED){showSignIn('Could not reach the online plan. Check your internet connection and try again.',true);setNet('err','Could not connect.')}else setNet('err','Could not connect: '+m.slice(0,140));return false}
 }
-function disconnectSupabase(){clearInterval(SB.pollT);SB.ready=false;SB.cfg=null;try{localStorage.removeItem(SB_KEY)}catch(e){}lsSet(LS_AUTO,snapshot());setNet('local')}
-function sbInvite(){return 'WSP1:'+btoa(unescape(encodeURIComponent(JSON.stringify({url:SB.cfg.url,key:SB.cfg.key,plan:SB.cfg.plan}))))}
-function sbReadInvite(code){try{const j=JSON.parse(decodeURIComponent(escape(atob(String(code).trim().replace(/^WSP1:/,'')))));return j.url&&j.key&&j.plan?j:null}catch(e){return null}}
+function signOutSB(){clearInterval(SB.pollT);SB.ready=false;try{fetch(sbRoot()+'/auth/v1/logout',{method:'POST',headers:{apikey:SB.cfg.key,Authorization:'Bearer '+(SB.session&&SB.session.access_token)}})}catch(e){}sbSetSess(null);setNet('local');renderPanel();showSignIn('Signed out.')}
+/* launch gate */
+function showSignIn(msg,isErr){
+  const m=$('#authM');if(!m)return;document.body.classList.add('gated');m.classList.add('open');
+  const el=$('#authMsg');el.classList.toggle('err',!!isErr);
+  el.textContent=msg||(SB.cfg&&SB.cfg.url?'Only invited members of the planning team can open this plan.':'This planner is not connected to Supabase yet. Add the Project URL and anon key at the top of the file.');
+  setTimeout(()=>{const u=$('#authUser');if(u&&!u.value)u.focus()},60);
+}
+function hideSignIn(){const m=$('#authM');if(m)m.classList.remove('open');document.body.classList.remove('gated')}
+async function doSignIn(){
+  SB.cfg=sbCfg();if(!SB.cfg||!SB.cfg.url){showSignIn(null,true);return}
+  const user=$('#authUser').value.trim(),pw=$('#authPw').value,btn=$('#authIn');
+  if(!user||!pw){showSignIn('Enter your email and password.',true);return}
+  btn.disabled=true;btn.textContent='Signing in…';
+  try{
+    const j=await sbAuth('token?grant_type=password',{email:toEmail(user),password:pw});
+    sbSetSess(Object.assign({},j,{expires_at:Date.now()+(j.expires_in||3600)*1000}));
+    const ok=await connectSupabase({preferRemote:true});
+    if(ok){$('#authPw').value='';hideSignIn();toast(`Welcome ${sbWho()}. Everything you do is saved online.`)}
+    else showSignIn('Signed in, but the plan could not be loaded. Check that the setup SQL was run in Supabase.',true);
+  }catch(e){showSignIn(/invalid login|credentials|invalid_grant/i.test(e.message)?'That email and password do not match an invited account.':(/email not confirmed/i.test(e.message)?'This account is not confirmed yet. In Supabase, confirm the user or create it with Auto Confirm.':e.message),true)}
+  btn.disabled=false;btn.textContent='Sign in';
+}
+/* download a copy of the planner with the Supabase connection built in, for phones and other computers */
+function downloadPersonalised(){
+  if(!window.__pristine){toast('Download is not available here.');return}
+  const cfg={url:SB.cfg.url,key:SB.cfg.key,plan:SB.cfg.plan||'hossam-salma'};
+  const a0='/*SB'+'_EMBED*/',a1='/*END'+'_EMBED*/';const i=window.__pristine.indexOf(a0),j=window.__pristine.indexOf(a1,i);
+  if(i<0||j<0){toast('Could not prepare the file.');return}
+  const html=window.__pristine.slice(0,i+a0.length)+JSON.stringify(cfg)+window.__pristine.slice(j);
+  try{const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([html],{type:'text/html'}));a.download='Hossam-Salma-wedding-planner.html';document.body.appendChild(a);a.click();a.remove();
+    toast('Downloaded. Open it on any device and sign in; no setup needed there.')}catch(e){toast('Download failed.')}
+}
+$('#authIn').onclick=()=>doSignIn();$('#authUser').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();$('#authPw').focus()}});
 function sbSection(){
-  if(ON.ready||window.claude)return '';
-  if(SB.ready){const host=(SB.cfg.url.match(/\/\/([^/.]+)/)||[])[1]||SB.cfg.url;
-    return `<h2>Saved online with Supabase</h2><p class="note">Connected to <b>${esc(host)}</b>, plan <b>${esc(SB.cfg.plan)}</b>. Every change saves within a second, and your partner's screen updates within a few seconds. Nothing is kept in this browser.</p>
-      <div class="btns"><button class="btn gold" id="sbInvite">Copy invite for your partner</button><button class="btn danger" id="sbOff">Disconnect</button></div>`}
-  const c=sbCfg()||{};
-  return `<h2>Save online with Supabase</h2>
-    <p class="note">1. Create a free project at supabase.com. 2. Open SQL Editor, paste the setup and press Run. 3. In Project Settings, API, copy the Project URL and the anon public key into the boxes below.</p>
-    <div class="btns"><button class="btn" id="sbSql">Copy setup SQL</button></div>
-    <div class="row"><label for="sbUrl">Project URL</label><input id="sbUrl" type="text" placeholder="https://xxxx.supabase.co" value="${esc(c.url||'')}"></div>
-    <div class="row"><label for="sbKeyI">Anon key</label><input id="sbKeyI" type="text" placeholder="eyJhbGci…" value="${esc(c.key||'')}"></div>
-    <div class="row"><label for="sbPlan">Plan code</label><input id="sbPlan" type="text" value="${esc(c.plan||('hossam-salma-'+Math.random().toString(36).slice(2,8)))}"></div>
-    <div class="row"><label for="sbName">Your name</label><input id="sbName" type="text" placeholder="Hossam" value="${esc(c.name||'')}"></div>
-    <div class="btns"><button class="btn primary" id="sbGo">Connect and save online</button></div>
-    <p class="note">Joining your partner's plan? Paste the invite they sent you:</p>
-    <div class="row"><input id="sbInv" type="text" placeholder="WSP1:…"><button class="btn" id="sbJoin">Join</button></div>`;
+  if(!SB.ready)return '';
+  return `<h2>Account</h2><p class="note">Signed in as <b>${esc((SB.session&&SB.session.user&&SB.session.user.email)||sbWho())}</b>. Everything saves online automatically.</p>
+    <div class="btns"><button class="btn" id="sbOut">Sign out</button></div>`;
 }
 function bindSbSection(){
   const q=id=>document.getElementById(id);
   if(q('sbSql'))q('sbSql').onclick=async()=>{try{await navigator.clipboard.writeText(SB_SQL);toast('Setup SQL copied. Paste it into Supabase SQL Editor and press Run.')}catch(e){q('sText').value=SB_SQL;toast('Copy the SQL from the box below.')}};
-  if(q('sbGo'))q('sbGo').onclick=async()=>{const cfg={url:q('sbUrl').value.trim(),key:q('sbKeyI').value.trim(),plan:q('sbPlan').value.trim().replace(/\s+/g,'-'),name:q('sbName').value.trim()};
-    if(!/^https:\/\/.+/.test(cfg.url)||!cfg.key||!cfg.plan){toast('Fill in the Project URL, anon key and plan code.');return}
-    lsSet(SB_KEY,JSON.stringify(cfg));if(await connectSupabase()){toast('Connected. Your plan now saves online.');renderPanel()}else toast('Could not connect. Check the URL, key and that the setup SQL ran.')};
-  if(q('sbJoin'))q('sbJoin').onclick=async()=>{const j=sbReadInvite(q('sbInv').value);if(!j){toast('That invite code is not valid.');return}
-    const name=(q('sbName')&&q('sbName').value.trim())||'';lsSet(SB_KEY,JSON.stringify(Object.assign(j,{name})));if(await connectSupabase({preferRemote:true})){toast('Joined. You are now planning together.');renderPanel()}else toast('Could not join. Ask your partner to check their Supabase setup.')};
-  if(q('sbInvite'))q('sbInvite').onclick=async()=>{const code=sbInvite();try{await navigator.clipboard.writeText(code);toast('Invite copied. Send it to your partner; they paste it in Saved, Join.')}catch(e){q('sText').value=code;toast('Copy the invite from the box below.')}};
-  if(q('sbOff'))q('sbOff').onclick=()=>{disconnectSupabase();renderPanel();toast('Disconnected. The plan is saved on this device again.')};
+  if(q('sbGo'))q('sbGo').onclick=async()=>{const cfg={url:q('sbUrl').value.trim(),key:q('sbKeyI').value.trim(),plan:'hossam-salma'};
+    if(!/^https:\/\/.+/.test(cfg.url)||!cfg.key){toast('Paste the Project URL and the anon key.');return}
+    lsSet(SB_KEY,JSON.stringify(cfg));SB.cfg=cfg;renderPanel();showSignIn('Project linked. Create your account (first time) or sign in.')};
+  if(q('sbSignIn'))q('sbSignIn').onclick=()=>{SB.cfg=sbCfg();showSignIn()};
+  if(q('sbReset'))q('sbReset').onclick=()=>{try{localStorage.removeItem(SB_KEY)}catch(e){}SB.cfg=null;renderPanel()};
+  if(q('sbDl'))q('sbDl').onclick=downloadPersonalised;
+  if(q('sbOut'))q('sbOut').onclick=signOutSB;
 }
+
 window.__plan={get S(){return S},nickOf,TYPES,seatSlots,rowsLayout,seatMap:()=>{computeSeatMap();return seatMap},tableSideKey,LINENS,CELL,tableName,tableNo,frame,coupleFocus,get showNames(){return showNames}};
 })();
 </script>
