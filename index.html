@@ -319,6 +319,17 @@ textarea{width:100%;min-height:90px;border:1px solid var(--line);border-radius:9
 .v3d-busy.on{display:flex}
 .v3d-busy i{width:46px;height:46px;border-radius:50%;border:2px solid rgba(176,141,87,.25);border-top-color:#B08D57;animation:spin 1s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
+/* real site drawing */
+.wall.rail{fill:#EFE4D0;stroke:#B9A57F;stroke-width:.03;stroke-dasharray:.12 .1}
+.wall.glassr{fill:rgba(160,205,225,.55);stroke:#6E97AA;stroke-width:.03}
+.wall.facade{fill:#D9C4A6;stroke:#9C8762;stroke-width:.04}
+.site-bld{fill:url(#lotHatch);stroke:#C9B89A;stroke-width:.08;opacity:.9}
+.site-t{font:italic 600 .9px "Cormorant Garamond",Georgia,serif;fill:#8A7A5E}
+.site-land{fill:#EFE6D6;stroke:#C9B89A;stroke-width:.06}
+.site-ros{fill:none;stroke:#B08D57;stroke-width:.08}
+.site-stair{stroke:#B9A57F;stroke-width:.05}
+.site-arrow{stroke:#8A7A5E;stroke-width:.06;marker-end:none;stroke-dasharray:.2 .15}
+.site-arch{fill:none;stroke:#8A7A5E;stroke-width:.08}
 /* editing in 3D */
 .stage.v3d-on .seatcard{z-index:45}
 .v3d-edit{position:absolute;left:50%;bottom:58px;transform:translate(-50%,12px);z-index:3;display:flex;align-items:center;gap:4px;padding:6px;border-radius:16px;background:rgba(251,248,242,.97);border:1px solid rgba(176,141,87,.6);box-shadow:0 18px 40px -16px rgba(0,0,0,.6);opacity:0;pointer-events:none;transition:opacity .18s,transform .18s;max-width:calc(100% - 20px);overflow-x:auto}
@@ -652,6 +663,7 @@ aside.panel.building .buildhead{display:flex}
       </pattern>
       <pattern id="lotHatch" width="1" height="1" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="1" height="1" fill="transparent"/><path d="M0 0V1" stroke="rgba(120,110,90,.18)" stroke-width=".06"/></pattern>
       <pattern id="m-d" width="2" height=".25" patternUnits="userSpaceOnUse"><rect width="2" height=".25" style="fill:var(--deck)"/><path d="M0 .245H2M1.3 0V.25" stroke="rgba(120,95,60,.22)" stroke-width=".02"/></pattern>
+      <pattern id="m-t" width="1.2" height="1.2" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="1.2" height="1.2" fill="#E8DFCE"/><rect width=".6" height=".6" fill="#A7B0B3"/><rect x=".6" y=".6" width=".6" height=".6" fill="#A7B0B3"/></pattern>
       <pattern id="m-m" width="4" height="4" patternUnits="userSpaceOnUse"><rect width="4" height="4" fill="#F4F2EE"/><path d="M0 1.2C1 .9 1.6 1.8 2.6 1.4S3.6 .6 4 .9M.4 3.6C1.4 3.1 2 3.8 3.1 3.2" fill="none" stroke="#D9D3C8" stroke-width=".03"/><path d="M0 0H4V4" fill="none" stroke="#E6E1D8" stroke-width=".03"/></pattern>
       <pattern id="m-s" width="1" height="1" patternUnits="userSpaceOnUse"><rect width="1" height="1" fill="#DAD4C8"/><path d="M0 .99H1M.99 0V1" stroke="#B9B1A2" stroke-width=".03"/></pattern>
       <pattern id="m-p" width="1" height="1" patternUnits="userSpaceOnUse"><rect width="1" height="1" fill="#C9A273"/><path d="M0 0L.5 .5L0 1M.5 0L1 .5L.5 1M0 .5L.25 .25M.75 .75L1 .5" fill="none" stroke="#A9834F" stroke-width=".025"/></pattern>
@@ -784,7 +796,7 @@ aside.panel.building .buildhead{display:flex}
 
 <script>
 /* ===== Supabase connection: paste your Project URL and anon public key here (Project Settings, API) ===== */
-const SUPABASE_URL='https://tucirtuxuzmifciywnqf.supabase.co';
+const SUPABASE_URL='https://tucirtuxuzmifciywnqf.supabase.co'';
 const SUPABASE_ANON_KEY='sb_publishable_Lz--X6lvwPcGmTzmx0_tnw_tixfRxqo';
 /* ===================================================================================================== */
 (function(){
@@ -888,7 +900,7 @@ function blankState(){const st={plan:{cap:100,extra:10,bride:50,groom:60},venue:
 
 /* ---------- floor, walls ---------- */
 const CELL=.5;
-const MATS={d:{name:'Deck',fill:'url(#m-d)'},m:{name:'Marble',fill:'url(#m-m)'},s:{name:'Stone',fill:'url(#m-s)'},p:{name:'Parquet',fill:'url(#m-p)'},c:{name:'Carpet',fill:'url(#m-c)'},g:{name:'Grass',fill:'url(#m-g)'},w:{name:'Water',fill:'url(#m-w)',block:true}};
+const MATS={t:{name:'Tolip marble',fill:'url(#m-t)'},d:{name:'Deck',fill:'url(#m-d)'},m:{name:'Marble',fill:'url(#m-m)'},s:{name:'Stone',fill:'url(#m-s)'},p:{name:'Parquet',fill:'url(#m-p)'},c:{name:'Carpet',fill:'url(#m-c)'},g:{name:'Grass',fill:'url(#m-g)'},w:{name:'Water',fill:'url(#m-w)',block:true}};
 function fDims(){return {cols:Math.max(1,Math.round(S.venue.w/CELL)),rows:Math.max(1,Math.round(S.venue.h/CELL))}}
 function makeFloor(ch){const {cols,rows}=fDims();return {rows:Array.from({length:rows},()=>ch.repeat(cols))}}
 function cellAt(cx,cy){const r=S.floor.rows[cy];return r&&cx>=0?(r[cx]||'.'):'.'}
@@ -1230,14 +1242,15 @@ function renderWalls(){
     const L=Math.hypot(w.x2-w.x1,w.y2-w.y1),ang=Math.atan2(w.y2-w.y1,w.x2-w.x1)*180/Math.PI;
     const ops=S.doors.filter(d=>d.wall===w.id).map(d=>({...d,a:d.t*L-d.wd/2,b:d.t*L+d.wd/2})).sort((a,b)=>a.a-b.a);
     let g=`<g transform="translate(${f(w.x1)} ${f(w.y1)}) rotate(${f(ang)})">`,pos=-.1;
-    for(const o of ops){if(o.a>pos)g+=`<rect class="wall" x="${f(pos)}" y="-.1" width="${f(o.a-pos)}" height=".2"/>`;
+    const wc=w.kind==='rail'?'wall rail':w.kind==='glass'?'wall glassr':w.kind==='facade'?'wall facade':'wall';
+    for(const o of ops){if(o.a>pos)g+=`<rect class="${wc}" x="${f(pos)}" y="-.1" width="${f(o.a-pos)}" height=".2"/>`;
       if(o.kind==='window')g+=`<rect class="winb" x="${f(o.a)}" y="-.07" width="${f(o.wd)}" height=".14"/><path class="door" d="M${f(o.a)} 0H${f(o.b)}"/>`;
       else if(o.kind==='opening')g+=`<path class="thresh" d="M${f(o.a)} -.1H${f(o.b)}M${f(o.a)} .1H${f(o.b)}"/>`;
       else{const dbl=o.wd>=1.4,lw=dbl?o.wd/2:o.wd;
         g+=`<path class="doorl" d="M${f(o.a)} 0V${f(-lw)}"/><path class="door" d="M${f(o.a+lw)} 0A${f(lw)} ${f(lw)} 0 0 0 ${f(o.a)} ${f(-lw)}"/>`;
         if(dbl)g+=`<path class="doorl" d="M${f(o.b)} 0V${f(-lw)}"/><path class="door" d="M${f(o.b-lw)} 0A${f(lw)} ${f(lw)} 0 0 1 ${f(o.b)} ${f(-lw)}"/>`}
       pos=o.b}
-    if(pos<L+.1)g+=`<rect class="wall" x="${f(pos)}" y="-.1" width="${f(L+.1-pos)}" height=".2"/>`;
+    if(pos<L+.1)g+=`<rect class="${wc}" x="${f(pos)}" y="-.1" width="${f(L+.1-pos)}" height=".2"/>`;
     s+=g+'</g>';
   }
   $('#walls').innerHTML=s;
@@ -1256,6 +1269,15 @@ function renderGround(){
     if(sea==='bottom')s+=`<text class="seat" x="${W/2}" y="${H+1+D/2+.4}" text-anchor="middle">${lbl}</text>`;
     if(sea==='left')s+=`<text class="seat" transform="translate(${-D/2-1} ${H/2}) rotate(-90)" text-anchor="middle">${lbl}</text>`;
     if(sea==='right')s+=`<text class="seat" transform="translate(${W+1+D/2} ${H/2}) rotate(90)" text-anchor="middle">${lbl}</text>`;
+  }
+  if(S.venue.site==='tolip'){
+    s+=`<rect class="site-bld" x="${W+.3}" y="-6" width="12" height="${H+26}"/><text class="site-t" transform="translate(${W+6.3} ${H/2}) rotate(90)" text-anchor="middle">Hotel tower, east wing</text>`;
+    s+=`<rect class="site-bld" x="-12.3" y="4" width="12" height="${H+16}"/><text class="site-t" transform="translate(-6.3 ${H/2+6}) rotate(-90)" text-anchor="middle">Hotel tower, west wing</text>`;
+    const cx=W/2,y0=H;
+    s+=`<path class="site-land" d="M${cx-7} ${y0}V${y0+5}A7 5.5 0 0 0 ${cx+7} ${y0+5}V${y0}Z"/><circle class="site-ros" cx="${cx}" cy="${y0+4.6}" r="2.2"/><circle class="site-ros" cx="${cx}" cy="${y0+4.6}" r="1.2"/>`;
+    for(const sg of [-1,1]){const x=cx+sg*5.2;let st='';for(let i=0;i<=14;i++)st+=`M${f(x-1.3)} ${f(y0+.3+i*.3)}H${f(x+1.3)}`;s+=`<path class="site-stair" d="${st}"/><path class="site-arrow" d="M${x} ${y0+.6}V${y0+4.6}"/>`}
+    s+=`<path class="site-arch" d="M${cx-1.4} ${y0+.2}V${y0+1}A1.4 1.4 0 0 1 ${cx+1.4} ${y0+1}V${y0+.2}"/>`;
+    s+=`<text class="site-t" x="${cx}" y="${y0+11.6}" text-anchor="middle">Grand staircase down to the pool courtyard</text>`;
   }
   s+=`<rect class="lot" x="0" y="0" width="${W}" height="${H}"/>`;
   s+=floorSVG();let g='',m='';
@@ -1782,7 +1804,7 @@ function renderBuild(b){
     ${bTool==='brush'?`<div class="row"><label for="bR">Brush</label><input id="bR" type="range" min=".5" max="4" step=".5" value="${brushR}"><span style="min-width:40px;text-align:right">${brushR*2} m</span></div>`:''}
     ${bTool==='door'?`<div class="row"><label for="bD">Door</label><select id="bD"><option value="1" ${doorW===1?'selected':''}>Single, 1 m</option><option value="1.8" ${doorW===1.8?'selected':''}>Double, 1.8 m</option><option value="3" ${doorW===3?'selected':''}>Grand entrance, 3 m</option></select></div>`:''}
     <h3>Start from a shape</h3>
-    <div class="btns"><button class="btn sm" data-shape="terrace">Open terrace</button><button class="btn sm" data-shape="hall">Walled hall</button><button class="btn sm" data-shape="aisle">Hall with carpet aisle</button><button class="btn sm" data-shape="L">L-shaped hall</button><button class="btn sm" data-shape="U">Courtyard</button><button class="btn sm" data-shape="tent">Garden tent</button></div>
+    <div class="btns"><button class="btn sm gold" id="bTolip">Tolip terrace (measured)</button><button class="btn sm" data-shape="terrace">Open terrace</button><button class="btn sm" data-shape="hall">Walled hall</button><button class="btn sm" data-shape="aisle">Hall with carpet aisle</button><button class="btn sm" data-shape="L">L-shaped hall</button><button class="btn sm" data-shape="U">Courtyard</button><button class="btn sm" data-shape="tent">Garden tent</button></div>
     <h3>Walls</h3>
     <div class="btns"><button class="btn sm" id="bWallsAround">Walls around the floor</button><button class="btn sm" id="bWallsClear">Remove all walls</button></div>
     <h3>Building area</h3>
@@ -1792,6 +1814,7 @@ function renderBuild(b){
   b.querySelectorAll('[data-bt]').forEach(x=>x.onclick=()=>{bTool=x.dataset.bt;stage.classList.toggle('hand',bTool==='hand');measure=null;renderOverlay();renderBuild(b)});
   b.querySelectorAll('[data-mat]').forEach(x=>x.onclick=()=>{bMat=x.dataset.mat;if(!['floor','brush'].includes(bTool))bTool='floor';renderBuild(b)});
   b.querySelectorAll('[data-shape]').forEach(x=>x.onclick=()=>buildShape(x.dataset.shape));
+  if($('#bTolip'))$('#bTolip').onclick=useTolipSite;
   if($('#bR'))$('#bR').oninput=e=>{brushR=+e.target.value;e.target.nextElementSibling.textContent=brushR*2+' m'};
   if($('#bD'))$('#bD').onchange=e=>{doorW=+e.target.value};
   $('#bWallsAround').onclick=()=>{mutate(wallAround);toast(`${S.walls.length} walls raised along the floor edge. Add doors next.`)};
@@ -3143,6 +3166,54 @@ function migrate(d){
   for(const i of d.items){if(i.title==null)i.title='';if(i.color==='white'&&!LINENS.white)i.color='ivory';if(!TYPES[i.type].table&&i.label&&!i.title){i.title=i.label;i.label=''}}
   return d;
 }
+/* ---------- the real Tolip Alexandria terrace ----------
+   Google measurement: 512.6 m² inside a 91.5 m perimeter, which solves to about 20.1 m along the sea by 25.5 m deep.
+   Sea and Corniche on the short north side, the grand double staircase down to the pool courtyard on the south side,
+   hotel towers on the long east and west sides. */
+const TOLIP={w:20,h:25.5};
+function applyTolipSite(){
+  const W=TOLIP.w,H=TOLIP.h;
+  S.venue.w=W;S.venue.h=H;S.venue.sea='top';S.venue.site='tolip';S.venue.name='Tolip Alexandria terrace';
+  S.floor=makeFloor('t');
+  fillRect(0,0,W,.5,'s');fillRect(0,H-.5,W,H,'s');fillRect(0,0,.5,H,'s');fillRect(W-.5,0,W,H,'s');
+  for(const cx of [4.25,8.25,11.75,15.75])fillRect(cx-.5,1,cx+.5,H-1,'m');
+  S.walls=[];S.doors=[];
+  const wl=(x1,y1,x2,y2,kind)=>{const w={id:'w'+(S.next++),x1,y1,x2,y2,kind};S.walls.push(w);return w};
+  wl(0,0,W,0,'rail');
+  const south=wl(W,H,0,H,'rail');
+  wl(0,H,0,0,'glass');
+  const east=wl(W,0,W,H,'facade');
+  for(const x of [W/2-5.2,W/2+5.2])S.doors.push({id:'d'+(S.next++),wall:south.id,t:(W-x)/W,wd:2.6,kind:'opening'});
+  S.doors.push({id:'d'+(S.next++),wall:east.id,t:(H-3.2)/H,wd:2.4,kind:'door'});
+  // keep every table and guest; replace the old estimated decor with what the hotel actually sets up here
+  const tables=S.items.filter(i=>TYPES[i.type].table);const kept=S.items.find(i=>i.type==='kosha');
+  S.items=tables.slice();
+  S.items.push(make('kosha',{x:W/2,y:2.3,w:6,h:3,rot:0}));
+  if(kept){const k=S.items[S.items.length-1];k.title=kept.title;k.color=kept.color}
+  S.items.push(make('dance',{x:W/2,y:7.9,w:6,h:4.6}));
+  S.items.push(make('dj',{x:1.6,y:2.4,rot:90}));
+  S.items.push(make('speaker',{x:W/2-5.2,y:4.6}));S.items.push(make('speaker',{x:W/2+5.2,y:4.6}));
+  S.items.push(make('buffet',{x:W/2,y:H-.9,w:6.4,rot:180}));
+  S.items.push(make('bar',{x:W-2.0,y:2.7,w:3,rot:90}));
+  S.items.push(make('cake',{x:W/2-5.6,y:2.2}));
+  for(const t of tables){t.x=W/2;t.y=H/2}
+}
+function autoArrange(){
+  const saved=LO.space;let best=null;
+  for(const sp of ['balanced','compact']){LO.space=sp;
+    for(const [k] of LSTYLES){if(k==='smart')continue;const x=bestFor(k);x.score+=({rings:14,crescent:11,arc:12,grid:8,stagger:10,sunflower:9,wave:8,rays:rectShare()>.5?22:6}[k]||0);if(!best||x.score>best.score)best=x}
+    if(best&&best.placed===best.total)break}
+  LO.space=saved;if(best)for(const [t,x,y,rt] of best.res){t.x=x;t.y=y;t.rot=rt}
+  return best;
+}
+function useTolipSite(){
+  mutate(()=>{applyTolipSite();autoArrange()});fit();
+  toast('The real Tolip terrace is set up: 20 × 25.5 m by the sea, staircase to the pool courtyard, hotel towers either side.');
+}
+function ensureTolipSite(){
+  if(!S||!S.preloads||S.preloads.includes('tolipSite'))return;
+  S.preloads.push('tolipSite');pushUndo(snapshot());applyTolipSite();autoArrange();renderAll();renderPanel();fit();
+}
 function defaultLayout(){
   S=blankState();const W=S.venue.w,H=S.venue.h;
   fillRect(0,0,W,3,'g');
@@ -3154,6 +3225,7 @@ let loaded=null;try{loaded=JSON.parse(lsGet(LS_AUTO)||'null')}catch(e){}
 if(!loaded){try{const v2=JSON.parse(lsGet('tolipPlanner.auto.v2')||'null');if(v2&&v2.venue)loaded=v2}catch(e){}}
 if(loaded&&loaded.venue&&Array.isArray(loaded.items))S=migrate(loaded);else defaultLayout();
 if(!(S.preloads||[]).includes('groom56'))runPreload();
+ensureTolipSite();
 if(!loaded)S.updatedAt=0;
 $('#bWalk').setAttribute('aria-pressed',!!S.venue.walk);
 renderAll();renderPanel();requestAnimationFrame(fit);
@@ -3204,7 +3276,7 @@ async function pushOnline(){
 }
 function busyEditing(){return !!(drag||gdrag||ON.timer||ON.writing)}
 function tryApplyRemote(){if(!ON.remotePending)return;if(busyEditing()){setTimeout(tryApplyRemote,700);return}const d=ON.remotePending;ON.remotePending=null;applyRemote(d)}
-async function applyRemote(d){
+async function applyRemote(d){setTimeout(ensureTolipSite,50);
   const floor=S.floor;const nx=migrate(Object.assign(JSON.parse(JSON.stringify(d.state)),{floor}));
   S=nx;ON.lastState=stateParts().restStr;ON.lastBy=d.by||null;ON.lastAt=d.at||Date.now();
   cleanSel();renderAll();
@@ -3231,7 +3303,7 @@ async function connectOnline(){
   if(useRemote){
     const floor=f1.exists?{rows:f1.data().rows}:S.floor;
     S=migrate(Object.assign(JSON.parse(JSON.stringify(s1.data().state)),{floor}));
-    ON.lastBy=s1.data().by||null;ON.lastAt=remoteAt;sel=new Set();selSeat=null;closeSeatCard();renderAll();renderPanel();fit();
+    setTimeout(ensureTolipSite,50);ON.lastBy=s1.data().by||null;ON.lastAt=remoteAt;sel=new Set();selSeat=null;closeSeatCard();renderAll();renderPanel();fit();
     const p=stateParts();ON.lastState=p.restStr;ON.lastFloor=f1.exists?p.floorStr:'';
   }else{
     ON.lastState=s1.exists?JSON.stringify(s1.data().state):'';ON.lastFloor=f1.exists?JSON.stringify(f1.data().rows):'';
@@ -3321,7 +3393,7 @@ async function connectSupabase(opts){
   setNet('connecting');
   try{
     const row=await sbGet(SB.cfg.plan);const localAt=S.updatedAt||0,remoteAt=row?Date.parse(row.updated_at)||0:0;
-    if(row&&(opts.preferRemote||localAt<=remoteAt)){pushUndo(snapshot());S=migrate(row.data);sel=new Set();selSeat=null;closeSeatCard();renderAll();renderPanel();fit();SB.lastStr=snapshot()}
+    if(row&&(opts.preferRemote||localAt<=remoteAt)){pushUndo(snapshot());S=migrate(row.data);setTimeout(ensureTolipSite,50);sel=new Set();selSeat=null;closeSeatCard();renderAll();renderPanel();fit();SB.lastStr=snapshot()}
     else SB.lastStr='';
     SB.lastAt=row?row.updated_at:'';SB.ready=true;
     clearInterval(SB.pollT);SB.pollT=setInterval(pollSB,4000);
@@ -3459,6 +3531,12 @@ function box(w,h,d){return new T.BoxGeometry(w,h,d)}
 function add(parent,geo,m,x,y,z,o){const me=new T.Mesh(geo,m);me.position.set(x||0,y||0,z||0);if(o){if(o.rx)me.rotation.x=o.rx;if(o.ry)me.rotation.y=o.ry;if(o.rz)me.rotation.z=o.rz;if(o.s)me.scale.set(o.s[0],o.s[1],o.s[2])}me.castShadow=o&&o.noShadow?false:true;me.receiveShadow=true;parent.add(me);return me}
 
 /* ---------- procedural textures ---------- */
+function texTolip(){const c=cvs(512,512),x=c.getContext('2d'),id=x.createImageData(512,512),r=rnd(71);
+  for(let y=0;y<512;y++)for(let xx=0;xx<512;xx++){const u=(xx+y)/512*2,v=(xx-y+512)/512*2;const k=(Math.floor(u*2)+Math.floor(v*2))%2;const n=(r()-.5)*10;const i=(y*512+xx)*4;
+    const cc=k?[168,176,179]:[232,223,206];id.data[i]=cc[0]+n;id.data[i+1]=cc[1]+n;id.data[i+2]=cc[2]+n;id.data[i+3]=255}
+  x.putImageData(id,0,0);x.strokeStyle='rgba(120,110,95,.25)';x.lineWidth=1.5;
+  for(let k=-512;k<1024;k+=128){x.beginPath();x.moveTo(k,0);x.lineTo(k+512,512);x.moveTo(k,512);x.lineTo(k+512,0);x.stroke()}
+  return tex(c,2.4)}
 function texDeck(){const c=cvs(512,512),x=c.getContext('2d'),r=rnd(7);const n=13,h=512/n;
   for(let i=0;i<n;i++){const t=150+r()*35|0;x.fillStyle=`rgb(${t+25},${t-10},${t-55})`;x.fillRect(0,i*h,512,h);
     for(let k=0;k<30;k++){x.strokeStyle=`rgba(80,50,25,${.05+r()*.08})`;x.lineWidth=1;x.beginPath();const y=i*h+r()*h;x.moveTo(0,y);x.bezierCurveTo(170,y+(r()-.5)*6,340,y+(r()-.5)*6,512,y+(r()-.5)*4);x.stroke()}
@@ -3511,6 +3589,7 @@ function textTex(lines,w,h,bg,fg,font){const c=cvs(w,h),x=c.getContext('2d');x.f
 
 /* ---------- materials ---------- */
 function M(){return {
+  tolip:mat('tolip',()=>std('#fff',{map:texTolip(),roughness:.3,metalness:.02})),
   deck:mat('deck',()=>std('#fff',{map:texDeck(),roughness:.78})),
   marble:mat('marble',()=>std('#fff',{map:texMarble(),roughness:.18,metalness:.02})),
   stone:mat('stone',()=>std('#fff',{map:texStone(),roughness:.85})),
@@ -3624,10 +3703,12 @@ function build(){
   // ground outside the lot
   const sea=S.venue.sea;
   let gx0=-80,gx1=W+80,gz0=-80,gz1=H+80;if(sea==='top')gz0=-8.2;if(sea==='bottom')gz1=H+8.2;if(sea==='left')gx0=-8.2;if(sea==='right')gx1=W+8.2;
-  const gw=gx1-gx0,gh=gz1-gz0,ground=new T.Mesh(new T.PlaneGeometry(gw,gh),m.paving);ground.geometry.attributes.uv.array.forEach((v,i,a)=>{a[i]=v*(i%2?gh:gw)});
-  ground.rotation.x=-Math.PI/2;ground.position.set((gx0+gx1)/2,-.35,(gz0+gz1)/2);ground.receiveShadow=true;root.add(ground);
+  const SITE=S.venue.site==='tolip';
+  const gw=gx1-gx0,gh=gz1-gz0,ground=SITE?new T.Group():new T.Mesh(new T.PlaneGeometry(gw,gh),m.paving);if(!SITE)ground.geometry.attributes.uv.array.forEach((v,i,a)=>{a[i]=v*(i%2?gh:gw)});
+  if(!SITE){ground.rotation.x=-Math.PI/2;ground.position.set((gx0+gx1)/2,-.35,(gz0+gz1)/2);ground.receiveShadow=true;root.add(ground)}
   // sea and corniche
-  if(sea&&sea!=='none'){
+  if(SITE){FL=Acc();buildTolipSite(S,m);const sf=accMesh(FL,mat('flowerVC',()=>new T.MeshStandardMaterial({vertexColors:true,roughness:.8})));if(sf)root.add(sf);FL=Acc()}
+  else if(sea&&sea!=='none'){
     const D=260,seaG=new T.PlaneGeometry(sea==='top'||sea==='bottom'?W+600:D,sea==='top'||sea==='bottom'?D:H+600);
     const sm=new T.Mesh(seaG,m.sea);sm.rotation.x=-Math.PI/2;sm.userData.sea=true;
     const uv=seaG.attributes.uv.array;for(let i=0;i<uv.length;i++)uv[i]*=i%2?(seaG.parameters.height):(seaG.parameters.width);
@@ -3663,10 +3744,136 @@ function build(){
   root.userData.clicks=tableClicks;
   applyDayNight();
 }
+/* ---------- the real Tolip Alexandria site: towers, grand staircase, courtyard pool, Corniche and sea ---------- */
+let BAL=[];
+function texFacade(){const c=cvs(512,512),x=c.getContext('2d'),r=rnd(41);
+  x.fillStyle='#EBD5B8';x.fillRect(0,0,512,512);grain(x,512,512,10,r);
+  x.fillStyle='rgba(120,90,60,.12)';x.fillRect(0,0,26,512);x.fillRect(486,0,26,512);
+  // arched window with balcony
+  x.fillStyle='#F4E6D1';x.fillRect(104,70,304,370);
+  x.fillStyle='#1E3350';x.beginPath();x.moveTo(140,420);x.lineTo(140,200);x.arc(256,200,116,Math.PI,0);x.lineTo(372,420);x.closePath();x.fill();
+  const g=x.createLinearGradient(0,90,0,420);g.addColorStop(0,'rgba(170,200,230,.45)');g.addColorStop(1,'rgba(20,40,70,0)');x.fillStyle=g;x.fill();
+  x.strokeStyle='#F7EEDF';x.lineWidth=10;x.beginPath();x.moveTo(256,90);x.lineTo(256,420);x.moveTo(140,250);x.lineTo(372,250);x.stroke();
+  x.fillStyle='#FBF4E8';x.fillRect(80,392,352,18);x.fillRect(80,470,352,20);
+  for(let i=0;i<14;i++){x.fillStyle='#F6ECDD';x.beginPath();x.ellipse(96+i*23.5,440,7,26,0,0,Math.PI*2);x.fill()}
+  x.fillStyle='rgba(0,0,0,.18)';x.fillRect(80,490,352,8);
+  const t=tex(c);return t}
+function texAsphalt(){const c=cvs(512,512),x=c.getContext('2d'),r=rnd(51);x.fillStyle='#4A4C50';x.fillRect(0,0,512,512);grain(x,512,512,26,r);
+  x.fillStyle='rgba(235,235,225,.85)';for(let i=0;i<4;i++)x.fillRect(0,128*i+60,200,8);return tex(c)}
+function texSand(){const c=cvs(256,256),x=c.getContext('2d'),r=rnd(61);x.fillStyle='#E6D2A6';x.fillRect(0,0,256,256);grain(x,256,256,22,r);return tex(c,4)}
+function texRosette(){const c=cvs(512,512),x=c.getContext('2d');x.fillStyle='#EDE2CF';x.fillRect(0,0,512,512);
+  const rings=[[250,'#C8B28C'],[235,'#EDE2CF'],[200,'#9A6B4A'],[190,'#EDE2CF'],[120,'#C8B28C'],[112,'#EDE2CF'],[60,'#9A6B4A'],[40,'#3B2B22'],[18,'#EDE2CF']];
+  for(const [rr,cc] of rings){x.fillStyle=cc;x.beginPath();x.arc(256,256,rr,0,Math.PI*2);x.fill()}
+  x.fillStyle='#9A6B4A';for(let i=0;i<16;i++){const a=i/16*Math.PI*2;x.beginPath();x.ellipse(256+Math.cos(a)*155,256+Math.sin(a)*155,30,14,a,0,Math.PI*2);x.fill()}
+  const t=new T.CanvasTexture(c);t.encoding=T.sRGBEncoding;return t}
+function texGrotto(){const c=cvs(512,256),x=c.getContext('2d');x.fillStyle='#E7CFB0';x.fillRect(0,0,512,256);
+  x.fillStyle='#2A2A26';x.beginPath();x.moveTo(176,256);x.lineTo(176,120);x.arc(256,120,80,Math.PI,0);x.lineTo(336,256);x.fill();
+  x.fillStyle='#4F7A43';for(let i=0;i<22;i++){x.beginPath();x.ellipse(190+Math.random()*130,210+Math.random()*40,14,10,0,0,Math.PI*2);x.fill()}
+  x.strokeStyle='#F4E6D1';x.lineWidth=12;x.beginPath();x.moveTo(170,256);x.lineTo(170,120);x.arc(256,120,86,Math.PI,0);x.lineTo(342,256);x.stroke();
+  const t=new T.CanvasTexture(c);t.encoding=T.sRGBEncoding;return t}
+function uvPlane(w,h,sx,sy){const g=new T.PlaneGeometry(w,h),uv=g.attributes.uv.array;for(let i=0;i<uv.length;i+=2){uv[i]*=w/sx;uv[i+1]*=h/sy}return g}
+function tower(x0,z0,x1,z1,y0,hgt,fm,faces){
+  const g=new T.Group(),w=x1-x0,d=z1-z0,cy=y0+hgt/2;
+  const f=(geo,x,z,ry)=>{const me=new T.Mesh(geo,fm);me.position.set(x,cy,z);me.rotation.y=ry;me.castShadow=true;me.receiveShadow=true;g.add(me)};
+  if(faces.includes('n'))f(uvPlane(w,hgt,4,3.4),(x0+x1)/2,z0,Math.PI);
+  if(faces.includes('s'))f(uvPlane(w,hgt,4,3.4),(x0+x1)/2,z1,0);
+  if(faces.includes('w'))f(uvPlane(d,hgt,4,3.4),x0,(z0+z1)/2,-Math.PI/2);
+  if(faces.includes('e'))f(uvPlane(d,hgt,4,3.4),x1,(z0+z1)/2,Math.PI/2);
+  const roof=new T.Mesh(new T.BoxGeometry(w,.6,d),mat('roofM',()=>std('#D8C2A3',{roughness:.9})));roof.position.set((x0+x1)/2,y0+hgt+.3,(z0+z1)/2);g.add(roof);
+  root.add(g);return g}
+function balustrade(x1,z1,y1,x2,z2,y2,opt){
+  opt=opt||{};const stone=mat('balStone',()=>std('#F1E6D3',{roughness:.75}));
+  const dx=x2-x1,dz=z2-z1,Lh=Math.hypot(dx,dz);if(Lh<.1)return;const dy=y2-y1,L=Math.hypot(Lh,dy),head=-Math.atan2(dz,dx),pitch=Math.atan2(dy,Lh);
+  const seg=(off,th,hh)=>{const me=new T.Mesh(new T.BoxGeometry(L,hh,th),stone);me.position.set((x1+x2)/2,(y1+y2)/2+off,(z1+z2)/2);me.rotation.set(0,head,pitch,'YZX');me.castShadow=true;me.receiveShadow=true;root.add(me)};
+  seg(.06,.26,.12);seg(1.0,.3,.12);seg(.93,.24,.06);
+  const n=Math.max(1,Math.round(Lh/.24));for(let i=0;i<n;i++){const t=(i+.5)/n;BAL.push([x1+dx*t,y1+dy*t+.12,z1+dz*t])}
+  if(opt.posts!==false){const np=Math.max(1,Math.round(Lh/2.6));for(let i=0;i<=np;i++){const t=i/np,x=x1+dx*t,z=z1+dz*t,y=y1+dy*t;
+    const p=new T.Mesh(new T.BoxGeometry(.34,1.12,.34),stone);p.position.set(x,y+.56,z);p.rotation.y=head;p.castShadow=true;root.add(p);
+    const cap=new T.Mesh(new T.BoxGeometry(.44,.08,.44),stone);cap.position.set(x,y+1.16,z);cap.rotation.y=head;root.add(cap);
+    if(opt.urns){const u=new T.Mesh(new T.SphereGeometry(.14,12,8),stone);u.position.set(x,y+1.32,z);root.add(u)}}}
+}
+function flushBalusters(){
+  if(!BAL.length)return;const geo=new T.LatheGeometry([[.07,0],[.07,.06],[.045,.12],[.06,.3],[.1,.45],[.08,.55],[.045,.66],[.06,.72],[.07,.78],[0,.78]].map(([a,b])=>new T.Vector2(a,b)),10);
+  const im=new T.InstancedMesh(geo,mat('balStone',()=>std('#F1E6D3',{roughness:.75})),BAL.length);BAL.forEach(([x,y,z],i)=>im.setMatrixAt(i,M4(x,y,z)));im.castShadow=true;im.receiveShadow=true;root.add(im);BAL=[]}
+function glassRail(x1,z1,x2,z2){
+  const L=Math.hypot(x2-x1,z2-z1),head=-Math.atan2(z2-z1,x2-x1),n=Math.max(1,Math.round(L/1.5));
+  for(let i=0;i<n;i++){const t0=i/n,t1=(i+1)/n,mx=x1+(x2-x1)*(t0+t1)/2,mz=z1+(z2-z1)*(t0+t1)/2;
+    const gp=new T.Mesh(new T.BoxGeometry(L/n-.06,1,.02),mat('glassRail',()=>new T.MeshPhysicalMaterial({color:col('#CFE6EE'),roughness:.05,metalness:.1,transparent:true,opacity:.3})));gp.position.set(mx,.55,mz);gp.rotation.y=head;root.add(gp)}
+  for(let i=0;i<=n;i++){const t=i/n,p=new T.Mesh(new T.CylinderGeometry(.03,.03,1.1,8),mat('silver',()=>std('#D9DDE0',{roughness:.18,metalness:1})));p.position.set(x1+(x2-x1)*t,.55,z1+(z2-z1)*t);root.add(p)}
+  const hr=new T.Mesh(new T.CylinderGeometry(.03,.03,L,8),mat('silver',()=>0));hr.position.set((x1+x2)/2,1.1,(z1+z2)/2);hr.rotation.set(0,head,Math.PI/2,'YZX');root.add(hr);
+}
+function buildTolipSite(S,m){
+  const W=S.venue.w,H=S.venue.h,cx=W/2,YC=-6.5,YL=-2.4,YR=-5;
+  const fm=mat('facade',()=>{const t=texFacade();return std('#fff',{map:t,roughness:.85})});
+  const cream=mat('creamStone',()=>std('#EAD6BA',{roughness:.85}));
+  // podium under the terrace, seen from the road and the courtyard
+  const pod=(x0,z0,x1,z1,faces)=>{const hgt=0-YC-.05;tower(x0,z0,x1,z1,YC,hgt,fm,faces).children.slice(-1)[0].visible=false};
+  pod(0,0,W,H,'nw');
+  // hotel towers
+  tower(W,-5,W+17,H+30,YC,52,fm,'nws');
+  tower(-19,5,-1.5,H+30,YC,46,fm,'nes');
+  tower(-19,H+30,W+17,H+46,YC,40,fm,'n');
+  // courtyard floor, lawn and the kidney pool with its round jacuzzi
+  const cf=new T.Mesh(uvPlane(W+36,H+60,1,1),m.stone);cf.rotation.x=-Math.PI/2;cf.position.set(cx,YC,H/2+8);cf.receiveShadow=true;root.add(cf);
+  const lawn=new T.Mesh(uvPlane(W+10,20,1,1),m.grass);lawn.rotation.x=-Math.PI/2;lawn.position.set(cx,YC+.02,H+19);lawn.receiveShadow=true;root.add(lawn);
+  const ps=new T.Shape();const P0=[[-6,-4],[-1,-5.5],[3,-3],[7,-4.5],[8.5,0],[6,4],[1,3],[-3,5],[-7.5,2]];
+  ps.moveTo(P0[0][0],P0[0][1]);for(let i=0;i<P0.length;i++){const a=P0[i],b=P0[(i+1)%P0.length];ps.quadraticCurveTo(a[0]+(b[0]-a[0])*.5+(i%2?1:-1)*1.2,a[1]+(b[1]-a[1])*.5,(a[0]+b[0])/2,(a[1]+b[1])/2)}
+  const pw=new T.Mesh(new T.ShapeGeometry(ps,24),m.water);pw.rotation.x=-Math.PI/2;pw.position.set(cx+1,YC+.05,H+19);root.add(pw);
+  const rim=new T.Mesh(new T.ShapeGeometry(ps,24),mat('poolRim',()=>std('#F4EEE4',{roughness:.6})));rim.rotation.x=-Math.PI/2;rim.scale.set(1.08,1.08,1);rim.position.set(cx+1,YC+.035,H+19);root.add(rim);
+  const jac=new T.Mesh(new T.CylinderGeometry(1.6,1.6,.3,32),m.water);jac.position.set(cx+3,YC+.2,H+17);root.add(jac);
+  const jr=new T.Mesh(new T.TorusGeometry(1.65,.08,8,40),m.silver);jr.rotation.x=Math.PI/2;jr.position.set(cx+3,YC+.4,H+17);root.add(jr);
+  const blue=mat('umb',()=>std('#1D6FB8',{roughness:.6,side:T.DoubleSide}));
+  for(const [ux,uz] of [[-7,H+10],[-9,H+14],[-10,H+19],[-9,H+24],[W+6,H+10],[W+8,H+14],[W+9,H+19],[W+8,H+24],[cx-5,H+28],[cx+6,H+28]]){
+    const u=new T.Group();u.position.set(ux,YC,uz);root.add(u);add(u,new T.CylinderGeometry(.03,.03,2.4,8),m.silver,0,1.2,0);add(u,new T.ConeGeometry(1.4,.55,8,1,true),blue,0,2.45,0)}
+  // grand double staircase down to the rosette landing, with the grotto arch between the flights
+  const land=new T.Shape();land.moveTo(cx-7.2,0);land.lineTo(cx-7.2,4.8);land.absellipse(cx,4.8,7.2,5.6,Math.PI,0,true);land.lineTo(cx+7.2,0);land.lineTo(cx-7.2,0);
+  const lg=new T.ExtrudeGeometry(land,{depth:.4,bevelEnabled:false,curveSegments:40});const lm=new T.Mesh(lg,m.marble);lm.rotation.x=Math.PI/2;lm.position.set(0,YL,H);lm.receiveShadow=true;lm.castShadow=true;root.add(lm);
+  const ros=new T.Mesh(new T.CircleGeometry(2.6,64),mat('rosette',()=>new T.MeshStandardMaterial({map:texRosette(),roughness:.35})));ros.rotation.x=-Math.PI/2;ros.position.set(cx,YL+.01,H+5.2);ros.receiveShadow=true;root.add(ros);
+  const steps=14,rise=(0-YL)/steps,run=.3;
+  for(const sx of [-1,1]){const x=cx+sx*5.2;
+    for(let i=0;i<steps;i++){const top=-(i+1)*rise,hh=top-YL+.001;const st=new T.Mesh(new T.BoxGeometry(2.6,hh,run+.02),m.marble);st.position.set(x,YL+hh/2,H+i*run+run/2);st.castShadow=true;st.receiveShadow=true;root.add(st)}
+    const L=steps*run;balustrade(x+sx*1.35,H,0,x+sx*1.35,H+L,YL,{urns:true});balustrade(x-sx*1.35,H,0,x-sx*1.35,H+L,YL,{posts:true});
+    const side=new T.Mesh(new T.BoxGeometry(.3,-YL,L),cream);side.position.set(x+sx*1.35,YL/2,H+L/2);root.add(side)}
+  const gw=new T.Mesh(new T.PlaneGeometry(7.6,-YL),mat('grotto',()=>new T.MeshStandardMaterial({map:texGrotto(),roughness:.8})));gw.position.set(cx,YL/2,H+.02);root.add(gw);
+  // curved balustrade round the landing, colonnade underneath down to the courtyard
+  const arcPts=[];for(let i=0;i<=24;i++){const a=Math.PI+i/24*Math.PI;arcPts.push([cx+Math.cos(a)*7.1,H+4.8-Math.sin(a)*5.5])}
+  for(let i=0;i<arcPts.length-1;i++)balustrade(arcPts[i][0],arcPts[i][1],YL,arcPts[i+1][0],arcPts[i+1][1],YL,{posts:i%4===0});
+  balustrade(cx-7.1,H+4.8,YL,cx-7.1,H+4.2,YL);balustrade(cx+7.1,H+4.2,YL,cx+7.1,H+4.8,YL);
+  const colM=mat('colM',()=>std('#EFDDC2',{roughness:.6}));
+  for(let i=0;i<=8;i++){const a=Math.PI+(i/8)*Math.PI,x=cx+Math.cos(a)*6.4,z=H+4.8-Math.sin(a)*4.9;
+    const cl=new T.Mesh(new T.CylinderGeometry(.34,.38,YL-YC-.2,20),colM);cl.position.set(x,(YC+YL)/2,z);cl.castShadow=true;root.add(cl)}
+  const gl=new T.Mesh(new T.CylinderGeometry(5.6,5.6,YL-YC-.5,40,1,true,-Math.PI/2,Math.PI),mat('glassHall',()=>new T.MeshPhysicalMaterial({color:col('#BFD6DF'),roughness:.05,metalness:.2,transparent:true,opacity:.45,side:T.DoubleSide,emissive:col('#FFE9C4'),emissiveIntensity:.08})));
+  gl.scale.set(1.2,1,.9);gl.position.set(cx,(YC+YL)/2,H+4.4);root.add(gl);
+  // Corniche road, pavement, beach, breakwater and the sea
+  const road=new T.Mesh(uvPlane(W+220,22,12,4),mat('asphalt',()=>std('#fff',{map:texAsphalt(),roughness:.9})));road.rotation.x=-Math.PI/2;road.position.set(cx,YR,-13);road.receiveShadow=true;root.add(road);
+  const walk=new T.Mesh(uvPlane(W+220,2.2,1,1),m.paving);walk.rotation.x=-Math.PI/2;walk.position.set(cx,YR+.15,-1.1);root.add(walk);
+  const walk2=new T.Mesh(uvPlane(W+220,3,1,1),m.paving);walk2.rotation.x=-Math.PI/2;walk2.position.set(cx,YR+.15,-25.5);root.add(walk2);
+  const sand=new T.Mesh(uvPlane(W+220,26,1,1),mat('sand',()=>std('#fff',{map:texSand(),roughness:1})));sand.rotation.x=-Math.PI/2;sand.position.set(cx,YR-.3,-40);sand.receiveShadow=true;root.add(sand);
+  const sea=new T.Mesh(uvPlane(W+900,700,1,1),m.sea);sea.rotation.x=-Math.PI/2;sea.position.set(cx,YR-.6,-53-350);root.add(sea);
+  const rock=mat('rock',()=>std('#8E8B84',{roughness:1}));for(let i=0;i<60;i++){const rr=new T.Mesh(new T.DodecahedronGeometry(.9+Math.random()*.6,0),rock);rr.position.set(-60+i*2.2,YR-.4,-70-Math.sin(i*.3)*4);rr.rotation.set(Math.random(),Math.random(),0);root.add(rr)}
+  // the yellow beach club across the road
+  const yel=mat('yellowB',()=>std('#E9C46A',{roughness:.8})),red=mat('redRoof',()=>std('#B5553C',{roughness:.8}));
+  const bc=new T.Mesh(new T.CylinderGeometry(7,7,11,40),yel);bc.position.set(-18,YR+5.5,-42);bc.castShadow=true;root.add(bc);
+  const bcr=new T.Mesh(new T.ConeGeometry(7.6,2.4,40),red);bcr.position.set(-18,YR+12.2,-42);root.add(bcr);
+  const wing=new T.Mesh(new T.BoxGeometry(18,7,9),yel);wing.position.set(-34,YR+3.5,-42);root.add(wing);
+  const wr=new T.Mesh(new T.BoxGeometry(18.6,.6,9.6),red);wr.position.set(-34,YR+7.3,-42);root.add(wr);
+  // Alexandria traffic
+  const cars=['#F2C230','#1B1B1B','#F2C230','#E9E9E9','#1B1B1B','#F2C230','#8C1E24','#F2C230'];
+  cars.forEach((c0,i)=>{const cg=new T.Group();cg.position.set(-50+i*13+(i%2)*4,YR,i%2?-8:-18);root.add(cg);const cm=mat('car'+c0,()=>std(c0,{roughness:.35,metalness:.4}));
+    add(cg,new T.BoxGeometry(4.2,.75,1.8),cm,0,.55,0);add(cg,new T.BoxGeometry(2.2,.6,1.6),mat('carGlass',()=>std('#22303A',{roughness:.1,metalness:.6})),-.2,1.2,0);
+    for(const [wx,wz] of [[-1.3,-.9],[1.3,-.9],[-1.3,.9],[1.3,.9]])add(cg,new T.CylinderGeometry(.33,.33,.22,14),m.black,wx,.33,wz,{rx:Math.PI/2})});
+  // street lamps along the Corniche
+  for(let x=-40;x<W+40;x+=14){const lp=new T.Group();lp.position.set(x,YR,-2.6);root.add(lp);add(lp,new T.CylinderGeometry(.08,.12,7,10),m.black,0,3.5,0);add(lp,new T.BoxGeometry(1.4,.08,.12),m.black,-.6,7,0);add(lp,new T.BoxGeometry(.4,.14,.3),m.emissiveWarm,-1.2,6.92,0,{noShadow:true});glowPts.push([0,0,0,lp,-1.2,6.8,0,1.1])}
+  // planters along the sea balustrade
+  for(let x=2;x<W-1;x+=4){const pl=new T.Group();pl.position.set(x,0,.6);root.add(pl);add(pl,new T.BoxGeometry(.7,.5,.5),mat('planter',()=>std('#D9C7A8',{roughness:.8})),0,.25,0);
+    FL=FL||Acc();for(let i=0;i<10;i++)fl(pl,(Math.random()-.5)*.55,.6+Math.random()*.25,(Math.random()-.5)*.35,.12,i%3?'#3F7A3A':'#E8C1CF')}
+  flushBalusters();
+}
+
 function buildFloor(S,m){
   const C=PL().CELL,rows=S.floor.rows,pools=S.items.filter(i=>i.type==='pool');
   const inPool=(x,y)=>pools.some(p=>{const c=Math.cos(rad(p.rot)),s=Math.sin(rad(p.rot)),dx=x-p.x,dy=y-p.y,lx=dx*c+dy*s,ly=-dx*s+dy*c;return Math.abs(lx)<p.w/2&&Math.abs(ly)<p.h/2});
-  const acc={};const key={d:'deck',m:'marble',s:'stone',p:'parquet',c:'carpet',g:'grass',w:'water'};
+  const acc={};const key={t:'tolip',d:'deck',m:'marble',s:'stone',p:'parquet',c:'carpet',g:'grass',w:'water'};
   rows.forEach((row,y)=>{const r2=row.split('').map((ch,x)=>inPool((x+.5)*C,(y+.5)*C)?'.':ch);let x=0;
     while(x<r2.length){const ch=r2[x];let e=x;while(e<r2.length&&r2[e]===ch)e++;
       if(ch!=='.'){const a=acc[ch]=acc[ch]||{p:[],u:[],i:[]};const x0=x*C,x1=e*C,y0=y*C,y1=(y+1)*C,yy=ch==='w'?-.12:.004,b=a.p.length/3;
@@ -3682,10 +3889,19 @@ function buildFloor(S,m){
   const em=accMesh(edge,mat('vcStone',()=>new T.MeshStandardMaterial({vertexColors:true,roughness:.8})));if(em){em.castShadow=false;root.add(em)}
 }
 function buildWalls(S,m){
-  const WH=3.1;
+  const WH=3.1;BAL=[];
   for(const w of S.walls||[]){
     const L=Math.hypot(w.x2-w.x1,w.y2-w.y1),ang=Math.atan2(w.y2-w.y1,w.x2-w.x1),g=new T.Group();g.position.set(w.x1,0,w.y1);g.rotation.y=-ang;root.add(g);
     const ops=(S.doors||[]).filter(d=>d.wall===w.id).map(d=>({...d,a:d.t*L-d.wd/2,b:d.t*L+d.wd/2})).sort((a,b)=>a.a-b.a);
+    if(w.kind==='rail'||w.kind==='glass'||(w.kind==='facade'&&S.venue.site==='tolip')){
+      const P=t=>[w.x1+(w.x2-w.x1)*t/L,w.y1+(w.y2-w.y1)*t/L];let a0=0;const solid=[];
+      for(const o of ops){if(o.a>a0)solid.push([a0,o.a]);a0=o.b}if(a0<L)solid.push([a0,L]);
+      if(w.kind==='rail')for(const [a,b] of solid){const [x1,z1]=P(a),[x2,z2]=P(b);balustrade(x1,z1,0,x2,z2,0,{urns:true})}
+      if(w.kind==='glass')for(const [a,b] of solid){const [x1,z1]=P(a),[x2,z2]=P(b);glassRail(x1,z1,x2,z2)}
+      if(w.kind==='facade')for(const o of ops){const c=(o.a+o.b)/2;const dg=new T.Group();dg.position.set(c,0,-.03);g.add(dg);
+        add(dg,box(o.wd+.5,3.2,.12),mat('doorFrame',()=>std('#F4E6D1',{roughness:.6})),0,1.6,0);add(dg,box(o.wd,2.8,.14),mat('doorGlass',()=>new T.MeshStandardMaterial({color:col('#22384F'),roughness:.08,metalness:.5,emissive:col('#FFE2B0'),emissiveIntensity:.12})),0,1.4,-.01);
+        add(dg,box(.06,2.8,.16),m.gold,0,1.4,-.02)}
+      continue}
     let pos=-.1;const seg=(a,b,y0,y1)=>{if(b-a<.01||y1-y0<.01)return;add(g,box(b-a,y1-y0,.22),m.plaster,(a+b)/2,(y0+y1)/2,0)};
     for(const o of ops){seg(pos,o.a,0,WH);
       if(o.kind==='window'){seg(o.a,o.b,0,.9);seg(o.a,o.b,2.3,WH);add(g,box(o.b-o.a,1.4,.03),m.window,(o.a+o.b)/2,1.6,0,{noShadow:true});add(g,box(o.b-o.a,.05,.26),m.stone,(o.a+o.b)/2,.92,0);add(g,box(.04,1.4,.06),m.darkwood,(o.a+o.b)/2,1.6,0)}
@@ -3697,6 +3913,7 @@ function buildWalls(S,m){
     seg(pos,L+.1,0,WH);
     add(g,box(L+.2,.1,.3),m.stone,L/2,WH+.05,0);
   }
+  flushBalusters();
 }
 /* ---------- builders per item ---------- */
 function linenOf(it,api){const sk=api.tableSideKey(it),tints={groom:'#DCE6F2',bride:'#F4DDE3',mixed:'#F1E6CF'};const base=api.LINENS[it.color]||'#FDFBF6';return (it.color==='ivory'||!it.color)&&tints[sk]?tints[sk]:base}
@@ -3782,7 +3999,15 @@ const BUILD={
   },
   stage(it,m){const g=place(new T.Group(),it);CUR.add(g);add(g,box(it.w,.6,it.h),m.darkwood,0,.3,0);const pg=new T.PlaneGeometry(it.w,it.h),uv=pg.attributes.uv.array;for(let i=0;i<uv.length;i++)uv[i]*=i%2?it.h:it.w;add(g,pg,m.wood,0,.605,0,{rx:-Math.PI/2,noShadow:true});add(g,box(it.w+.02,.08,it.h+.02),m.black,0,.62,0);add(g,box(it.w,.55,.02),mat('skirt',()=>std('#1C1C22',{roughness:.9})),0,.28,it.h/2+.01)},
   dance(it,m){const g=place(new T.Group(),it);CUR.add(g);add(g,box(it.w,.035,it.h),m.black,0,.0175,0);const pg=new T.PlaneGeometry(it.w,it.h),uv=pg.attributes.uv.array;for(let i=0;i<uv.length;i++)uv[i]*=i%2?it.h:it.w;add(g,pg,m.checker,0,.037,0,{rx:-Math.PI/2,noShadow:true});add(g,box(it.w+.1,.045,.06),m.gold,0,.022,it.h/2+.03);add(g,box(it.w+.1,.045,.06),m.gold,0,.022,-it.h/2-.03);add(g,box(.06,.045,it.h),m.gold,it.w/2+.03,.022,0);add(g,box(.06,.045,it.h),m.gold,-it.w/2-.03,.022,0)},
-  dj(it,m){const g=place(new T.Group(),it);CUR.add(g);add(g,box(it.w,1,it.h),m.black,0,.5,0);add(g,box(it.w,.12,.02),mat('led',()=>new T.MeshStandardMaterial({color:col('#8FD4FF'),emissive:col('#4FB6FF'),emissiveIntensity:1.2})),0,.8,it.h/2+.01);
+  dj(it,m){const g=place(new T.Group(),it);CUR.add(g);
+    { // lighting truss towers and beam, like the hotel's wedding rig
+      const tr=mat('truss',()=>std('#B9BEC2',{roughness:.35,metalness:.9}));const span=Math.max(it.w+3,5),hT=5.2;
+      const tower=(tx)=>{for(const [dx,dz] of [[-.17,-.17],[.17,-.17],[-.17,.17],[.17,.17]])add(g,new T.CylinderGeometry(.025,.025,hT,6),tr,tx+dx,hT/2,-it.h/2-.6+dz);
+        for(let y=.3;y<hT;y+=.5)add(g,box(.36,.03,.03),tr,tx,y,-it.h/2-.6-.17,{rz:.8,noShadow:true});add(g,box(.5,.1,.5),m.black,tx,.05,-it.h/2-.6)};
+      tower(-span/2);tower(span/2);
+      for(const dy of [-.17,.17])for(const dz of [-.17,.17])add(g,new T.CylinderGeometry(.025,.025,span,6),tr,0,hT+dy,-it.h/2-.6+dz,{rz:Math.PI/2});
+      for(let i=0;i<5;i++){const x=-span/2+.8+i*(span-1.6)/4;add(g,box(.22,.3,.22),m.black,x,hT-.45,-it.h/2-.6);add(g,new T.CylinderGeometry(.08,.08,.04,12),mat('lens',()=>new T.MeshStandardMaterial({color:col('#9FD4FF'),emissive:col('#7FC4FF'),emissiveIntensity:1.4})),x,hT-.62,-it.h/2-.6,{noShadow:true});glowPts.push([0,0,0,g,x,hT-.7,-it.h/2-.6,.5])}
+    }add(g,box(it.w,1,it.h),m.black,0,.5,0);add(g,box(it.w,.12,.02),mat('led',()=>new T.MeshStandardMaterial({color:col('#8FD4FF'),emissive:col('#4FB6FF'),emissiveIntensity:1.2})),0,.8,it.h/2+.01);
     for(const s of [-1,1])add(g,new T.CylinderGeometry(.16,.16,.03,24),m.silver,s*it.w*.25,1.02,0);add(g,box(.4,.05,.3),m.black,0,1.03,0)},
   screen(it,m,c,p,api){const g=place(new T.Group(),it);CUR.add(g);const hh=Math.max(1.6,it.w*.56);
     add(g,box(it.w,hh,.12),m.black,0,1.1+hh/2,0);const S=api.S;const tt=textTex([{t:S.venue.couple||'Welcome',f:'italic 600 110px Georgia'},{t:'Tolip Alexandria',f:'40px sans-serif',lh:120}],1024,576,'#1A1022','#F5E6C8','italic 110px Georgia');
@@ -3861,7 +4086,7 @@ function applyDayNight(){
   renderer.toneMappingExposure=day?.92:1.2;
   const d=Math.max(PL().S.venue.w,PL().S.venue.h);sunL.position.set(PL().S.venue.w/2+(day?-d*.5:d*.7),day?d*1.1:d*.25,PL().S.venue.h/2+(day?-d*.6:d*.3));
   if(root)root.traverse(o=>{if(o.userData.glow)o.visible=!day;if(o.isPointLight&&o.userData.eve)o.intensity=day?0:3.2});
-  scene.fog=new T.Fog(day?0xcfdce6:0x1a1426,d*2.2,d*6);
+  const far=PL().S.venue.site==='tolip'?1:0;scene.fog=new T.Fog(day?0xcfdce6:0x1a1426,far?120:d*2.2,far?700:d*6);
 }
 
 /* ---------- name labels: short nickname, full name on hover ---------- */
@@ -3879,11 +4104,10 @@ function updateLabels(){
   if(!labels.length)return;if(!PV)PV=new T.Vector3();
   const r=wrap.getBoundingClientRect(),W=r.width,H=r.height,cp=camera.position;
   for(const L of labels){
-    PV.set(L.x,L.y,L.z);if(L.inner)PV.applyMatrix4(L.inner.matrixWorld);PV.project(camera);
+    PV.set(L.x,L.y,L.z);if(L.inner)PV.applyMatrix4(L.inner.matrixWorld);const d=camera.position.distanceTo(PV);PV.project(camera);
     const vis=PV.z<1&&PV.z>-1&&Math.abs(PV.x)<1.15&&Math.abs(PV.y)<1.15;
     if(!vis){if(L.vis){L.el.style.display='none';L.vis=false}continue}
     if(!L.vis){L.el.style.display='';L.vis=true}
-    const d=camera.position.distanceTo(PV.set(L.x,L.y,L.z).applyMatrix4(L.inner?L.inner.matrixWorld:new T.Matrix4()));
     const base=Math.max(.42,Math.min(1.15,9/d)),target=L===hotL?Math.max(1.25,base*1.35):base;L.k+=(target-L.k)*.22;
     const op=L===hotL?1:Math.max(0,Math.min(1,(60-d)/25));
     L.sx=(PV.x*.5+.5)*W;L.sy=(-PV.y*.5+.5)*H;L.s=L.k;
