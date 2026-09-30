@@ -1850,6 +1850,25 @@ function coupleFocus(){
   const F=frame();if(!k){const p=F.P(.5,3);return {x:p.x,y:p.y,rot:F.rot,k:null}}
   const r=rad(k.rot);return {x:k.x-Math.sin(r)*(k.h/2+2),y:k.y+Math.cos(r)*(k.h/2+2),rot:k.rot,k};
 }
+const CLEAR={kosha:1.8,dance:1.1,bar:1.4,buffet:1.4,pool:1.1,dj:1.1,stage:1.2,screen:1,speaker:.8,photo:1.1,cake:.9,arch:1,lounge:.9,palm:.45,light:.45,pillar:.5};
+function placeRoomy(t){
+  if(!canPlace(t))return false;
+  const pad=chairPad(t);
+  if(samplePts(geom(t,pad+.45)).some(([x,y])=>!onFloor(x,y)))return false;
+  for(const o of S.items){if(o.id===t.id)continue;const T=TYPES[o.type];if(!T||T.table||T.zone==='soft'||T.zone==='over')continue;
+    const m=CLEAR[o.type]!=null?CLEAR[o.type]:.8;if(hit(geom(t,pad+m),geom(o,0)))return false}
+  return true;
+}
+/* who sits where: families up front and together, friends in the middle, colleagues at the back */
+function tableRole(t){
+  const gs=guestsAt(t).filter(Boolean);
+  if(!gs.length){const sd=t.side||tableSideKey(t);return {cat:'fam',pri:/bride|groom/.test(sd)?2:3}}
+  const grp=gs.map(g=>(g.group||'')+' '+(g.rel||'')).join(' ').toLowerCase(),pri=Math.min(...gs.map(g=>g.pri||3));
+  const workN=gs.filter(g=>(g.pri||3)>=5||/work|colleague|office|company|زملاء|شغل/.test(((g.group||'')+' '+(g.rel||'')).toLowerCase())).length;
+  if(workN>=gs.length/2)return {cat:'work',pri:5};
+  if(pri>=4)return {cat:'friends',pri};
+  return {cat:'fam',pri};
+}
 function orderUnit(list){ // head first, then partner/adults, then children, so families sit side by side
   return list.slice().sort((a,b)=>{const ha=normName(a.name)===normName(a.hh||a.name)?0:1,hb=normName(b.name)===normName(b.hh||b.name)?0:1;return (a.kid-b.kid)||(ha-hb)})}
 function seatUnit(list,t){
@@ -2165,19 +2184,23 @@ function tryLayout(style,extra){
   const orig=tabs.map(t=>[t,t.x,t.y,t.rot]);
   const A=F.k?{x:F.k.x,y:F.k.y}:{x:F.x+Math.sin(rad(F.rot))*2,y:F.y-Math.cos(rad(F.rot))*2};tabs.forEach(t=>{t.x=-999;t.y=-999});
   const num=t=>+tableNo(t)||99;
-  const order=tabs.slice().sort((a,b)=>tablePri(a)-tablePri(b)||num(a)-num(b));
-  const sorted={g:null,b:null,a:null};
+  const roles=new Map(tabs.map(t=>[t,tableRole(t)]));const catRank={fam:0,friends:1,work:2};
+  const order=tabs.slice().sort((a,b)=>catRank[roles.get(a).cat]-catRank[roles.get(b).cat]||roles.get(a).pri-roles.get(b).pri||num(a)-num(b));
+  const sorted={};
   const scoreOf=(o,sd)=>sd==='groom'&&o.scG!=null?o.scG:sd==='bride'&&o.scB!=null?o.scB:o.sc;
-  const listFor=sd=>{const k=sd==='groom'?'g':sd==='bride'?'b':'a';if(!sorted[k])sorted[k]=slots.slice().sort((p,q)=>scoreOf(p,sd)-scoreOf(q,sd));return sorted[k]};
+  // families: closest to the couple and hugging the centre line so both families meet; colleagues: the farthest slots
+  const famKey=o=>Math.hypot(o.u,o.v)+Math.abs(o.u)*.55,backKey=o=>-(Math.hypot(o.u*.6,o.v));
+  const listFor=(sd,cat)=>{const k=(sd==='groom'?'g':sd==='bride'?'b':'a')+cat;if(!sorted[k])sorted[k]=slots.slice().sort((p,q)=>cat==='work'?backKey(p)-backKey(q):cat==='fam'?famKey(p)-famKey(q):scoreOf(p,sd)-scoreOf(q,sd));return sorted[k]};
   let placed=0;const res=[];
   for(const t of order){
     const sd=tableSide(t)||t.side||'',sg=sd==='groom'?-1:sd==='bride'?1:0;let ok=false;
     for(const pass of [0,1]){
-      for(const o of listFor(sd)){if(o.taken)continue;if(pass===0&&sg&&o.u*sg<.3)continue;
+      const cat=roles.get(t).cat;
+      for(const o of listFor(sd,cat)){if(o.taken)continue;if(pass===0&&sg&&o.u*sg<.3)continue;
         t.x=f(o.x);t.y=f(o.y);
         if(LO.face){const ang=Math.atan2(A.y-o.y,A.x-o.x)*180/Math.PI;t.rot=normRot(!isCircle(t)&&t.h>t.w&&!TYPES[t.type].oneSide?ang:ang-90)}
         else t.rot=normRot(isCircle(t)?0:F.rot+o.a);
-        if(canPlace(t)){o.taken=true;ok=true;break}}
+        if(pass===0?placeRoomy(t):canPlace(t)){o.taken=true;ok=true;break}}
       if(ok)break}
     if(ok){placed++;res.push([t,t.x,t.y,t.rot])}else{const o=orig.find(x=>x[0]===t);t.x=o[1];t.y=o[2];t.rot=o[3];res.push([t,o[1],o[2],o[3]])}
   }
@@ -2192,9 +2215,14 @@ function tryLayout(style,extra){
     for(const o of pts){if(o===a||o.d>=a.d-.5)continue;const tt=((o.x-A.x)*dx+(o.y-A.y)*dy)/L2;if(tt<=.05||tt>=.95)continue;
       const px=A.x+tt*dx,py=A.y+tt*dy;if(Math.hypot(o.x-px,o.y-py)<o.r*.9)occl+=a.w}
     const u=(a.x-F.x)*ax[0]+(a.y-F.y)*ax[1],v=(a.x-F.x)*dv[0]+(a.y-F.y)*dv[1];angSpread+=a.w*Math.abs(Math.atan2(u,Math.max(.1,v)))}
-  const score=placed*1000+extra*45-(wsum?vip/wsum:0)*3-asym*4-occl*5-(wsum?angSpread/wsum:0)*6;
+  let workFront=0,famGap=0;const fams=pts.filter(a=>roles.get(a.t).cat==='fam'),works=pts.filter(a=>roles.get(a.t).cat==='work');
+  const famFar=fams.length?Math.max(...fams.map(a=>a.d)):0;for(const w of works)if(w.d<famFar)workFront+=famFar-w.d;
+  const gF=fams.filter(a=>(tableSide(a.t)||a.t.side)==='groom'),bF=fams.filter(a=>(tableSide(a.t)||a.t.side)==='bride');
+  if(gF.length&&bF.length)famGap=Math.min(...gF.flatMap(a=>bF.map(b=>Math.hypot(a.x-b.x,a.y-b.y))));
+  let tight=0;for(const a of pts)if(!placeRoomy(Object.assign({},a.t,{x:a.x,y:a.y,rot:res.find(r=>r[0]===a.t)[3]})))tight++;
+  const score=placed*1000+extra*45-(wsum?vip/wsum:0)*3-asym*4-occl*5-(wsum?angSpread/wsum:0)*6-workFront*6-famGap*2-tight*60;
   for(const [t,x,y,r] of orig){t.x=x;t.y=y;t.rot=r}
-  return {style,extra,placed,total:tabs.length,score,res,occl};
+  return {style,extra,placed,total:tabs.length,score,res,occl,tight};
 }
 function bestFor(style){
   let best=null;
@@ -2214,7 +2242,7 @@ function applyStyle(style){
     stage.classList.remove('busy');
     const name=LSTYLES.find(x=>x[0]===r.style)[1];
     const gap=(S.venue.aisle+r.extra).toFixed(1);
-    const msg=r.placed===r.total?`<b>${style==='smart'?'Smart pick chose '+name:name}${['chevron','diamond'].includes(r.style)?`, ${r.style==='diamond'?45:LO.ang}°`:''}.</b> All ${r.total} tables placed around ${esc(coupleNames())}, who stay exactly where they are. Closest family nearest them, groom's side left and bride's right${LO.face?', every table turned to face them with the first seat (the head of each family) given the clearest view':''}, ${r.occl?'a few partly blocked views':'clear sightlines from every table'}, at least ${gap} m between chair backs. Undo goes back.`
+    const msg=r.placed===r.total?`<b>${style==='smart'?'Smart pick chose '+name:name}${['chevron','diamond'].includes(r.style)?`, ${r.style==='diamond'?45:LO.ang}°`:''}.</b> All ${r.total} tables placed around ${esc(coupleNames())}, who stay exactly where they are. Both families up front and side by side, friends behind them, colleagues at the back, groom's side left and bride's right${LO.face?', every table turned to face them with the first seat (the head of each family) given the clearest view':''}, ${r.occl?'a few partly blocked views':'clear sightlines from every table'}, ${r.tight?`${r.tight} table${r.tight>1?'s':''} tighter than ideal near the floor edge or an object`:'generous space around the dance floor, bar, buffet and every other object'}, at least ${gap} m between chair backs. Undo goes back.`
       :`<b>${name}:</b> ${r.placed} of ${r.total} tables fit. Try Compact spacing, turn off the center aisle, or make the floor bigger in Build mode.`;
     $('#sbStatus').innerHTML=msg;renderStyleBar(true);
     logAct(`${style==='smart'?'Smart pick: '+name:name} layout applied, ${r.placed} of ${r.total} tables placed.`);
