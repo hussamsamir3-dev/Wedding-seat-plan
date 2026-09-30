@@ -608,6 +608,14 @@ aside.panel.building .buildhead{display:flex}
 </style>
 </head>
 <body>
+<div id="nojs" style="position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;padding:24px;background:#0E1F1B;color:#F3EEE3;font:16px/1.5 system-ui,sans-serif;text-align:center">
+  <div style="max-width:440px">
+    <div style="font:italic 600 30px Georgia,serif;margin-bottom:10px">Hossam &amp; Salma</div>
+    <p style="margin:0 0 12px"><b>The planner is only being previewed, not opened.</b></p>
+    <p style="margin:0 0 12px;opacity:.85">The app you used to open this file shows it as a picture without running it, so nothing responds.</p>
+    <p style="margin:0;opacity:.85">On a computer, open it in Chrome, Edge or Safari. On Android, choose <b>Open with → Chrome</b>. On iPhone, open the planner's web link instead.</p>
+  </div>
+</div>
 <header class="top">
   <div class="brand">
     <div class="mono" id="mono">&amp;</div>
@@ -796,11 +804,15 @@ aside.panel.building .buildhead{display:flex}
 
 <script>
 /* ===== Supabase connection: paste your Project URL and anon public key here (Project Settings, API) ===== */
-const SUPABASE_URL='https://tucirtuxuzmifciywnqf.supabase.co'';
+const SUPABASE_URL='https://tucirtuxuzmifciywnqf.supabase.co';
 const SUPABASE_ANON_KEY='sb_publishable_Lz--X6lvwPcGmTzmx0_tnw_tixfRxqo';
 /* ===================================================================================================== */
 (function(){
 "use strict";
+try{const n=document.getElementById('nojs');if(n)n.remove()}catch(e){}
+window.addEventListener('error',e=>{try{if(document.getElementById('jsErr'))return;const d=document.createElement('div');d.id='jsErr';
+  d.style.cssText='position:fixed;left:12px;right:12px;bottom:12px;z-index:9999;background:#B0413E;color:#fff;padding:12px 14px;border-radius:12px;font:13px/1.4 system-ui,sans-serif;box-shadow:0 10px 30px rgba(0,0,0,.4)';
+  d.textContent='Something went wrong starting the planner: '+(e.message||'unknown error')+'. Please send a screenshot of this message.';document.body.appendChild(d)}catch(_){}});
 try{const cs=document.currentScript,head="<!DOCTYPE html>\n"+document.documentElement.outerHTML;
   document.addEventListener('DOMContentLoaded',()=>{let t='';for(let n=cs.nextSibling;n;n=n.nextSibling)t+=n.nodeType===1?n.outerHTML:(n.nodeType===3?n.textContent:'');
     window.__pristine=head.replace(/<\/body>\s*<\/html>\s*$/i,t+'</body></html>')})}catch(e){}
