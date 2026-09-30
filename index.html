@@ -206,7 +206,15 @@ svg.lod2 .tnum,svg.lod2 .ttl,svg.lod2 .tocc,svg.lod2 .il,svg.lod2 .dimt{display:
 .glow{fill:url(#glowG)}
 
 /* panel */
-aside.panel{background:var(--panel);border-left:1px solid var(--line);display:flex;flex-direction:column;min-height:0}
+aside.panel{background:var(--panel);border-left:1px solid var(--line);display:flex;flex-direction:column;min-height:0;min-width:0;overflow:hidden;transition:transform .32s cubic-bezier(.2,.8,.2,1),opacity .25s}
+body{transition:grid-template-columns .32s cubic-bezier(.2,.8,.2,1)}
+body.panel-off{grid-template-columns:1fr 0px}
+body.panel-off aside.panel{transform:translateX(40px);opacity:0;pointer-events:none;border-left:0}
+.ptog{position:absolute;right:0;top:50%;transform:translateY(-50%);z-index:36;width:22px;height:64px;border:1px solid var(--line);border-right:0;border-radius:12px 0 0 12px;background:color-mix(in srgb,var(--panel) 94%,transparent);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;color:var(--ink);cursor:pointer;box-shadow:-4px 0 14px -8px rgba(0,0,0,.35);padding:0}
+.ptog:hover{width:28px;background:var(--panel)}
+.ptog svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;transition:transform .3s}
+body.panel-off .ptog svg{transform:rotate(180deg)}
+@media (max-width:860px){.ptog{display:none}}
 .tabs{display:flex;border-bottom:1px solid var(--line);padding:0 8px;flex:0 0 auto}
 .tab{flex:1;border:0;background:none;padding:13px 4px 11px;font-weight:500;font-size:14px;color:var(--muted);border-bottom:2px solid transparent;white-space:nowrap}
 .tab[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--gold)}
@@ -683,6 +691,7 @@ aside.panel.building .buildhead{display:flex}
 </header>
 
 <main class="stage" id="stage">
+  <button class="ptog" id="bPanel" title="Hide the side panel (\)" aria-label="Hide the side panel" aria-expanded="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg></button>
   <div class="toolbar">
     <div class="tgroup seg">
       <button class="tb" data-mode="plan" aria-pressed="true" title="Arrange tables and seat guests"><svg class="ic " viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/></svg><span class="tl">Plan</span></button>
@@ -767,7 +776,7 @@ aside.panel.building .buildhead{display:flex}
     </g>
   </svg>
   <div class="marquee" id="marquee"></div>
-  <div class="avlegend" id="avLegend" aria-label="Icon colours"><span style="opacity:.55;font-size:11px">Version 30 Sep, sweetheart table</span><span><svg viewBox="-1 -1 2 2" style="color:#2F6DB5"><use href="#av-m" x="-1" y="-1" width="2" height="2"/></svg>Man</span><span><svg viewBox="-1 -1 2 2" style="color:#D6457A"><use href="#av-f" x="-1" y="-1" width="2" height="2"/></svg>Woman</span><span><svg viewBox="-1 -1 2 2" style="color:#E39B17"><use href="#av-c" x="-1" y="-1" width="2" height="2"/></svg>Child</span><span><i style="display:inline-block;width:14px;height:14px;border-radius:50%;border:3px solid #3E5F88;background:#E4ECF6"></i>Groom's table</span><span><i style="display:inline-block;width:14px;height:14px;border-radius:50%;border:3px solid #B96F7E;background:#F8E5EA"></i>Bride's table</span><span><i style="display:inline-block;width:14px;height:14px;border-radius:50%;border:3px solid #B08D57;background:#F6EEDD"></i>Both</span><span><svg viewBox="-1 -1 2 2" style="color:#8E969C"><use href="#av-u" x="-1" y="-1" width="2" height="2"/></svg>Not set</span></div>
+  <div class="avlegend" id="avLegend" aria-label="Icon colours"><span style="opacity:.55;font-size:11px">Version 30 Sep, slide-out panel</span><span><svg viewBox="-1 -1 2 2" style="color:#2F6DB5"><use href="#av-m" x="-1" y="-1" width="2" height="2"/></svg>Man</span><span><svg viewBox="-1 -1 2 2" style="color:#D6457A"><use href="#av-f" x="-1" y="-1" width="2" height="2"/></svg>Woman</span><span><svg viewBox="-1 -1 2 2" style="color:#E39B17"><use href="#av-c" x="-1" y="-1" width="2" height="2"/></svg>Child</span><span><i style="display:inline-block;width:14px;height:14px;border-radius:50%;border:3px solid #3E5F88;background:#E4ECF6"></i>Groom's table</span><span><i style="display:inline-block;width:14px;height:14px;border-radius:50%;border:3px solid #B96F7E;background:#F8E5EA"></i>Bride's table</span><span><i style="display:inline-block;width:14px;height:14px;border-radius:50%;border:3px solid #B08D57;background:#F6EEDD"></i>Both</span><span><svg viewBox="-1 -1 2 2" style="color:#8E969C"><use href="#av-u" x="-1" y="-1" width="2" height="2"/></svg>Not set</span></div>
   <div class="scalebar" id="scalebar"></div>
   <div class="zoomlbl" id="zoomlbl"></div>
   <div class="tiltnote">3D preview. Tap 3D again to keep editing.</div>
@@ -12701,6 +12710,18 @@ const SUPABASE_ANON_KEY = "sb_publishable_Lz--X6lvwPcGmTzmx0_tnw_tixfRxqo";
   });
 })();
 
+</script>
+<script>
+(function(){
+  var b=document.getElementById('bPanel');if(!b)return;
+  function set(off,save){document.body.classList.toggle('panel-off',off);b.setAttribute('aria-expanded',String(!off));b.title=off?'Show the side panel (\\)':'Hide the side panel (\\)';b.setAttribute('aria-label',off?'Show the side panel':'Hide the side panel');
+    if(save)try{localStorage.setItem('tolipPlanner.panel',off?'off':'on')}catch(e){}
+    var k=0,t=setInterval(function(){window.dispatchEvent(new Event('resize'));if(++k>8)clearInterval(t)},45)}
+  try{if(localStorage.getItem('tolipPlanner.panel')==='off'&&window.innerWidth>860)set(true,false)}catch(e){}
+  b.addEventListener('click',function(){set(!document.body.classList.contains('panel-off'),true)});
+  document.addEventListener('keydown',function(e){if(e.key!=='\\'||e.ctrlKey||e.metaKey||e.altKey)return;var t=e.target;if(t&&(t.tagName==='INPUT'||t.tagName==='TEXTAREA'||t.tagName==='SELECT'||t.isContentEditable))return;e.preventDefault();set(!document.body.classList.contains('panel-off'),true)});
+  window.__panelShow=function(){if(document.body.classList.contains('panel-off'))set(false,true)};
+})();
 </script>
 </body>
 </html>
