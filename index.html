@@ -352,6 +352,72 @@ textarea{width:100%;min-height:90px;border:1px solid var(--line);border-radius:9
 .sb-status b{color:var(--ink);font-weight:500}
 .stage.busy #svg{opacity:.75;transition:opacity .2s}
 @media (pointer:coarse){.seg button{min-height:40px;padding:8px 12px;font-size:13px}.sbc{flex-basis:112px}}
+/* ===== refreshed chrome: icons, toolbar, view menu, tabs, planner ===== */
+.ic{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:0 0 auto}
+.ic.sm{width:14px;height:14px;opacity:.7}
+.toolbar{align-items:flex-start}
+.tspace{flex:1 1 auto}
+.tgroup{border-radius:14px;padding:4px;gap:2px;box-shadow:0 6px 18px -10px rgba(20,40,35,.35)}
+.tb{display:inline-flex;align-items:center;gap:7px;padding:7px 12px;border-radius:10px;font-weight:500;color:var(--ink);transition:background .15s,color .15s}
+.tb:hover{background:color-mix(in srgb,var(--gold) 14%,transparent)}
+.tb.ico{padding:7px 9px}
+.tb.hl{color:var(--gold);font-weight:600}
+.tb.hl[aria-pressed="true"],.tb[aria-pressed="true"]{background:var(--hdr);color:var(--hdr-ink)}
+.tgroup.seg .tb[aria-pressed="true"]{background:var(--hdr);color:var(--hdr-ink)}
+#bView[aria-expanded="true"]{background:var(--hdr);color:var(--hdr-ink)}
+.vmenu{position:absolute;top:62px;right:12px;z-index:7;width:260px;background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:8px;box-shadow:0 22px 50px -18px rgba(10,30,25,.45);display:none}
+.vmenu.open{display:block;animation:vmIn .16s ease-out}
+@keyframes vmIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
+.vm-h{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);padding:8px 10px 4px}
+.vm-row{display:flex;align-items:center;gap:10px;width:100%;border:0;background:none;padding:9px 10px;border-radius:10px;font-size:14px;color:var(--ink);text-align:left}
+.vm-row:hover{background:color-mix(in srgb,var(--gold) 12%,transparent)}
+.vm-row span{flex:1}
+.sw{width:34px;height:20px;border-radius:99px;background:color-mix(in srgb,var(--muted) 35%,transparent);position:relative;flex:0 0 auto;transition:background .18s}
+.sw::after{content:"";position:absolute;top:2px;left:2px;width:16px;height:16px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.3);transition:transform .18s}
+.vm-row[aria-pressed="true"] .sw{background:var(--gold)}
+.vm-row[aria-pressed="true"] .sw::after{transform:translateX(14px)}
+.vm-seg{display:flex;gap:4px;padding:4px 6px 6px}
+.vm-seg .tb{flex:1;flex-direction:column;gap:3px;font-size:12px;padding:8px 4px;border:1px solid var(--line)}
+.zoomer{position:absolute;right:14px;bottom:54px;z-index:5;display:flex;flex-direction:column;background:color-mix(in srgb,var(--panel) 94%,transparent);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border:1px solid var(--line);border-radius:14px;padding:4px;gap:2px;box-shadow:0 6px 18px -10px rgba(20,40,35,.35)}
+.zb{width:38px;height:38px;border:0;background:none;border-radius:10px;display:flex;align-items:center;justify-content:center;color:var(--ink)}
+.zb:hover{background:color-mix(in srgb,var(--gold) 14%,transparent)}
+.tabs{padding:6px 8px 0;gap:2px}
+.tab{display:flex;flex-direction:column;align-items:center;gap:4px;font-size:12px;padding:9px 2px 9px;border-radius:12px 12px 0 0}
+.tab .ic{width:21px;height:21px}
+.tab[aria-selected="true"]{color:var(--ink);background:color-mix(in srgb,var(--gold) 10%,transparent)}
+.tab[aria-selected="true"] .ic{color:var(--gold)}
+.tab .n{margin-left:4px}
+.tab[hidden],[hidden]{display:none!important}
+.qgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:14px 0 6px}
+.qa{display:flex;flex-direction:column;align-items:flex-start;gap:4px;padding:14px 13px;border:1px solid var(--line);border-radius:16px;background:var(--panel);color:var(--ink);text-align:left;cursor:pointer;transition:transform .12s,box-shadow .12s;box-shadow:0 8px 20px -16px rgba(20,40,35,.5)}
+.qa:hover{transform:translateY(-1px);box-shadow:0 12px 26px -16px rgba(20,40,35,.6)}
+.qa .ic{width:24px;height:24px;color:var(--gold);margin-bottom:4px}
+.qa b{font-size:14px;font-weight:600}
+.qa small{font-size:12px;color:var(--muted);line-height:1.3}
+.qa.gold{background:linear-gradient(140deg,#C9A45F,#A8824D);border-color:transparent;color:#fff}
+.qa.gold .ic,.qa.gold small{color:#fff}
+.qa.gold small{opacity:.85}
+.hh{display:flex;align-items:center;gap:8px}
+.hh .ic{color:var(--gold);width:17px;height:17px}
+.pill{margin-left:auto;background:var(--gold);color:#fff;border-radius:99px;font-size:11px;padding:1px 8px;font-weight:600}
+details.lim summary,details.exd summary{cursor:pointer;font-size:12px;color:var(--muted);margin-top:8px;list-style:none}
+details.more{margin-top:14px;border:1px solid var(--line);border-radius:14px;padding:4px 10px}
+details.more summary{display:flex;align-items:center;gap:8px;cursor:pointer;padding:9px 0;font-weight:600;list-style:none}
+details.more summary .ic{color:var(--gold)}
+details.more summary .sm{margin-left:auto;transition:transform .15s}
+details.more[open] summary .sm{transform:rotate(180deg)}
+details summary::-webkit-details-marker{display:none}
+.mtools{display:grid;grid-template-columns:1fr;gap:6px;padding:4px 0 10px}
+.mtools .tool{display:flex;flex-direction:row;align-items:center;gap:12px;border:0;background:color-mix(in srgb,var(--gold) 7%,transparent);border-radius:12px;padding:10px 12px;text-align:left;color:var(--ink);font-size:14px}
+.mtools .tool:hover{background:color-mix(in srgb,var(--gold) 16%,transparent)}
+.mtools .tool .ic{color:var(--gold);width:20px;height:20px}
+.mtools .tool small{display:block;color:var(--muted);font-size:12px;text-align:left}
+.mtools .tool span{text-align:left;font-weight:500}
+.seg2{display:flex;gap:4px;background:color-mix(in srgb,var(--muted) 10%,transparent);padding:4px;border-radius:12px;margin:2px 0 12px}
+.seg2 button{flex:1;display:flex;align-items:center;justify-content:center;gap:6px;border:0;background:none;border-radius:9px;padding:8px 6px;font-size:13px;color:var(--muted)}
+.seg2 button[aria-pressed="true"]{background:var(--panel);color:var(--ink);box-shadow:0 2px 8px -4px rgba(0,0,0,.25)}
+.seg2 .ic{width:16px;height:16px}
+@media (max-width:760px){.tl{display:none}.tb{padding:6px}.toolbar .ic{width:17px;height:17px}.tb .ic.sm{display:none}.toolbar{gap:4px;left:5px;right:5px}.tgroup{padding:2px}.zoomer{bottom:96px;right:10px}.vmenu{right:8px;top:58px}.qgrid{grid-template-columns:1fr 1fr}}
 /* launch gate: nothing is usable until an invited account signs in */
 .gate{position:fixed;inset:0;z-index:200;display:none;align-items:center;justify-content:center;padding:20px;
   background:radial-gradient(ellipse at 50% 30%,#1D3A33 0%,#0E1F1B 60%,#08120F 100%)}
@@ -528,39 +594,43 @@ aside.panel.building .buildhead{display:flex}
 
 <main class="stage" id="stage">
   <div class="toolbar">
-    <div class="tgroup">
-      <button class="tb" data-mode="plan" aria-pressed="true" title="Arrange tables and seat guests">Plan</button>
-      <button class="tb" data-mode="build" aria-pressed="false" title="Draw the hall: floor, walls, doors, pillars">Build</button>
+    <div class="tgroup seg">
+      <button class="tb" data-mode="plan" aria-pressed="true" title="Arrange tables and seat guests"><svg class="ic " viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/></svg><span class="tl">Plan</span></button>
+      <button class="tb" data-mode="build" aria-pressed="false" title="Draw the hall: floor, walls, doors, pillars"><svg class="ic " viewBox="0 0 24 24" aria-hidden="true"><path d="m15 12-8.5 8.5a2.12 2.12 0 1 1-3-3L12 9"/><path d="M17.64 15 22 10.64"/><path d="m20.91 11.7-1.25-1.25c-.6-.6-.93-1.4-.93-2.25v-.86L16.01 4.6a5.56 5.56 0 0 0-3.94-1.64H9l.92.82A6.18 6.18 0 0 1 12 8.4v1.56l2 2h2.47l2.26 1.91"/></svg><span class="tl">Build</span></button>
     </div>
     <div class="tgroup">
-      <button class="tb" id="bMusic" aria-pressed="true" title="Background music (Alt+M)"><span id="musicIco" aria-hidden="true">♪</span> <span id="musicTxt">Music</span></button>
-    </div>
-    <div class="tgroup">
-      <button class="tb" id="bUndo" title="Undo (Ctrl+Z)">Undo</button>
-      <button class="tb" id="bRedo" title="Redo (Ctrl+Shift+Z)">Redo</button>
+      <button class="tb ico" id="bUndo" title="Undo (Ctrl+Z)" aria-label="Undo"><svg class="ic " viewBox="0 0 24 24" aria-hidden="true"><path d="M9 14 4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11"/></svg></button>
+      <button class="tb ico" id="bRedo" title="Redo (Ctrl+Shift+Z)" aria-label="Redo"><svg class="ic " viewBox="0 0 24 24" aria-hidden="true"><path d="m15 14 5-5-5-5"/><path d="M20 9H9.5a5.5 5.5 0 0 0 0 11H13"/></svg></button>
     </div>
     <div class="tgroup plan-only">
-      <button class="tb" data-tool="select" aria-pressed="true" title="Move, rotate and resize">Select</button>
-      <button class="tb" data-tool="box" aria-pressed="false" title="Drag a box to select many">Box</button>
-      <button class="tb" data-tool="measure" aria-pressed="false" title="Measure a distance">Measure</button>
+      <button class="tb hl" id="bStyles" title="Arrange every table in a stylish layout around the couple"><svg class="ic " viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l1.9 4.6 4.6 1.9-4.6 1.9L12 16l-1.9-4.6L5.5 9.5l4.6-1.9Z"/><path d="M19 15l.8 1.7 1.7.8-1.7.8L19 20l-.8-1.7-1.7-.8 1.7-.8Z"/><path d="M5 3v3M3.5 4.5h3"/></svg><span class="tl">Layouts</span></button>
+      <button class="tb" id="bTilt" aria-pressed="false" title="Walk around a realistic 3D model"><svg class="ic " viewBox="0 0 24 24" aria-hidden="true"><path d="M21 8 12 3 3 8v8l9 5 9-5Z"/><path d="m3 8 9 5 9-5"/><path d="M12 13v8"/></svg><span class="tl">3D</span></button>
+      <button class="tb" id="bChart" title="Seating chart by table and A to Z"><svg class="ic " viewBox="0 0 24 24" aria-hidden="true"><rect x="8" y="2" width="8" height="4" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="M12 11h4M12 16h4M8 11h.01M8 16h.01"/></svg><span class="tl">Chart</span></button>
+      <button class="tb" id="bSheet" title="Every guest and table in an editable sheet"><svg class="ic " viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M3 15h18M9 3v18"/></svg><span class="tl">Sheet</span></button>
     </div>
-    <div class="tgroup plan-only">
-      <button class="tb" id="bStyles" title="Arrange all tables in a professional layout style">✦ Styles</button>
-      <button class="tb" id="bSheet" title="Every guest and table in an editable sheet">Sheet</button>
-      <button class="tb" id="bChart" title="Seating chart by table and A to Z">Seating chart</button>
-      <button class="tb" id="bNames" aria-pressed="true" title="Show guest names at each seat">Names</button>
-    </div>
+    <div class="tspace"></div>
     <div class="tgroup">
-      <button class="tb" id="bSnap" aria-pressed="true" title="Snap to 0.5 m grid and 15° angles">Snap</button>
-      <button class="tb" id="bWalk" aria-pressed="false" title="Show walkway clearance">Walkways</button>
-      <button class="tb" id="bNight" aria-pressed="false" title="Evening lighting preview">Evening</button>
-      <button class="tb" id="bTilt" aria-pressed="false" title="Walk around a realistic 3D model of the wedding">3D</button>
+      <button class="tb" id="bView" aria-expanded="false" aria-controls="vmenu" title="View options and tools"><svg class="ic " viewBox="0 0 24 24" aria-hidden="true"><path d="M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3M1 14h6M9 8h6M17 16h6"/></svg><span class="tl">View</span><svg class="ic sm" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button>
     </div>
-    <div class="tgroup">
-      <button class="tb" id="bOut" title="Zoom out">−</button>
-      <button class="tb" id="bFit" title="Fit whole terrace">Fit</button>
-      <button class="tb" id="bIn" title="Zoom in">+</button>
+  </div>
+  <div class="vmenu" id="vmenu" role="menu" aria-label="View options">
+    <div class="vm-h">Show on the plan</div>
+    <button class="vm-row plan-only" id="bNames" aria-pressed="true"><svg class="ic " viewBox="0 0 24 24" aria-hidden="true"><path d="M12.6 2.6A2 2 0 0 0 11.2 2H4a2 2 0 0 0-2 2v7.2a2 2 0 0 0 .6 1.4l8.7 8.7a2.4 2.4 0 0 0 3.4 0l6.6-6.6a2.4 2.4 0 0 0 0-3.4Z"/><circle cx="7.5" cy="7.5" r="1.5"/></svg><span>Guest names</span><i class="sw"></i></button>
+    <button class="vm-row" id="bWalk" aria-pressed="false"><svg class="ic " viewBox="0 0 24 24" aria-hidden="true"><circle cx="6" cy="19" r="3"/><path d="M9 19h8.5a3.5 3.5 0 0 0 0-7h-11a3.5 3.5 0 0 1 0-7H15"/><circle cx="18" cy="5" r="3"/></svg><span>Walkways</span><i class="sw"></i></button>
+    <button class="vm-row" id="bNight" aria-pressed="false"><svg class="ic " viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg><span>Evening lighting</span><i class="sw"></i></button>
+    <button class="vm-row" id="bSnap" aria-pressed="true"><svg class="ic " viewBox="0 0 24 24" aria-hidden="true"><path d="m6 15-4-4 6.75-6.77a7.79 7.79 0 0 1 11 11L13 22l-4-4 6.39-6.36a2.14 2.14 0 0 0-3-3L6 15"/><path d="m5 8 4 4M12 15l4 4"/></svg><span>Snap to grid</span><i class="sw"></i></button>
+    <button class="vm-row" id="bMusic" aria-pressed="true" title="Background music (Alt+M)"><svg class="ic " viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg><span id="musicTxt">Music</span><span id="musicIco" hidden></span><i class="sw"></i></button>
+    <div class="vm-h plan-only">Mouse tool</div>
+    <div class="vm-seg plan-only">
+      <button class="tb" data-tool="select" aria-pressed="true" title="Move, rotate and resize"><svg class="ic " viewBox="0 0 24 24" aria-hidden="true"><path d="m4 4 7.07 17 2.51-7.39L21 11.07Z"/></svg><span>Select</span></button>
+      <button class="tb" data-tool="box" aria-pressed="false" title="Drag a box to select many"><svg class="ic " viewBox="0 0 24 24" aria-hidden="true"><path d="M5 3a2 2 0 0 0-2 2M19 3a2 2 0 0 1 2 2M21 19a2 2 0 0 1-2 2M5 21a2 2 0 0 1-2-2M9 3h1M9 21h1M14 3h1M14 21h1M3 9v1M21 9v1M3 14v1M21 14v1"/></svg><span>Box</span></button>
+      <button class="tb" data-tool="measure" aria-pressed="false" title="Measure a distance"><svg class="ic " viewBox="0 0 24 24" aria-hidden="true"><path d="M21.3 15.3a2.4 2.4 0 0 1 0 3.4l-2.6 2.6a2.4 2.4 0 0 1-3.4 0L2.7 8.7a2.41 2.41 0 0 1 0-3.4l2.6-2.6a2.41 2.41 0 0 1 3.4 0Z"/><path d="m14.5 12.5 2-2M11.5 9.5l2-2M8.5 6.5l2-2M17.5 15.5l2-2"/></svg><span>Measure</span></button>
     </div>
+  </div>
+  <div class="zoomer" aria-label="Zoom">
+    <button class="zb" id="bIn" title="Zoom in" aria-label="Zoom in"><svg class="ic " viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></button>
+    <button class="zb" id="bFit" title="Fit the whole terrace" aria-label="Fit"><svg class="ic " viewBox="0 0 24 24" aria-hidden="true"><path d="M8 3H5a2 2 0 0 0-2 2v3M21 8V5a2 2 0 0 0-2-2h-3M3 16v3a2 2 0 0 0 2 2h3M16 21h3a2 2 0 0 0 2-2v-3"/></svg></button>
+    <button class="zb" id="bOut" title="Zoom out" aria-label="Zoom out"><svg class="ic " viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/></svg></button>
   </div>
   <svg id="svg" xmlns="http://www.w3.org/2000/svg" aria-label="Terrace floor plan">
     <defs>
@@ -630,13 +700,13 @@ aside.panel.building .buildhead{display:flex}
 
 <aside class="panel" id="panel">
   <div class="tabs" role="tablist">
-    <button class="tab" role="tab" data-tab="smart" aria-selected="true">Smart</button>
-    <button class="tab" role="tab" data-tab="add" aria-selected="false">Add</button>
-    <button class="tab" role="tab" data-tab="edit" aria-selected="false">Edit</button>
-    <button class="tab" role="tab" data-tab="guests" aria-selected="false">Guests<span class="n" id="gCount"></span></button>
-    <button class="tab" role="tab" data-tab="venue" aria-selected="false">Venue</button>
-    <button class="tab" role="tab" data-tab="layouts" aria-selected="false">Saved</button>
-    <div class="buildhead">Build the hall</div>
+    <button class="tab" role="tab" data-tab="smart" aria-selected="true"><svg class="ic " viewBox="0 0 24 24" aria-hidden="true"><path d="m21.64 3.64-1.28-1.28a1.21 1.21 0 0 0-1.72 0L2.36 18.64a1.21 1.21 0 0 0 0 1.72l1.28 1.28a1.2 1.2 0 0 0 1.72 0L21.64 5.36a1.2 1.2 0 0 0 0-1.72"/><path d="m14 7 3 3M5 6v4M19 14v4M10 2v2M7 8H3M21 16h-4M11 3H9"/></svg><span>Planner</span></button>
+    <button class="tab" role="tab" data-tab="guests" aria-selected="false"><svg class="ic " viewBox="0 0 24 24" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg><span>Guests<span class="n" id="gCount"></span></span></button>
+    <button class="tab" role="tab" data-tab="add" aria-selected="false"><svg class="ic " viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9.5"/><path d="M8 12h8M12 8v8"/></svg><span>Add</span></button>
+    <button class="tab" role="tab" data-tab="edit" aria-selected="false"><svg class="ic " viewBox="0 0 24 24" aria-hidden="true"><path d="M21.17 6.81a1 1 0 0 0-3.99-3.99L3.84 16.17a2 2 0 0 0-.5.83l-1.32 4.35a.5.5 0 0 0 .62.62l4.35-1.32a2 2 0 0 0 .83-.5Z"/><path d="m15 5 4 4"/></svg><span>Edit</span></button>
+    <button class="tab" role="tab" data-tab="venue" aria-selected="false"><svg class="ic " viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1Z"/></svg><span>Settings</span></button>
+    <button class="tab" role="tab" data-tab="layouts" aria-selected="false" hidden>Saved</button>
+  </div>
     <button class="collapse" id="bCollapse" aria-label="Collapse panel">▾</button>
   </div>
   <div class="pbody" id="pbody"></div>
@@ -1869,6 +1939,13 @@ function tableRole(t){
   if(pri>=4)return {cat:'friends',pri};
   return {cat:'fam',pri};
 }
+function rectShare(){const ts=S.items.filter(i=>TYPES[i.type].table&&!isCoupleTable(i));return ts.length?ts.filter(t=>!isCircle(t)).length/ts.length:0}
+function clusterKey(t,role){if(role.cat==='work')return 'work';const g=(tableGroup(t)||'').toLowerCase();if(!g)return 'held-'+(t.side||tableSideKey(t)||'x');return g.replace(/,.*$/,'').trim()}
+const CLUSTER_W={work:1.4,fam:.5,friends:.7};
+/* rotation that lets every guest see the couple: long tables point at them, so both rows just turn their heads */
+function viewRot(t,x,y,A){const ang=Math.atan2(A.y-y,A.x-x)*180/Math.PI;
+  if(isCircle(t)||TYPES[t.type].oneSide)return normRot(ang-90);
+  return normRot(t.w>=t.h?ang:ang-90)}
 function orderUnit(list){ // head first, then partner/adults, then children, so families sit side by side
   return list.slice().sort((a,b)=>{const ha=normName(a.name)===normName(a.hh||a.name)?0:1,hb=normName(b.name)===normName(b.hh||b.name)?0:1;return (a.kid-b.kid)||(ha-hb)})}
 function seatUnit(list,t){
@@ -2091,22 +2168,32 @@ function renderSmart(b){
   const gs=gstats(),lim=limitMax(),gc=countSide('groom'),bc=countSide('bride'),oc=S.guests.filter(g=>g.rsvp!=='no'&&g.side==='both').length;
   const pc=v=>Math.min(100,v/lim*100).toFixed(1)+'%';
   const ins=insights();
-  b.innerHTML=`<h2>Smart planner</h2>
-    <div class="cmd"><input id="cmd" type="text" placeholder="Tell the planner what to do" autocomplete="off" aria-label="Command"><button class="btn primary" id="cmdGo">Go</button></div>
-    <div class="ex">${['move Khaled to table 6','seat Hisham with family at table 3','swap Ghaly and Kabbo','add Sara to bride\'s friends','table 2 seats 12','where is Adly'].map(x=>`<button data-ex="${esc(x)}">${esc(x)}</button>`).join('')}</div>
-    <div class="capcard"><div class="big">${gs.coming}<small> of ${lim} guests</small></div>
+  const need=ins.filter(o=>o.l==='err'||o.l==='warn').length;
+  b.innerHTML=`<div class="capcard"><div class="big">${gs.coming}<small> of ${lim} guests</small></div>
       <div class="bar"><i class="g" style="width:${pc(gc)}"></i><i class="b" style="width:${pc(bc)}"></i><i class="o" style="width:${pc(oc)}"></i><i class="x" style="width:${Math.max(0,((lim-S.plan.cap)/lim*100)).toFixed(1)}%;margin-left:auto"></i></div>
-      <div class="capline"><span><i class="dot s-groom"></i> Groom ${gc} of ${S.plan.groom}</span><span><i class="dot s-bride"></i> Bride ${bc} of ${S.plan.bride}</span>${oc?`<span><i class="dot"></i> Both ${oc}</span>`:''}<span>Base ${S.plan.cap}, +${S.plan.extra}% extra</span></div>
-      <details style="margin-top:8px"><summary class="cap" style="cursor:pointer">Change the limits</summary>
+      <div class="capline"><span><i class="dot s-groom"></i> Groom ${gc} of ${S.plan.groom}</span><span><i class="dot s-bride"></i> Bride ${bc} of ${S.plan.bride}</span>${oc?`<span><i class="dot"></i> Both ${oc}</span>`:''}</div>
+      <details class="lim"><summary>Base ${S.plan.cap} guests, +${S.plan.extra}% extra · change</summary>
         <div class="two"><div class="row"><label for="lCap">Limit</label><input id="lCap" type="number" min="10" value="${S.plan.cap}"></div><div class="row"><label for="lEx">Extra %</label><input id="lEx" type="number" min="0" max="50" value="${S.plan.extra}"></div></div>
         <div class="two"><div class="row"><label for="lB">Bride</label><input id="lB" type="number" min="0" value="${S.plan.bride}"></div><div class="row"><label for="lG">Groom</label><input id="lG" type="number" min="0" value="${S.plan.groom}"></div></div></details>
     </div>
-    <h3>What needs attention</h3>
+    <div class="qgrid">
+      <button class="qa gold" id="sDist">${ic('seat')}<b>Seat everyone</b><small>Families together, children beside parents</small></button>
+      <button class="qa" id="sStyles">${ic('sparkles')}<b>Arrange tables</b><small>Stylish layouts facing the couple</small></button>
+      <button class="qa" id="sChart">${ic('chart')}<b>Seating chart</b><small>By table or A to Z</small></button>
+      <button class="qa" id="sSheet">${ic('sheet')}<b>Guest sheet</b><small>Edit and paste like Excel</small></button>
+    </div>
+    <h3 class="hh">${ic('star')}What needs attention${need?`<span class="pill">${need}</span>`:''}</h3>
     <ul class="ins">${ins.map((o,i)=>`<li class="${o.l}"><div>${esc(o.t)}</div>${o.b?`<button class="btn sm" data-fix="${i}">${esc(o.b)}</button>`:''}</li>`).join('')}</ul>
-    <h3>One-tap planning</h3>
-    <div class="btns"><button class="btn gold" id="sDist">Smart distribute</button><button class="btn" id="sReplan">Re-plan every seat</button><button class="btn" id="sArr">Arrange by importance</button><button class="btn" id="sStyles">✦ Layout styles</button><button class="btn" id="sRight">Right-size tables</button><button class="btn" id="sBride">Hold tables for the bride</button><button class="btn" id="sSheet">Open sheet</button></div>
-    <p class="note">Smart distribute keeps every household together, seats children next to their parents, fills the most important tables first, never uses reserved chairs, and adds tables only when needed. Re-plan starts from scratch and moves tables so the closest family sits nearest the kosha.</p>
-    ${actLog.length?`<h3>Recent</h3><ul class="log">${actLog.map(x=>`<li>${esc(x)}</li>`).join('')}</ul>`:''}`;
+    <h3 class="hh">${ic('chat')}Ask the planner</h3>
+    <div class="cmd"><input id="cmd" type="text" placeholder="e.g. move Khaled to table 6" autocomplete="off" aria-label="Command"><button class="btn primary" id="cmdGo">Go</button></div>
+    <details class="exd"><summary>Examples</summary><div class="ex">${['move Khaled to table 6','seat Hisham with family at table 3','swap Ghaly and Kabbo','add Sara to bride\'s friends','table 2 seats 12','where is Adly'].map(x=>`<button data-ex="${esc(x)}">${esc(x)}</button>`).join('')}</div></details>
+    <details class="more"><summary>${ic('wrench')}More tools${ic('chev','sm')}</summary><div class="mtools">
+      <button class="tool" id="sReplan">${ic('refresh')}<span>Re-plan every seat<small>Start over and move tables too</small></span></button>
+      <button class="tool" id="sArr">${ic('star')}<span>Arrange by importance<small>Closest family nearest the couple</small></span></button>
+      <button class="tool" id="sRight">${ic('shrink')}<span>Right-size tables<small>Remove empty chairs</small></span></button>
+      <button class="tool" id="sBride">${ic('heart')}<span>Hold tables for the bride<small>Empty tables for her guests</small></span></button>
+    </div></details>
+    ${actLog.length?`<details class="more"><summary>${ic('clock')}Recent activity${ic('chev','sm')}</summary><ul class="log">${actLog.map(x=>`<li>${esc(x)}</li>`).join('')}</ul></details>`:''}`;
   const go=()=>{const v=$('#cmd').value;runCommand(v);const c=$('#cmd');if(c){c.value='';c.focus()}};
   $('#cmdGo').onclick=go;$('#cmd').onkeydown=e=>{if(e.key==='Enter')go()};
   b.querySelectorAll('[data-ex]').forEach(x=>x.onclick=()=>{$('#cmd').value=x.dataset.ex;$('#cmd').focus()});
@@ -2114,12 +2201,12 @@ function renderSmart(b){
   $('#sDist').onclick=()=>smartDistribute({});$('#sReplan').onclick=()=>smartDistribute({reseat:true,arrange:true});
   $('#sStyles').onclick=openStyles;
   $('#sArr').onclick=()=>{mutate(arrangeTables);logAct("Tables arranged: closest family nearest the kosha, groom's side on the left, bride's on the right.")};
-  $('#sRight').onclick=rightSize;$('#sBride').onclick=reserveBrideTables;$('#sSheet').onclick=()=>openSheet('guests');
+  $('#sRight').onclick=rightSize;$('#sBride').onclick=reserveBrideTables;$('#sSheet').onclick=()=>openSheet('guests');$('#sChart').onclick=openChart;
   const lim2=(id,k)=>{$(id).onchange=e=>{mutate(()=>{S.plan[k]=Math.max(0,+e.target.value||0)})}};lim2('#lCap','cap');lim2('#lEx','extra');lim2('#lB','bride');lim2('#lG','groom');
 }
 
 /* ---------- layout styles: arrange every table in a professional pattern ---------- */
-const LSTYLES=[['smart','Smart pick'],['rings','Halo rings'],['crescent','Crescent'],['sunflower','Petal spiral'],['wave','Waves'],['grid','Classic rows'],['stagger','Staggered'],['chevron','Chevron'],['arc','Amphitheater'],['fan','Sunburst'],['diamond','Diamond'],['stacks','Long stacks'],['horseshoe','Horseshoe'],['islands','Side islands'],['garden','Garden']];
+const LSTYLES=[['smart','Smart pick'],['rays','Sun rays'],['rings','Halo rings'],['crescent','Crescent'],['sunflower','Petal spiral'],['wave','Waves'],['grid','Classic rows'],['stagger','Staggered'],['chevron','Chevron'],['arc','Amphitheater'],['fan','Sunburst'],['diamond','Diamond'],['stacks','Long stacks'],['horseshoe','Horseshoe'],['islands','Side islands'],['garden','Garden']];
 const LO={style:null,space:'balanced',aisle:true,ang:30,aisleW:3,shape:'keep',face:true};
 const SPACING={airy:[1.8,1.4,1,.7,.4,.15],balanced:[1.1,.8,.5,.25,.05],compact:[.35,.15,0]};
 function hash3(i,j,k){let h=(i*374761393+j*668265263+k*2147483647)|0;h=(h^(h>>>13))*1274126177|0;return ((h^(h>>>16))>>>0)/4294967295}
@@ -2146,6 +2233,10 @@ function genSlots(style,P){
     for(let L=0;L<8;L++){const e=P.fx/2+Math.max(.6,P.aisleG)+L*P.py,u1=B.u0-e,u2=B.u1+e,vt=Math.max(v0,B.v0),vb=B.v1+e;
       for(let v=vt;v<=vb+.01;v+=P.px){push(u1,v,90,L*1000+(v-vt));push(u2,v,90,L*1000+(v-vt))}
       const n=Math.max(1,Math.floor((u2-u1)/P.px));for(let k=1;k<n;k++){const u=u1+(u2-u1)*k/n;push(u,vb,0,L*1000+(vb-vt)+Math.abs(Math.abs(u)-(u2-u1)/2)*.2)}}}
+  else if(style==='rays'){const back=P.back||2,len=P.fx+Math.max(.6,P.aisleG),wide=(P.fs||P.fx)+P.aisleG+1.1;
+    const R0=back+v0+P.fx*.6,dth=wide/R0,t0=P.aisle?Math.max(dth/2,Math.asin(Math.min(.99,(c0+(P.fs||P.fx)/2)/R0))):dth/2;
+    for(let j=0;;j++){const th=t0+j*dth;if(th>rad(80))break;
+      for(let k=0;;k++){const r=R0+k*len;if(r>R+back)break;const u=r*Math.sin(th),v=r*Math.cos(th)-back;if(v<v0*.5)continue;both(u,v,90-deg(th),-(90-deg(th)),k*60+j*14)}}}
   else if(style==='rings'||style==='crescent'){const back=P.back||2;
     for(let i=0;;i++){const Rr=back+v0+P.fx*(style==='crescent'?1.4:.5)+i*P.py;if(Rr>R+back)break;const st=P.px/Rr,off=i%2?st/2:0;
       const t0=style==='crescent'?rad(32):(P.aisle?Math.asin(Math.min(.99,c0/Rr)):st/2),t1=rad(style==='crescent'?88:82);
@@ -2184,25 +2275,30 @@ function tryLayout(style,extra){
   const orig=tabs.map(t=>[t,t.x,t.y,t.rot]);
   const A=F.k?{x:F.k.x,y:F.k.y}:{x:F.x+Math.sin(rad(F.rot))*2,y:F.y-Math.cos(rad(F.rot))*2};tabs.forEach(t=>{t.x=-999;t.y=-999});
   const num=t=>+tableNo(t)||99;
-  const roles=new Map(tabs.map(t=>[t,tableRole(t)]));const catRank={fam:0,friends:1,work:2};
+  const roles=new Map(tabs.map(t=>[t,tableRole(t)]));const catRank={work:-1,fam:0,friends:1}; // colleagues claim the back first, as one block
   const order=tabs.slice().sort((a,b)=>catRank[roles.get(a).cat]-catRank[roles.get(b).cat]||roles.get(a).pri-roles.get(b).pri||num(a)-num(b));
   const sorted={};
   const scoreOf=(o,sd)=>sd==='groom'&&o.scG!=null?o.scG:sd==='bride'&&o.scB!=null?o.scB:o.sc;
   // families: closest to the couple and hugging the centre line so both families meet; colleagues: the farthest slots
   const famKey=o=>Math.hypot(o.u,o.v)+Math.abs(o.u)*.55,backKey=o=>-(Math.hypot(o.u*.6,o.v));
   const listFor=(sd,cat)=>{const k=(sd==='groom'?'g':sd==='bride'?'b':'a')+cat;if(!sorted[k])sorted[k]=slots.slice().sort((p,q)=>cat==='work'?backKey(p)-backKey(q):cat==='fam'?famKey(p)-famKey(q):scoreOf(p,sd)-scoreOf(q,sd));return sorted[k]};
-  let placed=0;const res=[];
+  let placed=0;const res=[];const groupPts={};
   for(const t of order){
     const sd=tableSide(t)||t.side||'',sg=sd==='groom'?-1:sd==='bride'?1:0;let ok=false;
+    const role=roles.get(t),cat=role.cat,ck=clusterKey(t,role),gp=groupPts[ck];
+    // tables of the same group (colleagues above all) pull towards each other
+    let cands=listFor(sd,cat);
+    if(gp&&gp.length){const cx=gp.reduce((a,p)=>a+p[0],0)/gp.length,cy=gp.reduce((a,p)=>a+p[1],0)/gp.length,w=CLUSTER_W[cat]||.5;
+      const rank=new Map(cands.map((o,i)=>[o,i]));
+      const rf=cat==='work'?.02:.35;cands=cands.slice().sort((p,q)=>(rank.get(p)*rf+w*Math.hypot(p.x-cx,p.y-cy))-(rank.get(q)*rf+w*Math.hypot(q.x-cx,q.y-cy)))}
     for(const pass of [0,1]){
-      const cat=roles.get(t).cat;
-      for(const o of listFor(sd,cat)){if(o.taken)continue;if(pass===0&&sg&&o.u*sg<.3)continue;
+      for(const o of cands){if(o.taken)continue;if(pass===0&&sg&&o.u*sg<.3&&cat!=='work')continue;
         t.x=f(o.x);t.y=f(o.y);
-        if(LO.face){const ang=Math.atan2(A.y-o.y,A.x-o.x)*180/Math.PI;t.rot=normRot(!isCircle(t)&&t.h>t.w&&!TYPES[t.type].oneSide?ang:ang-90)}
+        if(LO.face)t.rot=viewRot(t,o.x,o.y,A);
         else t.rot=normRot(isCircle(t)?0:F.rot+o.a);
         if(pass===0?placeRoomy(t):canPlace(t)){o.taken=true;ok=true;break}}
       if(ok)break}
-    if(ok){placed++;res.push([t,t.x,t.y,t.rot])}else{const o=orig.find(x=>x[0]===t);t.x=o[1];t.y=o[2];t.rot=o[3];res.push([t,o[1],o[2],o[3]])}
+    if(ok){placed++;res.push([t,t.x,t.y,t.rot]);(groupPts[ck]=groupPts[ck]||[]).push([t.x,t.y])}else{const o=orig.find(x=>x[0]===t);t.x=o[1];t.y=o[2];t.rot=o[3];res.push([t,o[1],o[2],o[3]])}
   }
   // score: everything placed, most important tables closest to the couple, left and right balanced, generous spacing
   let wsum=0,vip=0,gu=[],bu=[];
@@ -2220,9 +2316,13 @@ function tryLayout(style,extra){
   const gF=fams.filter(a=>(tableSide(a.t)||a.t.side)==='groom'),bF=fams.filter(a=>(tableSide(a.t)||a.t.side)==='bride');
   if(gF.length&&bF.length)famGap=Math.min(...gF.flatMap(a=>bF.map(b=>Math.hypot(a.x-b.x,a.y-b.y))));
   let tight=0;for(const a of pts)if(!placeRoomy(Object.assign({},a.t,{x:a.x,y:a.y,rot:res.find(r=>r[0]===a.t)[3]})))tight++;
-  const score=placed*1000+extra*45-(wsum?vip/wsum:0)*3-asym*4-occl*5-(wsum?angSpread/wsum:0)*6-workFront*6-famGap*2-tight*60;
+  let spread=0;const byKey={};for(const a of pts){const r=roles.get(a.t);(byKey[clusterKey(a.t,r)]=byKey[clusterKey(a.t,r)]||{w:CLUSTER_W[r.cat]||.5,p:[]}).p.push(a)}
+  for(const g of Object.values(byKey)){const q=g.p;for(let i=0;i<q.length;i++)for(let j=i+1;j<q.length;j++)spread+=g.w*Math.max(0,Math.hypot(q[i].x-q[j].x,q[i].y-q[j].y)-4)}
+  // side vision: angle between a long table's axis and the line to the couple (0 is ideal)
+  let sideView=0;for(const [t,x,y,r] of res){if(isCircle(t)||TYPES[t.type].oneSide)continue;const ax2=t.w>=t.h?r:r+90,to=Math.atan2(A.y-y,A.x-x)*180/Math.PI;let d=Math.abs(((to-ax2)%180+180)%180);d=Math.min(d,180-d);sideView+=d/90}
+  const score=placed*1000+extra*45-(wsum?vip/wsum:0)*3-asym*4-occl*5-(wsum?angSpread/wsum:0)*6-workFront*6-famGap*2-tight*60-spread*1.5-sideView*40;
   for(const [t,x,y,r] of orig){t.x=x;t.y=y;t.rot=r}
-  return {style,extra,placed,total:tabs.length,score,res,occl,tight};
+  return {style,extra,placed,total:tabs.length,score,res,occl,tight,spread};
 }
 function bestFor(style){
   let best=null;
@@ -2234,7 +2334,7 @@ function applyStyle(style){
   setTimeout(()=>{
     let r;const pre=snapshot();
     if(LO.shape!=='keep'){for(const t of S.items.filter(i=>TYPES[i.type].table&&!i.locked&&!isCoupleTable(i))){const want=LO.shape==='round'?'round':(Math.max(t.seats,guestsAt(t).filter(Boolean).length)>12?'banquet':'rect');if(shapeOf(t)!==want)reshapeTable(t,want)}}
-    if(style==='smart'){let best=null;for(const [k] of LSTYLES){if(k==='smart')continue;const x=bestFor(k);x.score+=({rings:14,crescent:11,sunflower:9,wave:8,grid:8,stagger:10,chevron:6,arc:12,fan:4,diamond:2,stacks:5,horseshoe:7,islands:6,garden:0})[k]||0;if(!best||x.score>best.score)best=x}r=best;LO.picked=r.style}
+    if(style==='smart'){let best=null;for(const [k] of LSTYLES){if(k==='smart')continue;const x=bestFor(k);x.score+=({rays:rectShare()>.5?22:6,rings:14,crescent:11,sunflower:9,wave:8,grid:8,stagger:10,chevron:6,arc:12,fan:4,diamond:2,stacks:5,horseshoe:7,islands:6,garden:0})[k]||0;if(!best||x.score>best.score)best=x}r=best;LO.picked=r.style}
     else{r=bestFor(style);LO.picked=null}
     if(!r||!r.total){stage.classList.remove('busy');$('#sbStatus').textContent='There are no tables to arrange yet.';return}
     for(const [t,x,y,rt] of r.res){t.x=x;t.y=y;t.rot=rt}
@@ -2242,7 +2342,7 @@ function applyStyle(style){
     stage.classList.remove('busy');
     const name=LSTYLES.find(x=>x[0]===r.style)[1];
     const gap=(S.venue.aisle+r.extra).toFixed(1);
-    const msg=r.placed===r.total?`<b>${style==='smart'?'Smart pick chose '+name:name}${['chevron','diamond'].includes(r.style)?`, ${r.style==='diamond'?45:LO.ang}°`:''}.</b> All ${r.total} tables placed around ${esc(coupleNames())}, who stay exactly where they are. Both families up front and side by side, friends behind them, colleagues at the back, groom's side left and bride's right${LO.face?', every table turned to face them with the first seat (the head of each family) given the clearest view':''}, ${r.occl?'a few partly blocked views':'clear sightlines from every table'}, ${r.tight?`${r.tight} table${r.tight>1?'s':''} tighter than ideal near the floor edge or an object`:'generous space around the dance floor, bar, buffet and every other object'}, at least ${gap} m between chair backs. Undo goes back.`
+    const msg=r.placed===r.total?`<b>${style==='smart'?'Smart pick chose '+name:name}${['chevron','diamond'].includes(r.style)?`, ${r.style==='diamond'?45:LO.ang}°`:''}.</b> All ${r.total} tables placed around ${esc(coupleNames())}, who stay exactly where they are. Both families up front and side by side, friends behind them, colleagues together at the back, groom's side left and bride's right${LO.face?', long tables pointed at them so both rows see them by turning left or right, round tables turned so the head of each family faces them':''}, ${r.occl?'a few partly blocked views':'clear sightlines from every table'}, ${r.tight?`${r.tight} table${r.tight>1?'s':''} tighter than ideal near the floor edge or an object`:'generous space around the dance floor, bar, buffet and every other object'}, at least ${gap} m between chair backs. Undo goes back.`
       :`<b>${name}:</b> ${r.placed} of ${r.total} tables fit. Try Compact spacing, turn off the center aisle, or make the floor bigger in Build mode.`;
     $('#sbStatus').innerHTML=msg;renderStyleBar(true);
     logAct(`${style==='smart'?'Smart pick: '+name:name} layout applied, ${r.placed} of ${r.total} tables placed.`);
@@ -2254,7 +2354,7 @@ function styleThumb(k){
   const sl=genSlots(k,P).filter(o=>o.v<4.4&&Math.abs(o.u)<4.6&&(k!=='horseshoe'||true));
   const pick=[];const sc=o=>o.scG!=null?Math.min(o.scG,o.scB):o.sc;
   sl.sort((a,b)=>sc(a)-sc(b));for(const o of sl){if(pick.length>=16)break;if(pick.some(p=>Math.hypot(p.u-o.u,p.v-o.v)<.7))continue;pick.push(o)}
-  const rectish=['chevron','diamond','stacks','fan','arc','horseshoe','garden','rings','crescent','sunflower','wave'].includes(k);
+  const rectish=['chevron','diamond','stacks','fan','arc','horseshoe','garden','rings','crescent','sunflower','wave','rays'].includes(k);
   let g='';for(const o of pick){const col=o.u<-.05?'#3E5F88':o.u>.05?'#B96F7E':'#9C8752';
     g+=rectish?`<rect x="-.36" y="-.15" width=".72" height=".3" rx=".08" fill="${col}" transform="translate(${f(o.u)} ${f(o.v)}) rotate(${f(o.a)})"/>`:`<circle cx="${f(o.u)}" cy="${f(o.v)}" r=".27" fill="${col}"/>`}
   const dance=k==='horseshoe'?`<rect x="-1.1" y=".5" width="2.2" height="1.8" fill="none" stroke="#9aa" stroke-dasharray=".2 .15" stroke-width=".8"/>`:'';
@@ -2751,7 +2851,7 @@ $('#chartCopy').onclick=async()=>{try{await navigator.clipboard.writeText(chartT
 
 /* ---------- panel ---------- */
 document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>{setTab(b.dataset.tab);$('#panel').classList.remove('collapsed');$('#bCollapse').textContent='▾'});
-function setTab(t){tab=t;document.querySelectorAll('.tab').forEach(b=>b.setAttribute('aria-selected',b.dataset.tab===t));renderPanel()}
+function setTab(t){tab=t;document.querySelectorAll('.tab').forEach(b=>b.setAttribute('aria-selected',b.dataset.tab===t||(t==='layouts'&&b.dataset.tab==='venue')));renderPanel()}
 function icon(key){
   const p=PRESETS.find(p=>p.key===key),T=TYPES[p.type];
   const it={id:'icon',type:p.type,w:p.w??T.w,h:p.h??(T.uniform?(p.w??T.w):T.h),rot:0,seats:p.seats??0,label:'',color:'ivory',x:0,y:0};
@@ -2764,7 +2864,15 @@ function guestOptions(){
   const grp={};for(const g of un){const k=g.group||SIDES[g.side];(grp[k]=grp[k]||[]).push(g)}
   return Object.entries(grp).sort().map(([k,l])=>`<optgroup label="${esc(k)}">${l.sort((a,b)=>a.name.localeCompare(b.name)).map(g=>`<option value="${g.id}">${esc(g.name)}</option>`).join('')}</optgroup>`).join('');
 }
-function renderPanel(){
+const ICONS={"grid": "<rect x=\"3\" y=\"3\" width=\"7\" height=\"7\" rx=\"1.5\"/><rect x=\"14\" y=\"3\" width=\"7\" height=\"7\" rx=\"1.5\"/><rect x=\"14\" y=\"14\" width=\"7\" height=\"7\" rx=\"1.5\"/><rect x=\"3\" y=\"14\" width=\"7\" height=\"7\" rx=\"1.5\"/>", "hammer": "<path d=\"m15 12-8.5 8.5a2.12 2.12 0 1 1-3-3L12 9\"/><path d=\"M17.64 15 22 10.64\"/><path d=\"m20.91 11.7-1.25-1.25c-.6-.6-.93-1.4-.93-2.25v-.86L16.01 4.6a5.56 5.56 0 0 0-3.94-1.64H9l.92.82A6.18 6.18 0 0 1 12 8.4v1.56l2 2h2.47l2.26 1.91\"/>", "undo": "<path d=\"M9 14 4 9l5-5\"/><path d=\"M4 9h10.5a5.5 5.5 0 0 1 0 11H11\"/>", "redo": "<path d=\"m15 14 5-5-5-5\"/><path d=\"M20 9H9.5a5.5 5.5 0 0 0 0 11H13\"/>", "sparkles": "<path d=\"M12 3l1.9 4.6 4.6 1.9-4.6 1.9L12 16l-1.9-4.6L5.5 9.5l4.6-1.9Z\"/><path d=\"M19 15l.8 1.7 1.7.8-1.7.8L19 20l-.8-1.7-1.7-.8 1.7-.8Z\"/><path d=\"M5 3v3M3.5 4.5h3\"/>", "cube": "<path d=\"M21 8 12 3 3 8v8l9 5 9-5Z\"/><path d=\"m3 8 9 5 9-5\"/><path d=\"M12 13v8\"/>", "chart": "<rect x=\"8\" y=\"2\" width=\"8\" height=\"4\" rx=\"1\"/><path d=\"M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2\"/><path d=\"M12 11h4M12 16h4M8 11h.01M8 16h.01\"/>", "sheet": "<rect x=\"3\" y=\"3\" width=\"18\" height=\"18\" rx=\"2\"/><path d=\"M3 9h18M3 15h18M9 3v18\"/>", "sliders": "<path d=\"M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3M1 14h6M9 8h6M17 16h6\"/>", "tag": "<path d=\"M12.6 2.6A2 2 0 0 0 11.2 2H4a2 2 0 0 0-2 2v7.2a2 2 0 0 0 .6 1.4l8.7 8.7a2.4 2.4 0 0 0 3.4 0l6.6-6.6a2.4 2.4 0 0 0 0-3.4Z\"/><circle cx=\"7.5\" cy=\"7.5\" r=\"1.5\"/>", "magnet": "<path d=\"m6 15-4-4 6.75-6.77a7.79 7.79 0 0 1 11 11L13 22l-4-4 6.39-6.36a2.14 2.14 0 0 0-3-3L6 15\"/><path d=\"m5 8 4 4M12 15l4 4\"/>", "route": "<circle cx=\"6\" cy=\"19\" r=\"3\"/><path d=\"M9 19h8.5a3.5 3.5 0 0 0 0-7h-11a3.5 3.5 0 0 1 0-7H15\"/><circle cx=\"18\" cy=\"5\" r=\"3\"/>", "moon": "<path d=\"M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z\"/>", "music": "<path d=\"M9 18V5l12-2v13\"/><circle cx=\"6\" cy=\"18\" r=\"3\"/><circle cx=\"18\" cy=\"16\" r=\"3\"/>", "pointer": "<path d=\"m4 4 7.07 17 2.51-7.39L21 11.07Z\"/>", "boxsel": "<path d=\"M5 3a2 2 0 0 0-2 2M19 3a2 2 0 0 1 2 2M21 19a2 2 0 0 1-2 2M5 21a2 2 0 0 1-2-2M9 3h1M9 21h1M14 3h1M14 21h1M3 9v1M21 9v1M3 14v1M21 14v1\"/>", "ruler": "<path d=\"M21.3 15.3a2.4 2.4 0 0 1 0 3.4l-2.6 2.6a2.4 2.4 0 0 1-3.4 0L2.7 8.7a2.41 2.41 0 0 1 0-3.4l2.6-2.6a2.41 2.41 0 0 1 3.4 0Z\"/><path d=\"m14.5 12.5 2-2M11.5 9.5l2-2M8.5 6.5l2-2M17.5 15.5l2-2\"/>", "plus": "<path d=\"M12 5v14M5 12h14\"/>", "minus": "<path d=\"M5 12h14\"/>", "fit": "<path d=\"M8 3H5a2 2 0 0 0-2 2v3M21 8V5a2 2 0 0 0-2-2h-3M3 16v3a2 2 0 0 0 2 2h3M16 21h3a2 2 0 0 0 2-2v-3\"/>", "wand": "<path d=\"m21.64 3.64-1.28-1.28a1.21 1.21 0 0 0-1.72 0L2.36 18.64a1.21 1.21 0 0 0 0 1.72l1.28 1.28a1.2 1.2 0 0 0 1.72 0L21.64 5.36a1.2 1.2 0 0 0 0-1.72\"/><path d=\"m14 7 3 3M5 6v4M19 14v4M10 2v2M7 8H3M21 16h-4M11 3H9\"/>", "users": "<path d=\"M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2\"/><circle cx=\"9\" cy=\"7\" r=\"4\"/><path d=\"M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75\"/>", "addc": "<circle cx=\"12\" cy=\"12\" r=\"9.5\"/><path d=\"M8 12h8M12 8v8\"/>", "pencil": "<path d=\"M21.17 6.81a1 1 0 0 0-3.99-3.99L3.84 16.17a2 2 0 0 0-.5.83l-1.32 4.35a.5.5 0 0 0 .62.62l4.35-1.32a2 2 0 0 0 .83-.5Z\"/><path d=\"m15 5 4 4\"/>", "gear": "<circle cx=\"12\" cy=\"12\" r=\"3\"/><path d=\"M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1Z\"/>", "seat": "<path d=\"M19 9V6a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2v3\"/><path d=\"M3 16a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-5a2 2 0 0 0-4 0v1.5a.5.5 0 0 1-.5.5h-9a.5.5 0 0 1-.5-.5V11a2 2 0 0 0-4 0Z\"/><path d=\"M5 18v2M19 18v2\"/>", "chev": "<path d=\"m6 9 6 6 6-6\"/>", "wrench": "<path d=\"M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94Z\"/>", "refresh": "<path d=\"M3 12a9 9 0 0 1 15-6.7L21 8M21 3v5h-5M21 12a9 9 0 0 1-15 6.7L3 16M8 16H3v5\"/>", "star": "<path d=\"M12 2.5l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.4l-5.9 3.1 1.2-6.5L2.5 9.4l6.6-.9Z\"/>", "shrink": "<path d=\"M8 3v3a2 2 0 0 1-2 2H3M21 8h-3a2 2 0 0 1-2-2V3M3 16h3a2 2 0 0 1 2 2v3M16 21v-3a2 2 0 0 1 2-2h3\"/>", "heart": "<path d=\"M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z\"/>", "chat": "<path d=\"M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z\"/>", "map": "<path d=\"M9 3 3 6v15l6-3 6 3 6-3V3l-6 3Z\"/><path d=\"M9 3v15M15 6v15\"/>", "save": "<path d=\"M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z\"/>", "clock": "<circle cx=\"12\" cy=\"12\" r=\"9.5\"/><path d=\"M12 7v5l3 2\"/>"};
+function ic(n,c){return `<svg class="ic ${c||''}" viewBox="0 0 24 24" aria-hidden="true">${ICONS[n]||''}</svg>`}
+function renderPanel(){_renderPanel();panelPost()}
+function panelPost(){
+  const b=$('#pbody');if(mode==='build'||(tab!=='venue'&&tab!=='layouts'))return;
+  b.insertAdjacentHTML('afterbegin',`<div class="seg2" role="tablist"><button data-set="venue" aria-pressed="${tab==='venue'}">${ic('map')}Venue &amp; couple</button><button data-set="layouts" aria-pressed="${tab==='layouts'}">${ic('save')}Saved &amp; sharing</button></div>`);
+  b.querySelectorAll('[data-set]').forEach(x=>x.onclick=()=>setTab(x.dataset.set));
+}
+function _renderPanel(){
   const b=$('#pbody');
   if(mode==='build'){renderBuild(b);return}
   if(tab==='add'){
@@ -3035,6 +3143,12 @@ if(!loaded)S.updatedAt=0;
 $('#bWalk').setAttribute('aria-pressed',!!S.venue.walk);
 renderAll();renderPanel();requestAnimationFrame(fit);
 let rT=null;window.addEventListener('resize',()=>{clearTimeout(rT);rT=setTimeout(applyView,100)});
+(function(){const bv=$('#bView'),vm=$('#vmenu');
+  const set=o=>{vm.classList.toggle('open',o);bv.setAttribute('aria-expanded',o)};
+  bv.onclick=e=>{e.stopPropagation();set(!vm.classList.contains('open'))};
+  document.addEventListener('pointerdown',e=>{if(vm.classList.contains('open')&&!vm.contains(e.target)&&!bv.contains(e.target))set(false)});
+  vm.querySelectorAll('[data-tool]').forEach(x=>x.addEventListener('click',()=>setTimeout(()=>set(false),120)));
+})();
 if(GATED){showSignIn();try{localStorage.removeItem(LS_AUTO)}catch(e){}}
 setTimeout(connectOnline,0);
 /* ---------- live online saving (claude.ai page), falls back to this device ---------- */
