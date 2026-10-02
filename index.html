@@ -517,6 +517,13 @@ details summary::-webkit-details-marker{display:none}
 .gate-msg{margin:10px 0 0;font-size:13px;color:#6B6456;min-height:18px}
 .gate-msg.err{color:#B0413E}
 body.gated #app,body.gated .app,body.gated header{filter:blur(8px);pointer-events:none}
+.chip.live{display:inline-flex;align-items:center;gap:4px;margin-left:6px;transition:box-shadow .3s}
+.chip.live i{width:20px;height:20px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;color:#fff;font:700 11px "Jost",system-ui,sans-serif;font-style:normal;margin-right:-6px;border:2px solid var(--hdr)}
+.chip.live span{margin-left:8px}
+.chip.live.ping{box-shadow:0 0 0 3px rgba(95,211,141,.55)}
+.peer{fill:none;stroke-width:3;stroke-dasharray:6 4}
+.peert{font:600 .34px "Jost",system-ui,sans-serif;fill:#fff}
+#svg .peert{vector-effect:none}
 /* online status chip */
 .chip.net{margin-left:6px;flex:0 0 auto}
 .chip.net::before{content:"";width:8px;height:8px;border-radius:50%;background:#9AA7A2;display:inline-block;margin-right:6px;align-self:center}
@@ -687,7 +694,7 @@ aside.panel.building .buildhead{display:flex}
     <div class="mono" id="mono">&amp;</div>
     <div><h1 id="vname">Wedding seat plan</h1><small id="vsize"></small></div>
   </div>
-  <div class="stats" id="stats"></div><button class="chip net" id="netChip" title="Where your plan is saved">This device</button>
+  <div class="stats" id="stats"></div><button class="chip net" id="netChip" title="Where your plan is saved">This device</button><span class="chip live" id="liveChip" hidden></span>
 </header>
 
 <main class="stage" id="stage">
@@ -776,7 +783,7 @@ aside.panel.building .buildhead{display:flex}
     </g>
   </svg>
   <div class="marquee" id="marquee"></div>
-  <div class="avlegend" id="avLegend" aria-label="Icon colours"><span style="opacity:.55;font-size:11px">Version 30 Sep, slide-out panel</span><span><svg viewBox="-1 -1 2 2" style="color:#2F6DB5"><use href="#av-m" x="-1" y="-1" width="2" height="2"/></svg>Man</span><span><svg viewBox="-1 -1 2 2" style="color:#D6457A"><use href="#av-f" x="-1" y="-1" width="2" height="2"/></svg>Woman</span><span><svg viewBox="-1 -1 2 2" style="color:#E39B17"><use href="#av-c" x="-1" y="-1" width="2" height="2"/></svg>Child</span><span><i style="display:inline-block;width:14px;height:14px;border-radius:50%;border:3px solid #3E5F88;background:#E4ECF6"></i>Groom's table</span><span><i style="display:inline-block;width:14px;height:14px;border-radius:50%;border:3px solid #B96F7E;background:#F8E5EA"></i>Bride's table</span><span><i style="display:inline-block;width:14px;height:14px;border-radius:50%;border:3px solid #B08D57;background:#F6EEDD"></i>Both</span><span><svg viewBox="-1 -1 2 2" style="color:#8E969C"><use href="#av-u" x="-1" y="-1" width="2" height="2"/></svg>Not set</span></div>
+  <div class="avlegend" id="avLegend" aria-label="Icon colours"><span style="opacity:.55;font-size:11px">Version 1 Oct, live sync</span><span><svg viewBox="-1 -1 2 2" style="color:#2F6DB5"><use href="#av-m" x="-1" y="-1" width="2" height="2"/></svg>Man</span><span><svg viewBox="-1 -1 2 2" style="color:#D6457A"><use href="#av-f" x="-1" y="-1" width="2" height="2"/></svg>Woman</span><span><svg viewBox="-1 -1 2 2" style="color:#E39B17"><use href="#av-c" x="-1" y="-1" width="2" height="2"/></svg>Child</span><span><i style="display:inline-block;width:14px;height:14px;border-radius:50%;border:3px solid #3E5F88;background:#E4ECF6"></i>Groom's table</span><span><i style="display:inline-block;width:14px;height:14px;border-radius:50%;border:3px solid #B96F7E;background:#F8E5EA"></i>Bride's table</span><span><i style="display:inline-block;width:14px;height:14px;border-radius:50%;border:3px solid #B08D57;background:#F6EEDD"></i>Both</span><span><svg viewBox="-1 -1 2 2" style="color:#8E969C"><use href="#av-u" x="-1" y="-1" width="2" height="2"/></svg>Not set</span></div>
   <div class="scalebar" id="scalebar"></div>
   <div class="zoomlbl" id="zoomlbl"></div>
   <div class="tiltnote">3D preview. Tap 3D again to keep editing.</div>
@@ -1008,6 +1015,7 @@ const SUPABASE_ANON_KEY = "sb_publishable_Lz--X6lvwPcGmTzmx0_tnw_tixfRxqo";
   let conflicts = /* @__PURE__ */ new Set(), measure = null, tab = "smart", seatMap = {}, placing = null;
   var ON = { db: null, user: null, me: null, canWrite: true, ready: false, status: "local", lastState: "", lastFloor: "", timer: null, writing: false, again: false, remotePending: null, designs: [], lastBy: null, lastAt: 0 };
   var GATED = !window.claude;
+  var LIVE = { client: null, ch: null, ok: false, peers: {}, lastMap: null, tomb: {}, sendT: 0, sendQ: false, moveT: 0, selKey: "", rtt: 0, remoteSel: {}, remoteMove: {}, lastHeard: 0 };
   var SB = { session: null, cfg: null, ready: false, lastStr: "", lastAt: "", timer: null, writing: false, again: false, pollT: null, tick: 0, designs: [] };
   let sheetView = "guests", sheetQ = "", sheetSort = { k: null, d: 1 }, sheetSel = /* @__PURE__ */ new Set(), actLog = [];
   let mode = "plan", bTool = "floor", bMat = "m", brushR = 1, doorW = 1.8, hover = null;
@@ -2054,6 +2062,16 @@ const SUPABASE_ANON_KEY = "sb_publishable_Lz--X6lvwPcGmTzmx0_tnw_tixfRxqo";
       if (it)
         s += outline(geom(it, chairPad(it) + 0.12), "sel");
     }
+    for (const [cid, p] of Object.entries(LIVE.remoteSel)) {
+      const col = peerColor(cid), mv = LIVE.remoteMove[cid] && Date.now() - LIVE.remoteMove[cid].t < 1500;
+      for (const id of p.ids) {
+        const it = byId(id);
+        if (!it)
+          continue;
+        s += outline(geom(it, chairPad(it) + 0.2), "peer").replace(/^<(circle|rect) /, '<$1 style="stroke:'.concat(col, '" '));
+        s += '<g transform="translate('.concat(f(it.x), " ").concat(f(it.y - (Math.max(it.w, it.h) / 2 + chairPad(it) + 0.6)), ')"><rect x="-1.1" y="-.32" width="2.2" height=".6" rx=".3" fill="').concat(col, '"/><text class="peert" text-anchor="middle" y=".1">').concat(esc((p.name || "Partner") + (mv ? " moving" : "")), "</text></g>");
+      }
+    }
     if (drag && drag.mode === "move" && drag.moved) {
       const a = byId(drag.lead);
       if (a && !TYPES[a.type].zone) {
@@ -2371,11 +2389,17 @@ const SUPABASE_ANON_KEY = "sb_publishable_Lz--X6lvwPcGmTzmx0_tnw_tixfRxqo";
   }
   let saveT = null;
   function saveAuto() {
+    if (LIVE.applying)
+      return;
+    if (ON.ready || SB.ready)
+      liveStamp();
     if (ON.ready) {
       scheduleOnline();
       return;
     }
     if (SB.ready) {
+      if (snapshot() !== SB.lastStr)
+        liveQueueState();
       scheduleSB();
       return;
     }
@@ -3043,6 +3067,10 @@ const SUPABASE_ANON_KEY = "sb_publishable_Lz--X6lvwPcGmTzmx0_tnw_tixfRxqo";
         if (gg)
           gg.setAttribute("transform", "translate(".concat(it2.x, " ").concat(it2.y, ") rotate(").concat(it2.rot, ")"));
       }
+      liveMove(drag.orig.map((o) => {
+        const it2 = byId(o.id);
+        return { id: it2.id, x: it2.x, y: it2.y, rot: it2.rot };
+      }));
       renderLive();
       return;
     }
@@ -3179,6 +3207,7 @@ const SUPABASE_ANON_KEY = "sb_publishable_Lz--X6lvwPcGmTzmx0_tnw_tixfRxqo";
       } else
         closeSeatCard();
     }
+    setTimeout(liveFlushPending, 30);
     if ((d.mode === "move" || d.mode === "rot" || d.mode === "scale") && d.moved) {
       const prev = posMap();
       let slid = 0;
@@ -7994,7 +8023,7 @@ const SUPABASE_ANON_KEY = "sb_publishable_Lz--X6lvwPcGmTzmx0_tnw_tixfRxqo";
       return;
     setNet("saving");
     clearTimeout(ON.timer);
-    ON.timer = setTimeout(pushOnline, 900);
+    ON.timer = setTimeout(pushOnline, 220);
   }
   async function pushOnline() {
     ON.timer = null;
@@ -8067,14 +8096,24 @@ const SUPABASE_ANON_KEY = "sb_publishable_Lz--X6lvwPcGmTzmx0_tnw_tixfRxqo";
   }
   async function applyRemote(d) {
     setTimeout(ensureTolipSite, 50);
-    const floor = S.floor;
-    const nx = migrate(Object.assign(JSON.parse(JSON.stringify(d.state)), { floor }));
+    const floor = S.floor, prevPos = posMap();
+    const nx = migrate(Object.assign(mergeRemote(JSON.parse(JSON.stringify(d.state))), { floor }));
     S = nx;
-    ON.lastState = stateParts().restStr;
+    liveBaseline();
+    if (!ON.timer && !ON.writing)
+      ON.lastState = stateParts().restStr;
+    else
+      scheduleOnline();
     ON.lastBy = d.by || null;
     ON.lastAt = d.at || Date.now();
     cleanSel();
-    renderAll();
+    LIVE.applying = true;
+    try {
+      renderAll();
+    } finally {
+      LIVE.applying = false;
+    }
+    animateFrom(prevPos, 260);
     const inPanel = document.activeElement && document.activeElement.closest && document.activeElement.closest("#pbody,#seatCard,#sheetM");
     if (!inPanel) {
       renderPanel();
@@ -8329,6 +8368,301 @@ const SUPABASE_ANON_KEY = "sb_publishable_Lz--X6lvwPcGmTzmx0_tnw_tixfRxqo";
     if (!r.ok)
       throw new Error(await r.text() || r.status);
   }
+  function liveMap() {
+    const m = { items: {}, guests: {} };
+    for (const k of ["items", "guests"])
+      for (const o of S[k]) {
+        const c = Object.assign({}, o);
+        delete c.mt;
+        m[k][o.id] = JSON.stringify(c);
+      }
+    return m;
+  }
+  function liveBaseline() {
+    LIVE.lastMap = liveMap();
+    LIVE.tomb = Object.assign({}, S.tomb || {});
+  }
+  function liveStamp() {
+    if (!LIVE.lastMap)
+      liveBaseline();
+    const now = Date.now(), cur = liveMap();
+    for (const k of ["items", "guests"]) {
+      for (const o of S[k])
+        if (LIVE.lastMap[k][o.id] !== cur[k][o.id])
+          o.mt = now;
+      for (const id of Object.keys(LIVE.lastMap[k]))
+        if (!(id in cur[k]))
+          LIVE.tomb[id] = now;
+    }
+    for (const [id, t] of Object.entries(LIVE.tomb))
+      if (now - t > 864e5)
+        delete LIVE.tomb[id];
+    S.tomb = Object.assign({}, LIVE.tomb);
+    LIVE.lastMap = cur;
+  }
+  function mergeRemote(R) {
+    const out = JSON.parse(JSON.stringify(R)), tomb = Object.assign({}, R.tomb || {}, S.tomb || {});
+    for (const k of ["items", "guests"]) {
+      const map = /* @__PURE__ */ new Map();
+      for (const o of R[k] || [])
+        map.set(o.id, o);
+      for (const o of S[k]) {
+        const r = map.get(o.id);
+        if (!r) {
+          if (!(tomb[o.id] && tomb[o.id] >= (o.mt || 0)))
+            map.set(o.id, o);
+        } else if ((o.mt || 0) > (r.mt || 0))
+          map.set(o.id, o);
+      }
+      out[k] = [...map.values()].filter((o) => !(tomb[o.id] && tomb[o.id] > (o.mt || 0)));
+    }
+    out.tomb = tomb;
+    out.next = Math.max(R.next || 0, S.next || 0);
+    out.gnext = Math.max(R.gnext || 0, S.gnext || 0);
+    return out;
+  }
+  function applyMerged(R, who) {
+    if (!R || !R.items)
+      return;
+    const prev = posMap(), wasSel = [...sel];
+    let newer = 0;
+    {
+      const tomb = R.tomb || {};
+      for (const k of ["items", "guests"]) {
+        const m = new Map((R[k] || []).map((o) => [o.id, o]));
+        for (const o of S[k]) {
+          const r = m.get(o.id);
+          if (r ? (o.mt || 0) > (r.mt || 0) : !(tomb[o.id] && tomb[o.id] >= (o.mt || 0)))
+            newer++;
+        }
+      }
+    }
+    const hadLocal = newer > 0;
+    const floorKeep = R.floor || S.floor;
+    S = migrate(Object.assign(mergeRemote(R), { floor: floorKeep }));
+    liveBaseline();
+    sel = new Set(wasSel.filter((id) => byId(id)));
+    cleanSel();
+    LIVE.applying = true;
+    try {
+      renderAll();
+    } finally {
+      LIVE.applying = false;
+    }
+    animateFrom(prev, 260);
+    if (hadLocal) {
+      if (SB.ready) {
+        if (!SB.timer)
+          scheduleSB();
+        liveQueueState();
+      } else if (ON.ready && !ON.timer)
+        scheduleOnline();
+    }
+    const inPanel = document.activeElement && document.activeElement.closest && document.activeElement.closest("#pbody,#seatCard,#sheetM");
+    if (!inPanel) {
+      renderPanel();
+      if (seatCard)
+        openSeatCard(seatCard.tid, seatCard.s);
+      if ($("#sheetM").classList.contains("open"))
+        renderSheet();
+    }
+    if (who)
+      liveNote(who);
+  }
+  let liveNoteT = 0;
+  function liveNote(who) {
+    const c = $("#liveChip");
+    if (!c)
+      return;
+    c.classList.add("ping");
+    clearTimeout(liveNoteT);
+    liveNoteT = setTimeout(() => c.classList.remove("ping"), 700);
+  }
+  function liveSend(type, payload) {
+    if (!LIVE.ok || !LIVE.ch)
+      return;
+    try {
+      LIVE.ch.send({ type: "broadcast", event: type, payload: Object.assign({ from: CLIENT, name: sbWho(), at: Date.now() }, payload) });
+    } catch (e) {
+    }
+  }
+  function liveQueueState() {
+    if (!LIVE.ok)
+      return;
+    const now = performance.now();
+    const go = () => {
+      LIVE.sendT = performance.now();
+      LIVE.sendQ = false;
+      liveSend("state", { state: JSON.parse(snapshot()) });
+    };
+    if (now - LIVE.sendT > 90)
+      go();
+    else if (!LIVE.sendQ) {
+      LIVE.sendQ = true;
+      setTimeout(go, 90 - (now - LIVE.sendT));
+    }
+  }
+  function liveMove(list) {
+    if (!LIVE.ok)
+      return;
+    const now = performance.now();
+    if (now - LIVE.moveT < 45)
+      return;
+    LIVE.moveT = now;
+    liveSend("move", { list });
+  }
+  function liveTick() {
+    if (!LIVE.ok)
+      return;
+    const k = [...sel].sort().join(",");
+    if (k !== LIVE.selKey) {
+      LIVE.selKey = k;
+      liveSend("sel", { ids: [...sel] });
+    }
+    for (const [id, p] of Object.entries(LIVE.remoteSel))
+      if (Date.now() - p.t > 15e3)
+        delete LIVE.remoteSel[id];
+  }
+  const PEERCOL = ["#E0607E", "#3E8ED0", "#E39B17", "#2E9C8F", "#8E6BD8", "#C0392B"];
+  function peerColor(id) {
+    let h = 0;
+    for (const ch of String(id))
+      h = h * 31 + ch.charCodeAt(0) >>> 0;
+    return PEERCOL[h % PEERCOL.length];
+  }
+  function renderPeers() {
+    const c = $("#liveChip");
+    if (!c)
+      return;
+    const ps = Object.values(LIVE.peers);
+    if (!LIVE.ok) {
+      c.hidden = true;
+      return;
+    }
+    c.hidden = false;
+    c.innerHTML = ps.length ? ps.slice(0, 4).map((p) => '<i style="background:'.concat(peerColor(p.client), '" title="').concat(esc(p.name || "Partner"), '">').concat(esc((p.name || "?")[0].toUpperCase()), "</i>")).join("") + "<span>".concat(ps.length === 1 ? esc(ps[0].name || "Partner") + " live" : ps.length + " live").concat(LIVE.rtt ? " \xB7 ".concat(LIVE.rtt, " ms") : "", "</span>") : "<span>Live \xB7 only you</span>";
+  }
+  async function liveConnect() {
+    if (LIVE.ok || !SB.ready || !SB.cfg)
+      return;
+    try {
+      if (!window.supabase || !window.supabase.createClient) {
+        await new Promise((res, rej) => {
+          const s = document.createElement("script");
+          s.src = "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js";
+          s.onload = res;
+          s.onerror = rej;
+          document.head.appendChild(s);
+        });
+      }
+      const cl = LIVE.client || window.supabase.createClient(SB.cfg.url, SB.cfg.key, { auth: { persistSession: false, autoRefreshToken: false }, realtime: { params: { eventsPerSecond: 40 } } });
+      LIVE.client = cl;
+      if (SB.session && cl.realtime && cl.realtime.setAuth)
+        cl.realtime.setAuth(SB.session.access_token);
+      const ch = cl.channel("wedding-" + SB.cfg.plan, { config: { broadcast: { self: false, ack: false }, presence: { key: CLIENT } } });
+      LIVE.ch = ch;
+      ch.on("broadcast", { event: "state" }, ({ payload: p }) => {
+        if (!p || p.from === CLIENT)
+          return;
+        LIVE.lastHeard = Date.now();
+        if (drag || gdrag) {
+          LIVE.pendingState = p;
+          return;
+        }
+        applyMerged(p.state, p.name);
+        if (!SB.timer && !SB.writing)
+          SB.lastStr = snapshot();
+      });
+      ch.on("broadcast", { event: "move" }, ({ payload: p }) => {
+        if (!p || p.from === CLIENT)
+          return;
+        const draggingIds = drag && drag.orig ? drag.orig.map((o) => o.id) : [];
+        for (const m of p.list) {
+          if (draggingIds.includes(m.id))
+            continue;
+          const it = byId(m.id);
+          if (!it)
+            continue;
+          it.x = m.x;
+          it.y = m.y;
+          it.rot = m.rot;
+          const gg = document.getElementById("g-" + it.id);
+          if (gg)
+            gg.setAttribute("transform", "translate(".concat(it.x, " ").concat(it.y, ") rotate(").concat(it.rot, ")"));
+          if (window.__v3dLiveMove)
+            window.__v3dLiveMove(m.id, m.x, m.y, m.rot);
+        }
+        LIVE.remoteMove[p.from] = { name: p.name, ids: p.list.map((m) => m.id), t: Date.now() };
+        renderOverlay();
+      });
+      ch.on("broadcast", { event: "sel" }, ({ payload: p }) => {
+        if (!p || p.from === CLIENT)
+          return;
+        LIVE.remoteSel[p.from] = { name: p.name, ids: p.ids || [], t: Date.now(), color: peerColor(p.from) };
+        renderOverlay();
+      });
+      ch.on("broadcast", { event: "ping" }, ({ payload: p }) => {
+        if (!p || p.from === CLIENT)
+          return;
+        liveSend("pong", { to: p.from, sent: p.at });
+      });
+      ch.on("broadcast", { event: "pong" }, ({ payload: p }) => {
+        if (!p || p.to !== CLIENT)
+          return;
+        LIVE.rtt = Math.max(1, Date.now() - p.sent);
+        renderPeers();
+      });
+      ch.on("presence", { event: "sync" }, () => {
+        const st = ch.presenceState(), ps = {};
+        for (const [k, arr] of Object.entries(st)) {
+          if (k === CLIENT)
+            continue;
+          const v = arr[0] || {};
+          ps[k] = { client: k, name: v.name };
+        }
+        LIVE.peers = ps;
+        for (const id of Object.keys(LIVE.remoteSel))
+          if (!ps[id])
+            delete LIVE.remoteSel[id];
+        renderPeers();
+        renderOverlay();
+      });
+      ch.subscribe(async (status) => {
+        if (status === "SUBSCRIBED") {
+          LIVE.ok = true;
+          await ch.track({ name: sbWho(), at: Date.now() });
+          liveBaseline();
+          renderPeers();
+          clearInterval(SB.pollT);
+          SB.pollT = setInterval(pollSB, 15e3);
+          clearInterval(LIVE.tickT);
+          LIVE.tickT = setInterval(() => {
+            liveTick();
+            if (Object.keys(LIVE.peers).length)
+              liveSend("ping", {});
+          }, 2500);
+        } else if (status === "CHANNEL_ERROR" || status === "TIMED_OUT" || status === "CLOSED") {
+          LIVE.ok = false;
+          renderPeers();
+          clearInterval(SB.pollT);
+          SB.pollT = setInterval(pollSB, 2e3);
+        }
+      });
+    } catch (e) {
+      LIVE.ok = false;
+      clearInterval(SB.pollT);
+      SB.pollT = setInterval(pollSB, 2e3);
+    }
+  }
+  function liveFlushPending() {
+    if (LIVE.pendingState && !drag && !gdrag) {
+      const p = LIVE.pendingState;
+      LIVE.pendingState = null;
+      applyMerged(p.state, p.name);
+      if (!SB.timer && !SB.writing)
+        SB.lastStr = snapshot();
+    }
+  }
   function scheduleSB() {
     if (!SB.ready)
       return;
@@ -8336,7 +8670,7 @@ const SUPABASE_ANON_KEY = "sb_publishable_Lz--X6lvwPcGmTzmx0_tnw_tixfRxqo";
       return;
     setNet("saving");
     clearTimeout(SB.timer);
-    SB.timer = setTimeout(pushSB, 900);
+    SB.timer = setTimeout(pushSB, 450);
   }
   async function pushSB() {
     SB.timer = null;
@@ -8382,10 +8716,22 @@ const SUPABASE_ANON_KEY = "sb_publishable_Lz--X6lvwPcGmTzmx0_tnw_tixfRxqo";
         if (h.client !== CLIENT) {
           const row = await sbGet(SB.cfg.plan);
           if (row && !sbBusy()) {
-            S = migrate(row.data);
-            SB.lastStr = snapshot();
+            const prev = posMap();
+            S = migrate(Object.assign(mergeRemote(row.data), { floor: row.data.floor || S.floor }));
+            liveBaseline();
+            const hadL = !!(SB.timer || SB.writing);
+            if (!hadL)
+              SB.lastStr = snapshot();
             cleanSel();
-            renderAll();
+            LIVE.applying = true;
+            try {
+              renderAll();
+            } finally {
+              LIVE.applying = false;
+            }
+            animateFrom(prev, 260);
+            if (hadL)
+              scheduleSB();
             const inPanel = document.activeElement && document.activeElement.closest && document.activeElement.closest("#pbody,#seatCard,#sheetM");
             if (!inPanel) {
               renderPanel();
@@ -8482,7 +8828,9 @@ const SUPABASE_ANON_KEY = "sb_publishable_Lz--X6lvwPcGmTzmx0_tnw_tixfRxqo";
       SB.lastAt = row ? row.updated_at : "";
       SB.ready = true;
       clearInterval(SB.pollT);
-      SB.pollT = setInterval(pollSB, 4e3);
+      SB.pollT = setInterval(pollSB, 2e3);
+      liveBaseline();
+      liveConnect();
       loadSBDesigns();
       try {
         const local = JSON.parse(lsGet(LS_SAVES) || "[]");
@@ -8524,6 +8872,14 @@ const SUPABASE_ANON_KEY = "sb_publishable_Lz--X6lvwPcGmTzmx0_tnw_tixfRxqo";
   }
   function signOutSB() {
     clearInterval(SB.pollT);
+    clearInterval(LIVE.tickT);
+    try {
+      LIVE.ch && LIVE.ch.unsubscribe();
+    } catch (e) {
+    }
+    LIVE.ok = false;
+    LIVE.ch = null;
+    renderPeers();
     SB.ready = false;
     try {
       fetch(sbRoot() + "/auth/v1/logout", { method: "POST", headers: { apikey: SB.cfg.key, Authorization: "Bearer " + (SB.session && SB.session.access_token) } });
@@ -8668,6 +9024,7 @@ const SUPABASE_ANON_KEY = "sb_publishable_Lz--X6lvwPcGmTzmx0_tnw_tixfRxqo";
     get S() {
       return S;
     },
+    liveMove: (id, x, y, rot) => liveMove([{ id, x, y, rot }]),
     theme,
     FPAL,
     ACCENTS,
@@ -12108,6 +12465,8 @@ const SUPABASE_ANON_KEY = "sb_publishable_Lz--X6lvwPcGmTzmx0_tnw_tixfRxqo";
     drag.R.rig.updateMatrixWorld(true);
     renderer.shadowMap.needsUpdate = true;
     lastInput = performance.now();
+    if (PL().liveMove)
+      PL().liveMove(drag.R.it.id, x, z, drag.R.it.rot || 0);
     hint("".concat(PL().nameOf(drag.R.it), ": ").concat(x.toFixed(1), " m, ").concat(z.toFixed(1), " m"));
   }
   function endItemDrag() {
@@ -12578,6 +12937,16 @@ const SUPABASE_ANON_KEY = "sb_publishable_Lz--X6lvwPcGmTzmx0_tnw_tixfRxqo";
       dn.textContent = st.tod === "day" ? "\u2600 Day" : st.tod === "golden" ? "\u25D0 Golden hour" : "\u263E Evening";
   }
   window.__v3dCenter = () => isOpen ? { x: ctl.tx, y: ctl.tz } : null;
+  window.__v3dLiveMove = (id, x, y, rot) => {
+    if (!isOpen || !RIGS[id] || drag && drag.R && drag.R.it.id === id)
+      return;
+    const R = RIGS[id];
+    R.rig.position.set(x, 0, y);
+    R.rig.updateMatrixWorld(true);
+    LASTPOS[id] = { x, z: y, ry: -rad(rot || 0) };
+    renderer.shadowMap.needsUpdate = true;
+    lastInput = performance.now();
+  };
   window.__v3dSim = (n) => {
     let t = 0;
     for (let i = 0; i < n; i++) {
